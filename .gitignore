@@ -82,7 +82,7 @@ dist/
 # 6. Data Science Specifics
 # =========================
 # Large Data Files (Add your specific data folder paths here)
-python-ml/data/
+backend/data/
 data/
 *.csv
 *.parquet

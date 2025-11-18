@@ -2,7 +2,7 @@
 
 Project: A Comparative Analysis of Classical and Deep Learning Forecasting  
 Your Role: AI & Software Lead  
-Stack: Python 3.10+, PyTorch 2.0+, Polars, LightGBM, FastAPI, Next.js 14, Docker (Optional)
+Stack: Python 3.10+, PyTorch 2.0+, Polars, LightGBM, FastAPI, Next.js 16, Docker (Optional)
 
 ### **Phase 0: Infrastructure & Architecture (Weeks 1-3)**
 
