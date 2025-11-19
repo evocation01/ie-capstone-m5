@@ -240,7 +240,11 @@ def main():
     out_df = pd.DataFrame(forecast_array, columns=[f"F{i}" for i in range(1, 29)])
     out_df["id"] = sorted(unique_ids)
 
-    out_path = paths.EXPERIMENTS_DIR / "forecast_lstm.csv"
+    # Save submission file
+    logger.info(f"Saving submission file...")
+    out_path = paths.FORECASTS_DIR / "forecast_lstm.csv"
+    submission_df.to_csv(out_path, index=False)
+    logger.info(f"Submission file saved to {out_path}")
     out_df.to_csv(out_path, index=False)
     logger.info(f"✅ Saved to {out_path}")
 

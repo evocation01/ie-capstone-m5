@@ -63,15 +63,17 @@ def calculate_costs(forecast_matrix, actual_matrix, holding_cost, stockout_cost)
 
 
 def main():
-    logger.info("🚀 Starting Full Optimization & Analysis (3 Models)...")
+    logger.info("🚀 Starting Optimization Analysis...")
 
     # 1. Load Data
-    lstm_path = paths.EXPERIMENTS_DIR / "forecast_lstm.csv"
-    lgbm_path = paths.EXPERIMENTS_DIR / "forecast_lgbm.csv"
+    lstm_path = paths.FORECASTS_DIR / "forecast_lstm.csv"
+    lgbm_path = paths.FORECASTS_DIR / "forecast_lgbm.csv"
     raw_path = paths.RAW_DATA_DIR / "sales_train_validation.csv"
 
     if not lstm_path.exists() or not raw_path.exists():
-        logger.error("Missing forecast or raw data files.")
+        logger.error(
+            "Missing LSTM forecast or raw data files. Run prediction scripts first."
+        )
         return
 
     # Load LSTM Forecast (The Anchor)
@@ -94,7 +96,7 @@ def main():
         logger.warning("LightGBM forecast not found. Skipping LGBM comparison.")
 
     # Load Ground Truth
-    logger.info("Loading Ground Truth...")
+    logger.info("Loading Ground Truth for validation period...")
     df_actual = pd.read_csv(raw_path)
 
     # The forecast corresponds to the last 28 columns (d_1886 to d_1913)
@@ -107,12 +109,13 @@ def main():
     naive_forecast = df_actual.set_index("id").loc[unique_ids, naive_cols].values
 
     # Cost Parameters
-    HOLDING_COST = 1.0
-    STOCKOUT_COST = 10.0
+    HOLDING_COST = 1.0  # Simplified cost per unit of excess inventory
+    STOCKOUT_COST = 10.0  # Simplified cost per unit of missed sales
 
     results = []
 
     # --- ANALYSIS 1: NAIVE BASELINE ---
+    logger.info("Analyzing Naive (Last-Period) Baseline...")
     rmse_naive, weekly_naive = calculate_metrics(naive_forecast, ground_truth)
     h_cost, s_cost = calculate_costs(
         naive_forecast, ground_truth, HOLDING_COST, STOCKOUT_COST
@@ -123,12 +126,15 @@ def main():
             "RMSE": rmse_naive,
             "W1_RMSE": weekly_naive[0],
             "W4_RMSE": weekly_naive[3],
+            "Holding_Cost": h_cost,
+            "Stockout_Cost": s_cost,
             "Total_Cost": h_cost + s_cost,
         }
     )
 
     # --- ANALYSIS 2: LIGHTGBM ---
     if has_lgbm:
+        logger.info("Analyzing LightGBM Model...")
         rmse_lgbm, weekly_lgbm = calculate_metrics(lgbm_matrix, ground_truth)
         h_cost, s_cost = calculate_costs(
             lgbm_matrix, ground_truth, HOLDING_COST, STOCKOUT_COST
@@ -139,11 +145,14 @@ def main():
                 "RMSE": rmse_lgbm,
                 "W1_RMSE": weekly_lgbm[0],
                 "W4_RMSE": weekly_lgbm[3],
+                "Holding_Cost": h_cost,
+                "Stockout_Cost": s_cost,
                 "Total_Cost": h_cost + s_cost,
             }
         )
 
     # --- ANALYSIS 3: LSTM (DEEP LEARNING) ---
+    logger.info("Analyzing LSTM Model...")
     rmse_lstm, weekly_lstm = calculate_metrics(lstm_matrix, ground_truth)
     h_cost, s_cost = calculate_costs(
         lstm_matrix, ground_truth, HOLDING_COST, STOCKOUT_COST
@@ -154,57 +163,50 @@ def main():
             "RMSE": rmse_lstm,
             "W1_RMSE": weekly_lstm[0],
             "W4_RMSE": weekly_lstm[3],
+            "Holding_Cost": h_cost,
+            "Stockout_Cost": s_cost,
             "Total_Cost": h_cost + s_cost,
         }
     )
 
-    # --- ANALYSIS 4: SENSITIVITY (Robustness Check) ---
-    # Scenario: What if LSTM is 10% worse? (Add 10% noise)
-    lstm_matrix = lstm_matrix.astype(float)
-    np.random.seed(42)
-
-    noise = np.random.normal(0, 0.1 * (np.mean(lstm_matrix) + 1e-6), lstm_matrix.shape)
-    lstm_noisy = np.maximum(lstm_matrix + noise, 0)
-
-    h_cost_bad, s_cost_bad = calculate_costs(
-        lstm_noisy, ground_truth, HOLDING_COST, STOCKOUT_COST
-    )
-    total_bad = h_cost_bad + s_cost_bad
-
+    # --- FINAL REPORT ---
     logger.info("\n" + "=" * 80)
-    logger.info("📊 FINAL COMPARISON REPORT")
+    logger.info("📊 MODEL COMPARISON REPORT (COST & ACCURACY)")
     logger.info("=" * 80)
-    logger.info(
-        f"{'Model':<15} | {'RMSE':<8} | {'W1 RMSE':<8} | {'W4 RMSE':<8} | {'TOTAL COST ($)':<15}"
+    report_str = (
+        f"{'Model':<15} | {'RMSE':<8} | {'Total Cost':<15} | "
+        f"{'Holding Cost':<15} | {'Stockout Cost':<15}"
     )
+    logger.info(report_str)
     logger.info("-" * 80)
 
     for r in results:
-        logger.info(
-            f"{r['Model']:<15} | {r['RMSE']:.4f}   | {r['W1_RMSE']:.4f}   | {r['W4_RMSE']:.4f}   | ${r['Total_Cost']:,.0f}"
+        report_line = (
+            f"{r['Model']:<15} | {r['RMSE']:.4f}   | ${r['Total_Cost']:<14,.0f} | "
+            f"${r['Holding_Cost']:<14,.0f} | ${r['Stockout_Cost']:<14,.0f}"
         )
+        logger.info(report_line)
 
-    logger.info("-" * 80)
-    logger.info(
-        f"LSTM (Noisy -10%)| ------     | ------     | ------     | ${total_bad:,.0f}"
-    )
     logger.info("=" * 80)
 
     # Calculate Savings vs Naive
-    naive_cost = results[0]["Total_Cost"]
-    lstm_cost = results[-1]["Total_Cost"]
-    savings = naive_cost - lstm_cost
+    try:
+        naive_cost = next(r["Total_Cost"] for r in results if r["Model"] == "Naive")
+        lstm_cost = next(r["Total_Cost"] for r in results if r["Model"] == "LSTM")
+        savings = naive_cost - lstm_cost
+        percentage_savings = (savings / naive_cost) * 100 if naive_cost > 0 else 0
 
-    if savings > 0:
-        logger.info(f"🏆 LSTM saves ${savings:,.0f} vs Naive Baseline.")
-    else:
-        logger.info(f"⚠️ LSTM is ${abs(savings):,.0f} more expensive than Naive.")
+        logger.info(
+            f"🏆 LSTM financial impact vs. Naive Baseline: ${savings:,.0f} ({percentage_savings:.2f}%)"
+        )
+    except StopIteration:
+        logger.warning("Could not calculate financial impact due to missing models.")
 
     # Save Results
     res_df = pd.DataFrame(results)
-    out_path = paths.EXPERIMENTS_DIR / "final_results.csv"
+    out_path = paths.OPTIMIZATION_DIR / "optimization_summary.csv"
     res_df.to_csv(out_path, index=False)
-    logger.info(f"Saved final results to {out_path}")
+    logger.info(f"Saved optimization summary to {out_path}")
 
 
 if __name__ == "__main__":

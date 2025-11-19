@@ -12,7 +12,13 @@ EXTERNAL_DATA_DIR = DATA_DIR / "external"
 
 # Model Directories
 MODELS_DIR = PROJECT_ROOT / "models"
-EXPERIMENTS_DIR = PROJECT_ROOT / "experiments"
+
+# Reporting & Results Directories
+REPORTS_DIR = PROJECT_ROOT / "reports"
+RESULTS_DIR = PROJECT_ROOT / "results"
+FORECASTS_DIR = RESULTS_DIR / "forecasts"
+OPTIMIZATION_DIR = RESULTS_DIR / "optimization"
+TESTING_DIR = PROJECT_ROOT / "testing"
 
 # Verify directories exist
 if not RAW_DATA_DIR.exists():

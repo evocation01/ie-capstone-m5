@@ -15,33 +15,36 @@ logger = get_logger("extract_sample")
 
 
 def main():
-    logger.info("🚀 Extracting Sample Forecasts for Team...")
+    logger.info("🚀 Extracting Sample Forecasts for analysis...")
 
-    forecast_path = paths.EXPERIMENTS_DIR / "forecast_lgbm.csv"
+    forecast_path = paths.FORECASTS_DIR / "forecast_lgbm.csv"
     if not forecast_path.exists():
-        logger.error(f"Forecast file not found at {forecast_path}")
+        logger.error(f"Source forecast file not found at {forecast_path}")
         return
 
     # Load Forecasts
     df = pd.read_csv(forecast_path)
     logger.info(f"Loaded {len(df)} item forecasts.")
 
-    # Pick 10 Random Items
-    # We fix the seed so you send the SAME 5 items if you run this again
+    # Pick 100 Random Items for the sample
+    # We fix the seed so the sample is reproducible
     random.seed(42)
-    sample_ids = random.sample(df["id"].tolist(), 100)
+    if len(df) < 100:
+        logger.warning("Fewer than 100 items in forecast, using all items for sample.")
+        sample_ids = df["id"].tolist()
+    else:
+        sample_ids = random.sample(df["id"].tolist(), 100)
 
-    logger.info(f"Selected Sample IDs: {sample_ids}")
+    logger.info(f"Selected {len(sample_ids)} Sample IDs for the subset.")
 
-    # Filter
+    # Filter for the sampled IDs
     sample_df = df[df["id"].isin(sample_ids)]
 
-    # Save
-    out_path = paths.EXPERIMENTS_DIR / "forecast_lgbm_sample50.csv"
+    # Save the sample to a new file
+    out_path = paths.FORECASTS_DIR / "forecast_lgbm_sample100.csv"
     sample_df.to_csv(out_path, index=False)
 
-    logger.info(f"✅ Saved sample to {out_path}")
-    logger.info("Send this file to your Optimization Lead!")
+    logger.info(f"✅ Saved sample forecast to {out_path}")
 
 
 if __name__ == "__main__":

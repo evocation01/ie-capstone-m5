@@ -91,9 +91,10 @@ def main():
     pivot_df = pivot_df.reset_index()
 
     # Save
-    out_path = paths.EXPERIMENTS_DIR / "forecast_lgbm.csv"
-    pivot_df.to_csv(out_path, index=False)
-    logger.info(f"✅ Saved LightGBM forecast to {out_path}")
+    logger.info(f"Saving submission file...")
+    out_path = paths.FORECASTS_DIR / "forecast_lgbm.csv"
+    submission.to_csv(out_path, index=False)
+    logger.info(f"Submission file saved to {out_path}")
 
 
 if __name__ == "__main__":

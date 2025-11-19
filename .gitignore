@@ -83,8 +83,6 @@ dist/
 # =========================
 # Large Data Files (Add your specific data folder paths here)
 backend/data/
-*.csv
-*.parquet
 
 # Model Weights & Binaries (Prevent 2GB+ commits)
 *.h5
