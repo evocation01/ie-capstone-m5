@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 # Add 'src' to python path so imports work when running from scripts/
-sys.path.append(str(Path(__file__).parents[1]))
+sys.path.append(str(Path(__file__).parents[2]))
 
 from src.config import paths
 from src.data.ingestion import load_and_melt_sales, load_calendar, load_prices
