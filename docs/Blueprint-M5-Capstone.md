@@ -53,112 +53,91 @@ These steps turn a "methodological flaw" into a "robust sensitivity analysis," w
     - **Backend:** backend/ (Python/ML workspace)
     - **Frontend:** frontend/ (Next.js Dashboard)
 2. **Detailed Component Breakdown (backend/):**
-    - **data/**: The immutable foundation.
-        - raw/: Untouched source files (sales_train_evaluation.csv, calendar.csv, sell_prices.csv). **Read-only.**
-        - processed/: Parquet files optimized for read speed (melted_sales.parquet, final_train.parquet).
-        - external/: Any supplementary data (e.g., holiday metadata).
-    - **config/**: Configuration management.
-        - config.yaml: Global settings (paths, random seeds).
-        - model_config.yaml: Hyperparameters (learning rate, hidden dims, batch size).
-        - **Why:** Never hardcode numbers in Python scripts. Use hydra or pyyaml to load these.
-    - **src/**: The Application Source Code.
-        - data/:
-            - loader.py: Polars-based data loading logic.
-            - dataset.py: torch.utils.data.Dataset implementation for sliding window sequences.
-            - splitter.py: Time-series cross-validation splitter (e.g., expanding window).
-        - features/:
-            - engineer.py: Functions to generate lags (lag_7, lag_28), rolling means, and categorical encodings.
-        - models/:
-            - lstm.py: PyTorch LSTM/GRU implementation.
-            - transformer.py: (Advanced) Time-series Transformer architecture.
-            - baseline.py: LightGBM wrapper class.
-        - training/:
-            - trainer.py: A robust training loop class with train_epoch and validate_epoch methods.
-            - callbacks.py: Early stopping and model checkpointing logic.
-        - evaluation/:
-            - metrics.py: Custom implementation of **WRMSSE** (Weighted Root Mean Squared Scaled Error) \- the official M5 metric.
-        - utils/:
-            - logger.py: Centralized logging configuration (standard logging library).
-            - seeder.py: def seed_everything(seed) to ensure reproducibility.
-    - **experiments/**:
-        - runs/: Stores TensorBoard logs or CSV logs of training loss.
-        - checkpoints/: Saves best model weights (best_model.pt).
-    - **tests/**:
-        - test_data.py: Verify data shapes and no NaN values after processing.
-        - test_model.py: Verify model forward pass works on dummy data.
-    - **scripts/**:
-        - preprocess.py: CLI script to run the Polars pipeline.
-        - train.py: CLI script to start training (accepts config path).
-        - predict.py: CLI script to generate the final 28-day forecast.
+    - **`data/`**: The storage location for all data.
+        - `raw/`: The original, immutable M5 competition data.
+        - `processed/`: Cleaned, transformed, and feature-engineered data, often in a more efficient format like Parquet.
+    - **`models/`**: Stores saved model artifacts after training (e.g., `lstm_best.pt`, `baseline_lgbm.pkl`).
+    - **`notebooks/`**: Jupyter notebooks for exploratory data analysis (EDA) and prototyping.
+    - **`reports/`**: Contains human-readable reports, diagrams, and summaries about the experiments.
+    - **`results/`**: The destination for final pipeline outputs.
+        - `forecasts/`: Contains the generated forecast CSV files (e.g., `forecast_lstm.csv`).
+        - `optimization/`: Contains the final cost and accuracy comparisons (e.g., `optimization_summary.csv`).
+    - **`scripts/`**: Holds the high-level executable scripts that run the end-to-end pipeline. These scripts import and use the code from `src`.
+        - `data_preparation/`: Scripts for downloading and processing data.
+        - `optimization/`: Scripts to run inventory analysis on forecasts.
+        - `prediction/`: Scripts to generate forecasts from trained models.
+        - `training/`: Scripts to train models (`train_lgbm.py`, `train_lstm.py`).
+    - **`src/`**: Contains the core, reusable Python modules for the project.
+        - `config/`: Configuration files (e.g. paths).
+        - `data/`: Data ingestion and `torch.utils.data.Dataset` logic.
+        - `features/`: Feature engineering functions.
+        - `models/`: Model architecture definitions (PyTorch classes like `lstm.py`).
+        - `utils/`: Utility functions like logging.
+    - **`testing/`**: Holds scripts for validating the outputs of the pipeline, such as checking the format and integrity of generated forecast files.
 
 ### **Phase 1: Data Engineering & Baseline (Semester 1\)**
 
 **Goal:** Establish a high-performance data pipeline and a strong Machine Learning baseline.
 
-1. **Data Ingestion & Optimization (scripts/preprocess.py)**
+1. **Data Ingestion & Optimization (`backend/scripts/data_preparation/preprocess.py`)**
     - **Task:** Ingest 59M rows efficiently.
     - **Tool:** polars. It is non-negotiable for speed here.
     - **Logic:**
         - Cast types immediately (e.g., int16 for sales, category for IDs) to save RAM.
         - Melt sales_train from wide to long.
-        - Save as processed/melted_sales.parquet.
-2. **Feature Engineering (src/features/engineer.py)**
+        - Save as `data/processed/melted_sales.parquet`.
+2. **Feature Engineering (`backend/src/features/engineer.py`)**
     - **Task:** Create the signals the model learns from.
     - **Key Features:**
         - **Lags:** Sales from 7, 14, 21, 28 days ago.
         - **Rolling Stats:** Mean/Std of sales over last 7/28 days.
         - **Calendar:** wday, month, event_name_1 (embedded later).
         - **Price:** sell_price, price_momentum (current price / avg price).
-    - **Output:** data/processed/features.parquet.
-3. **Baseline Model (src/models/baseline.py)**
+    - **Output:** `data/processed/features.parquet`.
+3. **Baseline Model (`backend/src/models/baseline.py`)**
     - **Model:** LightGBM (Gradient Boosting).
     - **Why:** It handles NaNs and categories natively and is SOTA for tabular time-series.
     - **Validation:** Use the last 28 days of training data as a validation set.
-    - **Deliverable:** experiments/baseline_metrics.json (RMSE score to beat).
-4. **Testing (tests/test_data.py)**
-    - **Unit Test:** Assert that features.parquet has no infinite values.
-    - **Unit Test:** Assert that date column is sorted chronologically.
+    - **Deliverable:** `results/forecasts/forecast_lgbm.csv` and an analysis in `reports/`.
+4. **Validation (`backend/testing/validate_experiment_outputs.py`)**
+    - **Task:** Assert that final forecast files have the correct shape and format.
 
 ### **Phase 2: Deep Learning & MLOps (Semester 2\)**
 
 **Goal:** Surpass the baseline using a custom PyTorch architecture.
 
-1. **Custom Dataset (src/data/dataset.py)**
-    - **Logic:** The \_\_getitem\_\_ method must be fast.
+1. **Custom Dataset (`backend/src/data/dataset.py`)**
+    - **Logic:** The `__getitem__` method must be fast.
     - **Input:** A single index i.
-    - **Operation:** Look back seq_len days (e.g., 90 days) from index i.
+    - **Operation:** Look back `seq_len` days (e.g., 90 days) from index i.
     - **Return:**
         - x_num: Tensor of numerical features (sales lags, price).
         - x_cat: LongTensor of categorical indices (item_id, store_id).
         - y: Tensor of target sales (next 1 or 28 days).
-2. **Model Architecture (src/models/lstm.py)**
-    - **Design:** \* **Embeddings:** Learnable vectors for item_id (3049 items) and store_id (10 stores).
+2. **Model Architecture (`backend/src/models/lstm.py`)**
+    - **Design:**
+        - **Embeddings:** Learnable vectors for item_id (3049 items) and store_id (10 stores).
         - **Encoder:** 2-layer LSTM or GRU with dropout.
         - **Decoder (Head):** Dense layers mapping hidden state to scalar output.
-    - **Optimization:** Use torch.amp (Automatic Mixed Precision) to speed up training on Mac (MPS) or GPU.
-3. **Training Loop (src/training/trainer.py)**
-    - **Logging:** Log train_loss and val_loss to TensorBoard or a CSV file every epoch.
-    - **Checkpointing:** Only save model_best.pt when val_loss improves.
-    - **Scheduler:** Implement OneCycleLR or ReduceLROnPlateau for stable convergence.
-4. **Testing (tests/test_model.py)**
-    - **Integration Test:** Run one training step on a batch of random noise. Assert loss decreases (or at least computes).
-    - **Shape Test:** Assert output shape matches (batch_size, prediction_horizon).
+    - **Optimization:** Use `torch.amp` (Automatic Mixed Precision) to speed up training on Mac (MPS) or GPU.
+3. **Training Scripts (`backend/scripts/training/`)**
+    - **Logic:** The training logic is managed by scripts like `train_lstm.py`, which handle the training loop, logging, and model checkpointing directly. This is a more direct approach than the previously proposed `trainer.py` class.
 
 ### **Phase 3: Inference & Integration**
 
 **Goal:** Generate the "Money Slide" data.
 
-1. **Recursive Inference (scripts/predict.py)**
+1. **Recursive Inference (`backend/scripts/prediction/*.py`)**
     - **Challenge:** You need to predict day t+1 to calculate the lag feature for day t+2.
     - **Implementation:**
-        - Step 1: Predict Day 1\.
+        - Step 1: Predict Day 1.
         - Step 2: Append prediction to data (updating lags).
-        - Step 3: Predict Day 2\.
+        - Step 3: Predict Day 2.
         - Loop for 28 days.
-    - **Output:** final_forecast.csv.
-2. **API (Optional Production Touch)**
-    - Create backend/scripts/app.py using **FastAPI**.
-    - Endpoint: POST /predict accepts JSON inputs and returns forecast.
+    - **Output:** `results/forecasts/final_forecast.csv`.
+2. **API (Future Goal)**
+    - A potential future step is to create a `FastAPI` app in `backend/scripts/app.py`.
+    - Endpoint: `POST /predict` accepts JSON inputs and returns forecast.
     - This allows the frontend to query the model dynamically (Real-time DSS).
 
 ### **Phase 4: Frontend Visualization**
@@ -175,20 +154,20 @@ These steps turn a "methodological flaw" into a "robust sensitivity analysis," w
 **Objective:** Automate testing and deployment to Vercel.
 
 1. **Continuous Integration (GitHub Actions):**
-    - **Trigger:** On push to main or Pull Request.
+    - **Trigger:** On push to `main` or Pull Request.
     - **Backend Job:**
         - Set up Python 3.10.
         - Install dependencies.
-        - Run pytest backend/tests.
+        - Run `python backend/testing/validate_experiment_outputs.py`.
         - (Optional) Run "black" or "ruff" for linting.
     - **Frontend Job:**
-        - Set up Node 20\.
-        - Run pnpm lint and pnpm build.
+        - Set up Node 20.
+        - Run `pnpm lint` and `pnpm build`.
 2. **Frontend Deployment (Vercel):**
     - **Integration:** Connect your GitHub repo to Vercel.
-    - **Root Directory:** Set to frontend.
-    - **Build Command:** pnpm build.
-    - **Output Directory:** .next.
+    - **Root Directory:** Set to `frontend`.
+    - **Build Command:** `pnpm build`.
+    - **Output Directory:** `.next`.
     - **Database:** Use Vercel Postgres (if needed) to store simulation results or user scenarios.
 3. **Backend Strategy (Since Vercel is Serverless):**
     - **Option A (Static):** You generate forecast.csv locally/on Colab and commit it to the repo. The Vercel app just reads this file. (Simplest/Free).
