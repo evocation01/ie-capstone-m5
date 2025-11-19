@@ -83,7 +83,6 @@ dist/
 # =========================
 # Large Data Files (Add your specific data folder paths here)
 backend/data/
-data/
 *.csv
 *.parquet
 
