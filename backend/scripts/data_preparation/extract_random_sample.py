@@ -17,7 +17,7 @@ logger = get_logger("extract_sample")
 def main():
     logger.info("🚀 Extracting Sample Forecasts for Team...")
 
-    forecast_path = paths.EXPERIMENTS_DIR / "forecast_lstm.csv"
+    forecast_path = paths.EXPERIMENTS_DIR / "forecast_lgbm.csv"
     if not forecast_path.exists():
         logger.error(f"Forecast file not found at {forecast_path}")
         return
@@ -37,7 +37,7 @@ def main():
     sample_df = df[df["id"].isin(sample_ids)]
 
     # Save
-    out_path = paths.EXPERIMENTS_DIR / "forecast_sample_for_excel.csv"
+    out_path = paths.EXPERIMENTS_DIR / "forecast_lgbm_sample50.csv"
     sample_df.to_csv(out_path, index=False)
 
     logger.info(f"✅ Saved sample to {out_path}")
