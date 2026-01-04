@@ -1,0 +1,81 @@
+id,model,rmse
+FOODS_1_047_TX_3_validation,Naive,1.7525
+FOODS_1_047_TX_3_validation,SMA_28,0.7962
+FOODS_1_047_TX_3_validation,WMA_3,0.9636
+FOODS_1_047_TX_3_validation,SES (alpha=0.2),0.7976
+FOODS_1_047_TX_3_validation,Holt Linear,0.786
+FOODS_1_047_TX_3_validation,Holt-Winters,0.7715
+FOODS_1_047_TX_3_validation,"ARIMA (1,1,1)",0.7864
+FOODS_1_047_TX_3_validation,Auto ARIMA (Tier 2),0.7873
+FOODS_2_011_CA_3_validation,Naive,1.3229
+FOODS_2_011_CA_3_validation,SMA_28,1.437
+FOODS_2_011_CA_3_validation,WMA_3,1.3347
+FOODS_2_011_CA_3_validation,SES (alpha=0.2),1.4104
+FOODS_2_011_CA_3_validation,Holt Linear,1.4293
+FOODS_2_011_CA_3_validation,Holt-Winters,1.4054
+FOODS_2_011_CA_3_validation,"ARIMA (1,1,1)",1.4261
+FOODS_2_011_CA_3_validation,Auto ARIMA (Tier 2),1.4119
+FOODS_3_452_TX_3_validation,Naive,0.4629
+FOODS_3_452_TX_3_validation,SMA_28,0.5669
+FOODS_3_452_TX_3_validation,WMA_3,0.4629
+FOODS_3_452_TX_3_validation,SES (alpha=0.2),0.4522
+FOODS_3_452_TX_3_validation,Holt Linear,0.5072
+FOODS_3_452_TX_3_validation,Holt-Winters,0.5123
+FOODS_3_452_TX_3_validation,"ARIMA (1,1,1)",0.5073
+FOODS_3_452_TX_3_validation,Auto ARIMA (Tier 2),0.5074
+HOBBIES_1_207_TX_3_validation,Naive,0.6268
+HOBBIES_1_207_TX_3_validation,SMA_28,0.5393
+HOBBIES_1_207_TX_3_validation,WMA_3,0.6579
+HOBBIES_1_207_TX_3_validation,SES (alpha=0.2),0.5544
+HOBBIES_1_207_TX_3_validation,Holt Linear,0.5439
+HOBBIES_1_207_TX_3_validation,Holt-Winters,0.5703
+HOBBIES_1_207_TX_3_validation,"ARIMA (1,1,1)",0.5428
+HOBBIES_1_207_TX_3_validation,Auto ARIMA (Tier 2),0.5462
+HOBBIES_2_046_WI_1_validation,Naive,0.189
+HOBBIES_2_046_WI_1_validation,SMA_28,0.2143
+HOBBIES_2_046_WI_1_validation,WMA_3,0.189
+HOBBIES_2_046_WI_1_validation,SES (alpha=0.2),0.2041
+HOBBIES_2_046_WI_1_validation,Holt Linear,0.2193
+HOBBIES_2_046_WI_1_validation,Holt-Winters,0.1982
+HOBBIES_2_046_WI_1_validation,"ARIMA (1,1,1)",0.2199
+HOBBIES_2_046_WI_1_validation,Auto ARIMA (Tier 2),0.2207
+HOUSEHOLD_1_119_CA_4_validation,Naive,1.8992
+HOUSEHOLD_1_119_CA_4_validation,SMA_28,1.4317
+HOUSEHOLD_1_119_CA_4_validation,WMA_3,1.532
+HOUSEHOLD_1_119_CA_4_validation,SES (alpha=0.2),1.4301
+HOUSEHOLD_1_119_CA_4_validation,Holt Linear,1.4295
+HOUSEHOLD_1_119_CA_4_validation,Holt-Winters,1.4387
+HOUSEHOLD_1_119_CA_4_validation,"ARIMA (1,1,1)",1.4297
+HOUSEHOLD_1_119_CA_4_validation,Auto ARIMA (Tier 2),1.4326
+HOUSEHOLD_1_221_CA_1_validation,Naive,0.8864
+HOUSEHOLD_1_221_CA_1_validation,SMA_28,0.7626
+HOUSEHOLD_1_221_CA_1_validation,WMA_3,0.7319
+HOUSEHOLD_1_221_CA_1_validation,SES (alpha=0.2),0.7417
+HOUSEHOLD_1_221_CA_1_validation,Holt Linear,0.7334
+HOUSEHOLD_1_221_CA_1_validation,Holt-Winters,0.7229
+HOUSEHOLD_1_221_CA_1_validation,"ARIMA (1,1,1)",0.7368
+HOUSEHOLD_1_221_CA_1_validation,Auto ARIMA (Tier 2),0.7368
+HOUSEHOLD_1_435_TX_3_validation,Naive,1.0351
+HOUSEHOLD_1_435_TX_3_validation,SMA_28,0.7898
+HOUSEHOLD_1_435_TX_3_validation,WMA_3,0.9087
+HOUSEHOLD_1_435_TX_3_validation,SES (alpha=0.2),0.7531
+HOUSEHOLD_1_435_TX_3_validation,Holt Linear,0.7509
+HOUSEHOLD_1_435_TX_3_validation,Holt-Winters,0.7381
+HOUSEHOLD_1_435_TX_3_validation,"ARIMA (1,1,1)",0.7514
+HOUSEHOLD_1_435_TX_3_validation,Auto ARIMA (Tier 2),0.7529
+HOUSEHOLD_2_084_WI_3_validation,Naive,0.866
+HOUSEHOLD_2_084_WI_3_validation,SMA_28,0.5487
+HOUSEHOLD_2_084_WI_3_validation,WMA_3,0.5669
+HOUSEHOLD_2_084_WI_3_validation,SES (alpha=0.2),0.5386
+HOUSEHOLD_2_084_WI_3_validation,Holt Linear,0.574
+HOUSEHOLD_2_084_WI_3_validation,Holt-Winters,0.5534
+HOUSEHOLD_2_084_WI_3_validation,"ARIMA (1,1,1)",0.5633
+HOUSEHOLD_2_084_WI_3_validation,Auto ARIMA (Tier 2),0.5633
+HOUSEHOLD_2_392_CA_2_validation,Naive,0.982
+HOUSEHOLD_2_392_CA_2_validation,SMA_28,0.1856
+HOUSEHOLD_2_392_CA_2_validation,WMA_3,0.5
+HOUSEHOLD_2_392_CA_2_validation,SES (alpha=0.2),0.2482
+HOUSEHOLD_2_392_CA_2_validation,Holt Linear,0.2065
+HOUSEHOLD_2_392_CA_2_validation,Holt-Winters,0.2157
+HOUSEHOLD_2_392_CA_2_validation,"ARIMA (1,1,1)",0.1983
+HOUSEHOLD_2_392_CA_2_validation,Auto ARIMA (Tier 2),0.4195
