@@ -10,6 +10,7 @@ sys.path.append(str(project_root))
 
 from src.config import paths
 from src.utils.logger import get_logger
+from src.models.classical import ClassicalForecaster
 
 logger = get_logger("optimize")
 
@@ -108,6 +109,42 @@ def main():
     naive_cols = [c for c in df_actual.columns if c.startswith("d_")][-56:-28]
     naive_forecast = df_actual.set_index("id").loc[unique_ids, naive_cols].values
 
+    # Generate Holt-Winters Forecasts (Classical Champion)
+    logger.info("Generating Holt-Winters Forecasts (this might take a few minutes)...")
+    train_cols = [c for c in df_actual.columns if c.startswith("d_")][:-28]
+    
+    # Filter for the same unique_ids
+    subset_df = df_actual.set_index("id").loc[unique_ids, train_cols]
+    
+    hw_matrix = []
+    total_items = len(subset_df)
+    
+    # Use tqdm if available, else simple print
+    try:
+        from tqdm import tqdm
+        iterator = tqdm(subset_df.iterrows(), total=total_items, desc="Holt-Winters")
+    except ImportError:
+        iterator = subset_df.iterrows()
+        logger.info("tqdm not found, using simple loop")
+
+    for idx, row in iterator:
+        y_train = row.astype(float)
+        # Optimization: slice from first non-zero to improve Holt-Winters fit
+        if (y_train != 0).any():
+             # Find first non-zero index efficiently
+             y_vals = y_train.values
+             start_loc = np.argmax(y_vals != 0)
+             y_train_clean = y_train.iloc[start_loc:]
+        else:
+             y_train_clean = y_train
+             
+        fc = ClassicalForecaster(y_train_clean, horizon=28)
+        # We only use Holt-Winters as it was the Classical Winner
+        pred = fc.holt_winters().fillna(0).values
+        hw_matrix.append(pred)
+    
+    hw_matrix = np.array(hw_matrix)
+
     # Cost Parameters
     HOLDING_COST = 1.0  # Simplified cost per unit of excess inventory
     STOCKOUT_COST = 10.0  # Simplified cost per unit of missed sales
@@ -132,7 +169,25 @@ def main():
         }
     )
 
-    # --- ANALYSIS 2: LIGHTGBM ---
+    # --- ANALYSIS 2: HOLT-WINTERS (CLASSICAL) ---
+    logger.info("Analyzing Holt-Winters Model...")
+    rmse_hw, weekly_hw = calculate_metrics(hw_matrix, ground_truth)
+    h_cost, s_cost = calculate_costs(
+        hw_matrix, ground_truth, HOLDING_COST, STOCKOUT_COST
+    )
+    results.append(
+        {
+            "Model": "Holt-Winters",
+            "RMSE": rmse_hw,
+            "W1_RMSE": weekly_hw[0],
+            "W4_RMSE": weekly_hw[3],
+            "Holding_Cost": h_cost,
+            "Stockout_Cost": s_cost,
+            "Total_Cost": h_cost + s_cost,
+        }
+    )
+
+    # --- ANALYSIS 3: LIGHTGBM ---
     if has_lgbm:
         logger.info("Analyzing LightGBM Model...")
         rmse_lgbm, weekly_lgbm = calculate_metrics(lgbm_matrix, ground_truth)
@@ -151,7 +206,7 @@ def main():
             }
         )
 
-    # --- ANALYSIS 3: LSTM (DEEP LEARNING) ---
+    # --- ANALYSIS 4: LSTM (DEEP LEARNING) ---
     logger.info("Analyzing LSTM Model...")
     rmse_lstm, weekly_lstm = calculate_metrics(lstm_matrix, ground_truth)
     h_cost, s_cost = calculate_costs(
@@ -192,12 +247,12 @@ def main():
     # Calculate Savings vs Naive
     try:
         naive_cost = next(r["Total_Cost"] for r in results if r["Model"] == "Naive")
-        lstm_cost = next(r["Total_Cost"] for r in results if r["Model"] == "LSTM")
-        savings = naive_cost - lstm_cost
+        best_model = min(results, key=lambda x: x['Total_Cost'])
+        savings = naive_cost - best_model["Total_Cost"]
         percentage_savings = (savings / naive_cost) * 100 if naive_cost > 0 else 0
 
         logger.info(
-            f"🏆 LSTM financial impact vs. Naive Baseline: ${savings:,.0f} ({percentage_savings:.2f}%)"
+            f"🏆 Best Model ({best_model['Model']}) Savings vs. Naive: ${savings:,.0f} ({percentage_savings:.2f}%)"
         )
     except StopIteration:
         logger.warning("Could not calculate financial impact due to missing models.")

@@ -1,0 +1,112 @@
+id,model,rmse
+FOODS_1_047_TX_3_validation,Naive,1.7525
+FOODS_1_047_TX_3_validation,SMA_28,0.7962
+FOODS_1_047_TX_3_validation,WMA_3,0.9636
+FOODS_1_047_TX_3_validation,SES (alpha=0.2),0.7976
+FOODS_1_047_TX_3_validation,Holt-Winters,0.7715
+FOODS_1_047_TX_3_validation,"ARIMA (1,1,1)",0.7864
+FOODS_1_047_TX_3_validation,Auto ARIMA (Tier 2),0.7873
+FOODS_1_047_TX_3_validation,XGBoost (Tier 2),0.9766
+FOODS_1_047_TX_3_validation,Random Forest (Tier 2),0.8909
+FOODS_1_047_TX_3_validation,Prophet (Tier 2),0.8162
+FOODS_1_047_TX_3_validation,LightGBM (Tier 3),0.8156
+FOODS_2_011_CA_3_validation,Naive,1.3229
+FOODS_2_011_CA_3_validation,SMA_28,1.437
+FOODS_2_011_CA_3_validation,WMA_3,1.3347
+FOODS_2_011_CA_3_validation,SES (alpha=0.2),1.4104
+FOODS_2_011_CA_3_validation,Holt-Winters,1.4054
+FOODS_2_011_CA_3_validation,"ARIMA (1,1,1)",1.4261
+FOODS_2_011_CA_3_validation,Auto ARIMA (Tier 2),1.4119
+FOODS_2_011_CA_3_validation,XGBoost (Tier 2),1.3866
+FOODS_2_011_CA_3_validation,Random Forest (Tier 2),1.3623
+FOODS_2_011_CA_3_validation,Prophet (Tier 2),1.3673
+FOODS_2_011_CA_3_validation,LightGBM (Tier 3),1.3009
+FOODS_3_452_TX_3_validation,Naive,0.4629
+FOODS_3_452_TX_3_validation,SMA_28,0.5669
+FOODS_3_452_TX_3_validation,WMA_3,0.4629
+FOODS_3_452_TX_3_validation,SES (alpha=0.2),0.4522
+FOODS_3_452_TX_3_validation,Holt-Winters,0.5123
+FOODS_3_452_TX_3_validation,"ARIMA (1,1,1)",0.5073
+FOODS_3_452_TX_3_validation,Auto ARIMA (Tier 2),0.5074
+FOODS_3_452_TX_3_validation,XGBoost (Tier 2),0.4522
+FOODS_3_452_TX_3_validation,Random Forest (Tier 2),0.4861
+FOODS_3_452_TX_3_validation,Prophet (Tier 2),0.4768
+FOODS_3_452_TX_3_validation,LightGBM (Tier 3),0.5062
+HOBBIES_1_207_TX_3_validation,Naive,0.6268
+HOBBIES_1_207_TX_3_validation,SMA_28,0.5393
+HOBBIES_1_207_TX_3_validation,WMA_3,0.6579
+HOBBIES_1_207_TX_3_validation,SES (alpha=0.2),0.5544
+HOBBIES_1_207_TX_3_validation,Holt-Winters,0.5703
+HOBBIES_1_207_TX_3_validation,"ARIMA (1,1,1)",0.5428
+HOBBIES_1_207_TX_3_validation,Auto ARIMA (Tier 2),0.5462
+HOBBIES_1_207_TX_3_validation,XGBoost (Tier 2),0.5379
+HOBBIES_1_207_TX_3_validation,Random Forest (Tier 2),0.5392
+HOBBIES_1_207_TX_3_validation,Prophet (Tier 2),0.5698
+HOBBIES_1_207_TX_3_validation,LightGBM (Tier 3),0.554
+HOBBIES_2_046_WI_1_validation,Naive,0.189
+HOBBIES_2_046_WI_1_validation,SMA_28,0.2143
+HOBBIES_2_046_WI_1_validation,WMA_3,0.189
+HOBBIES_2_046_WI_1_validation,SES (alpha=0.2),0.2041
+HOBBIES_2_046_WI_1_validation,Holt-Winters,0.1982
+HOBBIES_2_046_WI_1_validation,"ARIMA (1,1,1)",0.2199
+HOBBIES_2_046_WI_1_validation,Auto ARIMA (Tier 2),0.2207
+HOBBIES_2_046_WI_1_validation,XGBoost (Tier 2),0.2187
+HOBBIES_2_046_WI_1_validation,Random Forest (Tier 2),0.2211
+HOBBIES_2_046_WI_1_validation,Prophet (Tier 2),0.2288
+HOBBIES_2_046_WI_1_validation,LightGBM (Tier 3),0.2232
+HOUSEHOLD_1_119_CA_4_validation,Naive,1.8992
+HOUSEHOLD_1_119_CA_4_validation,SMA_28,1.4317
+HOUSEHOLD_1_119_CA_4_validation,WMA_3,1.532
+HOUSEHOLD_1_119_CA_4_validation,SES (alpha=0.2),1.4301
+HOUSEHOLD_1_119_CA_4_validation,Holt-Winters,1.4387
+HOUSEHOLD_1_119_CA_4_validation,"ARIMA (1,1,1)",1.4297
+HOUSEHOLD_1_119_CA_4_validation,Auto ARIMA (Tier 2),1.4326
+HOUSEHOLD_1_119_CA_4_validation,XGBoost (Tier 2),1.4396
+HOUSEHOLD_1_119_CA_4_validation,Random Forest (Tier 2),1.3734
+HOUSEHOLD_1_119_CA_4_validation,Prophet (Tier 2),1.4418
+HOUSEHOLD_1_119_CA_4_validation,LightGBM (Tier 3),1.4284
+HOUSEHOLD_1_221_CA_1_validation,Naive,0.8864
+HOUSEHOLD_1_221_CA_1_validation,SMA_28,0.7626
+HOUSEHOLD_1_221_CA_1_validation,WMA_3,0.7319
+HOUSEHOLD_1_221_CA_1_validation,SES (alpha=0.2),0.7417
+HOUSEHOLD_1_221_CA_1_validation,Holt-Winters,0.7229
+HOUSEHOLD_1_221_CA_1_validation,"ARIMA (1,1,1)",0.7368
+HOUSEHOLD_1_221_CA_1_validation,Auto ARIMA (Tier 2),0.7368
+HOUSEHOLD_1_221_CA_1_validation,XGBoost (Tier 2),0.7642
+HOUSEHOLD_1_221_CA_1_validation,Random Forest (Tier 2),0.7926
+HOUSEHOLD_1_221_CA_1_validation,Prophet (Tier 2),0.7246
+HOUSEHOLD_1_221_CA_1_validation,LightGBM (Tier 3),0.74
+HOUSEHOLD_1_221_CA_1_validation,LSTM (Tier 3),0.8864
+HOUSEHOLD_1_435_TX_3_validation,Naive,1.0351
+HOUSEHOLD_1_435_TX_3_validation,SMA_28,0.7898
+HOUSEHOLD_1_435_TX_3_validation,WMA_3,0.9087
+HOUSEHOLD_1_435_TX_3_validation,SES (alpha=0.2),0.7531
+HOUSEHOLD_1_435_TX_3_validation,Holt-Winters,0.7381
+HOUSEHOLD_1_435_TX_3_validation,"ARIMA (1,1,1)",0.7514
+HOUSEHOLD_1_435_TX_3_validation,Auto ARIMA (Tier 2),0.7529
+HOUSEHOLD_1_435_TX_3_validation,XGBoost (Tier 2),0.7832
+HOUSEHOLD_1_435_TX_3_validation,Random Forest (Tier 2),0.7324
+HOUSEHOLD_1_435_TX_3_validation,Prophet (Tier 2),0.7482
+HOUSEHOLD_1_435_TX_3_validation,LightGBM (Tier 3),0.7802
+HOUSEHOLD_2_084_WI_3_validation,Naive,0.866
+HOUSEHOLD_2_084_WI_3_validation,SMA_28,0.5487
+HOUSEHOLD_2_084_WI_3_validation,WMA_3,0.5669
+HOUSEHOLD_2_084_WI_3_validation,SES (alpha=0.2),0.5386
+HOUSEHOLD_2_084_WI_3_validation,Holt-Winters,0.5534
+HOUSEHOLD_2_084_WI_3_validation,"ARIMA (1,1,1)",0.5633
+HOUSEHOLD_2_084_WI_3_validation,Auto ARIMA (Tier 2),0.5633
+HOUSEHOLD_2_084_WI_3_validation,XGBoost (Tier 2),0.5607
+HOUSEHOLD_2_084_WI_3_validation,Random Forest (Tier 2),0.5815
+HOUSEHOLD_2_084_WI_3_validation,Prophet (Tier 2),0.5624
+HOUSEHOLD_2_084_WI_3_validation,LightGBM (Tier 3),0.536
+HOUSEHOLD_2_392_CA_2_validation,Naive,0.982
+HOUSEHOLD_2_392_CA_2_validation,SMA_28,0.1856
+HOUSEHOLD_2_392_CA_2_validation,WMA_3,0.5
+HOUSEHOLD_2_392_CA_2_validation,SES (alpha=0.2),0.2482
+HOUSEHOLD_2_392_CA_2_validation,Holt-Winters,0.2157
+HOUSEHOLD_2_392_CA_2_validation,"ARIMA (1,1,1)",0.1983
+HOUSEHOLD_2_392_CA_2_validation,Auto ARIMA (Tier 2),0.4195
+HOUSEHOLD_2_392_CA_2_validation,XGBoost (Tier 2),0.1965
+HOUSEHOLD_2_392_CA_2_validation,Random Forest (Tier 2),0.1886
+HOUSEHOLD_2_392_CA_2_validation,Prophet (Tier 2),0.2147
+HOUSEHOLD_2_392_CA_2_validation,LightGBM (Tier 3),0.2191
