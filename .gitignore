@@ -27,6 +27,7 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 lightning_logs/
+backend/logs/
 
 # =========================
 # 4. Node.js / Frontend (Next.js)
