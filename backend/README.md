@@ -18,6 +18,7 @@ backend/
 │   │   └── img/
 │   └── summaries/
 ├── results/
+│   ├── benchmark/
 │   ├── forecasts/
 │   └── optimization/
 ├── scripts/
@@ -41,6 +42,7 @@ backend/
     -   `processed`: Cleaned, transformed, and feature-engineered data, often in a more efficient format like Parquet.
 -   **`models`**: Stores saved model artifacts after training (e.g., `lstm_best.pt`, `baseline_lgbm.pkl`).
 -   **`results`**: The destination for final pipeline outputs.
+    -   `benchmark`: Contains the leaderboard results comparing 10+ models.
     -   `forecasts`: Contains the generated forecast CSV files (e.g., `forecast_lstm.csv`).
     -   `optimization`: Contains the final cost and accuracy comparisons (e.g., `optimization_summary.csv`).
 -   **`reports`**: Contains human-readable reports, diagrams, and summaries about the experiments.
@@ -75,7 +77,7 @@ backend/
 
     ```bash
     mamba install pytorch torchvision torchaudio -c pytorch
-    mamba install -c conda-forge numpy scikit-learn polars matplotlib seaborn lightgbm fastapi uvicorn
+    mamba install -c conda-forge numpy scikit-learn polars matplotlib seaborn lightgbm fastapi uvicorn statsmodels prophet xgboost
     ```
 
 ## ⚙️ Running the Pipeline
@@ -112,15 +114,23 @@ python backend/scripts/prediction/predict_lgbm.py
 python backend/scripts/prediction/predict_lstm.py
 ```
 
-### 4. Run Optimization Analysis
+### 4. Run Benchmark "Drag Race"
 
-With the forecasts generated, run the optimization script to calculate inventory costs and compare the models' financial impact.
+Compare 10+ models (Classical, ML, Deep Learning) on the full dataset to find the accuracy champion.
+
+```bash
+python backend/scripts/prediction/benchmark_models.py
+```
+
+### 5. Run Optimization Analysis
+
+Run the inventory simulation to calculate logistics costs (Holding vs Stockout) for the top models (LightGBM, Holt-Winters, LSTM, Naive).
 
 ```bash
 python backend/scripts/optimization/optimize.py
 ```
 
-### 5. Validate Results
+### 6. Validate Results
 
 After running the pipeline, you can validate the outputs to ensure they meet the expected format and quality standards.
 
