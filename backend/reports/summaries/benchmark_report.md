@@ -2,12 +2,18 @@
 
 ## 1. Overview
 
-We benchmarked **10 different forecasting models** across three tiers of complexity (Classical, ML, Deep Learning) on a large subset of **3,049 items** from the M5 dataset.
+We benchmarked **10 different forecasting models** across three tiers of complexity (Classical, ML, Deep Learning) on a large subset of the M5 dataset.
 
-**Dataset:**
 
--   **Items:** 3,049 (Subset of the full 30k, covering all stores/categories).
+
+**Dataset Scope:**
+
+-   **Store:** **CA_1** (California Store 1). Selected as the representative pilot location.
+
+-   **Items:** **3,049** (All unique products available in Store CA_1).
+
 -   **Training:** ~5 years (1885 days).
+
 -   **Testing:** Last 28 days (Validation period).
 
 ## 2. The Leaderboard (RMSE)

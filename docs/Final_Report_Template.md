@@ -164,7 +164,7 @@ Finally, we acknowledge the open-source community and the **Makridakis Open Fore
 
 Inventory optimization in the modern retail sector is increasingly challenged by high product variety ("The Long Tail") and intermittent demand patterns, often leading to the "Bullwhip Effect." This project proposes a comprehensive framework to evaluate the financial impact of advanced forecasting methodologies—specifically comparing **10 forecasting algorithms** ranging from Classical Statistical methods (Holt-Winters, ETS) to Machine Learning (LightGBM) and Deep Learning (LSTM) architectures.
 
-In the scope of IE 4197, the theoretical infrastructure and data processing pipelines have been established using the massive **M5 Walmart dataset (30,490 time series)**. A rigorous "Drag Race" benchmark was conducted on 3,049 items to identify the most viable candidates for the final optimization phase.
+In the scope of IE 4197, the theoretical infrastructure and data processing pipelines have been established using the massive **M5 Walmart dataset (30,490 time series)**. A rigorous "Drag Race" benchmark was conducted on **Store CA_1 (3,049 items)** to identify the most viable candidates for the final optimization phase.
 
 Our findings reveal a significant divergence between theoretical complexity and practical value. **LightGBM** (RMSE 1.41) and **Holt-Winters** (RMSE 1.45) significantly outperformed standard Deep Learning approaches (LSTM RMSE 2.02). By integrating these forecasts into a simulated $(s, Q)$ inventory policy, we demonstrated that the LightGBM model reduces total logistics costs by **19.5% ($125,190)** compared to a naive baseline.
 
