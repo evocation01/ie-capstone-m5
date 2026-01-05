@@ -1,155 +1,190 @@
-### **AI & Software Lead: Developer Blueprint (Production-Ready Edition)**
+# **Project Blueprint: Deep Learning for Supply Chain Forecasting**
 
-Project: A Comparative Analysis of Classical and Deep Learning Forecasting  
-Your Role: AI & Software Lead  
-Stack: Python 3.10+, PyTorch 2.0+, Polars, LightGBM, FastAPI, Next.js 14, Docker (Optional)
+**Project:** A Comparative Analysis of Classical and Deep Learning Forecasting for Supply Chain Inventory Optimization  
+**Your Role:** AI & Software Lead  
+**Stack:** Python 3.10+, PyTorch 2.0+, Polars, LightGBM, FastAPI, Next.js 16, Docker (Optional)
 
-### **Phase 0: Infrastructure & Architecture (Weeks 1-3)**
+---
 
-**Objective:** Build a "Cookiecutter Data Science" structure that supports reproducibility, logging, and configuration management from Day 1\.
+## **1. Executive Summary & Key Findings**
 
-1. **Repository Structure (Hybrid Monorepo):**
-    - **Root:** ie-capstone-m5
-    - **Backend:** backend/ (Python/ML workspace)
-    - **Frontend:** frontend/ (Next.js Dashboard)
-2. **Detailed Component Breakdown (backend/):**
-    - **data/**: The immutable foundation.
-        - raw/: Untouched source files (sales_train_evaluation.csv, calendar.csv, sell_prices.csv). **Read-only.**
-        - processed/: Parquet files optimized for read speed (melted_sales.parquet, final_train.parquet).
-        - external/: Any supplementary data (e.g., holiday metadata).
-    - **config/**: Configuration management.
-        - config.yaml: Global settings (paths, random seeds).
-        - model_config.yaml: Hyperparameters (learning rate, hidden dims, batch size).
-        - **Why:** Never hardcode numbers in Python scripts. Use hydra or pyyaml to load these.
-    - **src/**: The Application Source Code.
-        - data/:
-            - loader.py: Polars-based data loading logic.
-            - dataset.py: torch.utils.data.Dataset implementation for sliding window sequences.
-            - splitter.py: Time-series cross-validation splitter (e.g., expanding window).
-        - features/:
-            - engineer.py: Functions to generate lags (lag_7, lag_28), rolling means, and categorical encodings.
-        - models/:
-            - lstm.py: PyTorch LSTM/GRU implementation.
-            - transformer.py: (Advanced) Time-series Transformer architecture.
-            - baseline.py: LightGBM wrapper class.
-        - training/:
-            - trainer.py: A robust training loop class with train_epoch and validate_epoch methods.
-            - callbacks.py: Early stopping and model checkpointing logic.
-        - evaluation/:
-            - metrics.py: Custom implementation of **WRMSSE** (Weighted Root Mean Squared Scaled Error) \- the official M5 metric.
-        - utils/:
-            - logger.py: Centralized logging configuration (standard logging library).
-            - seeder.py: def seed_everything(seed) to ensure reproducibility.
-    - **experiments/**:
-        - runs/: Stores TensorBoard logs or CSV logs of training loss.
-        - checkpoints/: Saves best model weights (best_model.pt).
-    - **tests/**:
-        - test_data.py: Verify data shapes and no NaN values after processing.
-        - test_model.py: Verify model forward pass works on dummy data.
-    - **scripts/**:
-        - preprocess.py: CLI script to run the Polars pipeline.
-        - train.py: CLI script to start training (accepts config path).
-        - predict.py: CLI script to generate the final 28-day forecast.
+This study compared three forecasting methodologies—Naive Baseline, Gradient Boosting (LightGBM), and Deep Learning (LSTM)—to determine their impact on Supply Chain Inventory Optimization using the M5 dataset.
 
-### **Phase 1: Data Engineering & Baseline (Semester 1\)**
+**Key Finding:** While the Deep Learning (LSTM) model showed promising initial metrics during training, the **LightGBM (Gradient Boosting)** model provided the superior balance of accuracy and real-world cost-efficiency for this specific sparse retail dataset. LightGBM reduced total simulated logistics costs by **19.5%** compared to a naive baseline, representing a potential savings of over $125,000 in the experiment.
 
-**Goal:** Establish a high-performance data pipeline and a strong Machine Learning baseline.
+| Model        | RMSE (Error) | Total Logistics Cost | Performance vs. Naive      |
+| :----------- | :----------- | :------------------- | :------------------------- |
+| **Naive**    | 2.86         | $640,703             | Baseline                   |
+| **LightGBM** | **2.10**     | **$515,513**         | **+19.5% Savings ($125k)** |
+| **LSTM**     | 3.58         | $1,229,646           | -91% (Loss)                |
 
-1. **Data Ingestion & Optimization (scripts/preprocess.py)**
-    - **Task:** Ingest 59M rows efficiently.
-    - **Tool:** polars. It is non-negotiable for speed here.
-    - **Logic:**
-        - Cast types immediately (e.g., int16 for sales, category for IDs) to save RAM.
-        - Melt sales_train from wide to long.
-        - Save as processed/melted_sales.parquet.
-2. **Feature Engineering (src/features/engineer.py)**
-    - **Task:** Create the signals the model learns from.
-    - **Key Features:**
-        - **Lags:** Sales from 7, 14, 21, 28 days ago.
-        - **Rolling Stats:** Mean/Std of sales over last 7/28 days.
-        - **Calendar:** wday, month, event_name_1 (embedded later).
-        - **Price:** sell_price, price_momentum (current price / avg price).
-    - **Output:** data/processed/features.parquet.
-3. **Baseline Model (src/models/baseline.py)**
-    - **Model:** LightGBM (Gradient Boosting).
-    - **Why:** It handles NaNs and categories natively and is SOTA for tabular time-series.
-    - **Validation:** Use the last 28 days of training data as a validation set.
-    - **Deliverable:** experiments/baseline_metrics.json (RMSE score to beat).
-4. **Testing (tests/test_data.py)**
-    - **Unit Test:** Assert that features.parquet has no infinite values.
-    - **Unit Test:** Assert that date column is sorted chronologically.
+The LSTM's underperformance in the cost simulation, despite a strong validation Log-RMSE (0.53), is attributed to the **Sparsity Penalty**, where the model's predictions of small, non-zero values for items with many zero-sale days led to accumulating holding costs or significant stockout costs.
 
-### **Phase 2: Deep Learning & MLOps (Semester 2\)**
+**Recommendation:** For this dataset, **LightGBM is the recommended production model** due to its robustness, efficiency, and proven cost savings. Future deep learning work should investigate probabilistic architectures (e.g., DeepAR) designed to handle highly intermittent demand.
 
-**Goal:** Surpass the baseline using a custom PyTorch architecture.
+---
 
-1. **Custom Dataset (src/data/dataset.py)**
-    - **Logic:** The \_\_getitem\_\_ method must be fast.
-    - **Input:** A single index i.
-    - **Operation:** Look back seq_len days (e.g., 90 days) from index i.
-    - **Return:**
-        - x_num: Tensor of numerical features (sales lags, price).
-        - x_cat: LongTensor of categorical indices (item_id, store_id).
-        - y: Tensor of target sales (next 1 or 28 days).
-2. **Model Architecture (src/models/lstm.py)**
-    - **Design:** \* **Embeddings:** Learnable vectors for item_id (3049 items) and store_id (10 stores).
-        - **Encoder:** 2-layer LSTM or GRU with dropout.
-        - **Decoder (Head):** Dense layers mapping hidden state to scalar output.
-    - **Optimization:** Use torch.amp (Automatic Mixed Precision) to speed up training on Mac (MPS) or GPU.
-3. **Training Loop (src/training/trainer.py)**
-    - **Logging:** Log train_loss and val_loss to TensorBoard or a CSV file every epoch.
-    - **Checkpointing:** Only save model_best.pt when val_loss improves.
-    - **Scheduler:** Implement OneCycleLR or ReduceLROnPlateau for stable convergence.
-4. **Testing (tests/test_model.py)**
-    - **Integration Test:** Run one training step on a batch of random noise. Assert loss decreases (or at least computes).
-    - **Shape Test:** Assert output shape matches (batch_size, prediction_horizon).
+## **2. Project Architecture & Structure**
 
-### **Phase 3: Inference & Integration**
+**Objective:** Maintain a "Cookiecutter Data Science" structure that supports reproducibility, logging, and configuration management from Day 1.
 
-**Goal:** Generate the "Money Slide" data.
+### **2.1. Repository Structure (Hybrid Monorepo)**
 
-1. **Recursive Inference (scripts/predict.py)**
-    - **Challenge:** You need to predict day t+1 to calculate the lag feature for day t+2.
-    - **Implementation:**
-        - Step 1: Predict Day 1\.
-        - Step 2: Append prediction to data (updating lags).
-        - Step 3: Predict Day 2\.
-        - Loop for 28 days.
-    - **Output:** final_forecast.csv.
-2. **API (Optional Production Touch)**
-    - Create backend/scripts/app.py using **FastAPI**.
-    - Endpoint: POST /predict accepts JSON inputs and returns forecast.
-    - This allows the frontend to query the model dynamically (Real-time DSS).
+-   **Root:** `ie-capstone-m5/`
+-   **Backend:** `backend/` (Python/ML workspace)
+-   **Frontend:** `frontend/` (Next.js Dashboard)
+
+### **2.2. Detailed Backend Component Breakdown (`backend/`)**
+
+-   **`src`**: Contains the core, reusable Python modules for the project. This includes data loading (`data/`), feature engineering (`features/`), model definitions (`models/`), configuration (`config/`), and utilities (`utils/`).
+-   **`scripts`**: Holds the high-level executable scripts that run the end-to-end pipeline (e.g., `training/train_lstm.py`, `prediction/predict_lgbm.py`). These scripts import and use the code from `src`.
+-   **`data`**: The storage location for all data.
+    -   `raw/`: The original, immutable M5 competition data.
+    -   `processed/`: Cleaned, transformed, and feature-engineered data, often in a more efficient format like Parquet.
+-   **`models/`**: Stores saved model artifacts after training (e.g., `lstm_best.pt`, `baseline_lgbm.pkl`).
+-   **`results/`**: The destination for final pipeline outputs.
+    -   `forecasts/`: Generated forecast CSV files.
+    -   `optimization/`: Final cost and accuracy comparisons.
+-   **`reports/`**: Human-readable reports, diagrams, and experiment summaries.
+-   **`notebooks/`**: Jupyter notebooks for exploratory data analysis (EDA) and prototyping.
+-   **`testing/`**: Scripts for validating the format and integrity of pipeline outputs.
+
+---
+
+## **3. End-to-End MLOps Pipeline**
+
+### **3.1. Environment Setup**
+
+The project uses a dedicated Mamba/Conda environment for reproducibility.
+
+1.  **Navigate to the backend directory:**
+    ```bash
+    cd backend/
+    ```
+2.  **Create and activate the Mamba environment:**
+    ```bash
+    mamba create -n capstone python=3.10
+    mamba activate capstone
+    ```
+3.  **Install dependencies:**
+    ```bash
+    mamba install pytorch torchvision torchaudio -c pytorch
+    mamba install -c conda-forge numpy scikit-learn polars matplotlib seaborn lightgbm fastapi uvicorn
+    ```
+
+### **3.2. Running the Pipeline**
+
+The pipeline is executed via a series of scripts from the project root directory.
+
+1.  **Data Preparation:** Preprocess raw data and generate features.
+    ```bash
+    python backend/scripts/data_preparation/preprocess.py
+    python backend/scripts/data_preparation/make_features.py
+    ```
+2.  **Model Training:** Train the machine learning and deep learning models.
+    ```bash
+    python backend/scripts/training/train_lgbm.py
+    python backend/scripts/training/train_lstm.py
+    ```
+3.  **Generate Forecasts:** Use trained models to generate 28-day forecasts.
+    ```bash
+    python backend/scripts/prediction/predict_lgbm.py
+    python backend/scripts/prediction/predict_lstm.py
+    ```
+4.  **Run Optimization Analysis:** Calculate inventory costs to compare model impact.
+    ```bash
+    python backend/scripts/optimization/optimize.py
+    ```
+5.  **Validate Results:** Check outputs for format and quality standards.
+    ```bash
+    python backend/testing/validate_experiment_outputs.py
+    ```
+
+---
+
+## **4. Modeling Strategy & Algorithm Comparison**
+
+To provide a multi-faceted comparative analysis, we will conduct experiments along two parallel tracks, evaluating both algorithmic performance and the impact of data scale and tooling.
+
+### **Track 1: IE Team Benchmark (Small-Scale, Traditional Tools)**
+
+-   **Scope:** A random sample of 50-100 items from the dataset.
+-   **Tools:** Excel, Minitab, or similar statistical software.
+-   **Algorithms (Tier 1):**
+    -   Naive Method
+    -   Simple & Weighted Moving Average
+    -   Single Exponential Smoothing
+    -   Holt’s Linear Trend
+    -   Holt-Winters Additive Seasonality
+-   **Objective:** Establish a performance baseline that reflects traditional, small-scale analysis methods.
+
+### **Track 2: AI/Dev Team Benchmark (Full-Scale, Python Pipeline)**
+
+-   **Scope:** The complete dataset (~59 million rows).
+-   **Tools:** Python (Statsmodels, Scikit-learn, PyTorch).
+-   **Algorithms:** This track covers all three tiers of complexity to compare against the IE Team's baseline and determine the state-of-the-art.
+    -   **Tier 1 (Classical Replication):** The same methods as the IE team, but applied at scale.
+    -   **Tier 2 (Scalable Machine Learning):** ARIMA/SARIMA, Facebook Prophet, XGBoost.
+    -   **Tier 3 (Deep Learning):** LightGBM, LSTM, and stretch goals like N-BEATS or a Transformer.
+-   **Objective:** Quantify the performance gains from both superior algorithms and larger data.
+
+### **Primary Analytical Goals**
+
+This dual-track approach allows us to answer two key questions:
+
+1.  **Which algorithm provides the lowest inventory cost?** (Absolute Performance)
+2.  **What is the quantifiable value of scaling up?** We can directly compare the results of Tier 1 algorithms on small data (Track 1) vs. large data (Track 2) to measure the impact of data scale alone.
+
+---
+
+## **5. Phased Development Plan**
+
+### **Phase 1: Data Engineering & Baseline**
+
+-   **Goal:** Establish a high-performance data pipeline and a strong Machine Learning baseline.
+-   **Tasks:**
+    1.  **Data Ingestion (`preprocess.py`):** Ingest and optimize 59M rows using **Polars** for high-speed processing.
+    2.  **Feature Engineering (`engineer.py`):** Create lag, rolling statistic, calendar, and price features.
+    3.  **Baseline Model (`baseline.py`):** Train and validate the LightGBM model.
+    4.  **Validation (`validate_experiment_outputs.py`):** Create scripts to assert the integrity of all pipeline outputs.
+
+### **Phase 2: Deep Learning & MLOps**
+
+-   **Goal:** Surpass the baseline using a custom PyTorch architecture.
+-   **Tasks:**
+    1.  **Custom Dataset (`dataset.py`):** Implement a `torch.utils.data.Dataset` class for efficiently feeding sequence data to the model.
+    2.  **Model Architecture (`lstm.py`):** Design a custom LSTM/GRU model with embeddings for categorical features.
+    3.  **Training Scripts (`train_lstm.py`):** Develop a robust training loop with logging, checkpointing, and mixed-precision support.
+    4.  **Future Work:** Based on results, pivot to **Probabilistic Architectures** (e.g., DeepAR, N-BEATS) that can better model the zero-inflated nature of the data.
+
+### **Phase 3: Inference & Optimization Analysis**
+
+-   **Goal:** Generate forecasts and translate them into actionable business metrics.
+-   **Tasks:**
+    1.  **Recursive Inference (`prediction/*.py`):** Implement a loop to predict 28 days sequentially, using each prediction to update features for the next step.
+    2.  **Optimization (`optimization/optimize.py`):** Simulate inventory policies (Reorder Point, Safety Stock) based on the generated forecasts to calculate and compare total logistics costs (holding + stockout).
 
 ### **Phase 4: Frontend Visualization**
 
-**Goal:** "The Executive Dashboard."
-
--   **Tech:** Next.js 14 (App Router), Recharts.
+-   **Goal:** Create an executive dashboard to communicate results effectively.
+-   **Tech:** Next.js 16 (App Router), Recharts, Tailwind CSS.
 -   **Components:**
-    -   ForecastChart.tsx: Line chart comparing "Actuals", "Classical Forecast", and "AI Forecast".
-    -   InventorySimulator.tsx: Sliders to adjust "Service Level" (e.g., 95% vs 99%) and see the resulting Safety Stock cost.
+    -   `ForecastChart.tsx`: Line chart comparing "Actuals," "LightGBM Forecast," and "LSTM Forecast."
+    -   `InventorySimulator.tsx`: Sliders to adjust service level and see the impact on safety stock and total cost.
 
 ### **Phase 5: CI/CD & Deployment**
 
-**Objective:** Automate testing and deployment to Vercel.
+-   **Goal:** Automate testing and deployment.
+-   **Tasks:**
+    1.  **Continuous Integration (GitHub Actions):** On every push, automatically run linters (`ruff`) and validation scripts (`testing/*`) for the backend, and build/lint for the frontend.
+    2.  **Deployment (Vercel):** Connect the GitHub repo to Vercel, with the root directory set to `frontend`. Forecast data will be pre-generated and committed to the repo for the frontend to consume statically.
 
-1. **Continuous Integration (GitHub Actions):**
-    - **Trigger:** On push to main or Pull Request.
-    - **Backend Job:**
-        - Set up Python 3.10.
-        - Install dependencies.
-        - Run pytest backend/tests.
-        - (Optional) Run "black" or "ruff" for linting.
-    - **Frontend Job:**
-        - Set up Node 20\.
-        - Run pnpm lint and pnpm build.
-2. **Frontend Deployment (Vercel):**
-    - **Integration:** Connect your GitHub repo to Vercel.
-    - **Root Directory:** Set to frontend.
-    - **Build Command:** pnpm build.
-    - **Output Directory:** .next.
-    - **Database:** Use Vercel Postgres (if needed) to store simulation results or user scenarios.
-3. **Backend Strategy (Since Vercel is Serverless):**
-    - **Option A (Static):** You generate forecast.csv locally/on Colab and commit it to the repo. The Vercel app just reads this file. (Simplest/Free).
-    - **Option B (Dynamic):** If you need live inference, you cannot host the PyTorch model on Vercel (file size limits). You would deploy the FastAPI app on Render, Railway, or Hugging Face Spaces (free tier) and have your Vercel app call that API.
+---
+
+## **6. Validation and Robustness Strategy**
+
+To address the limitation of not having a formal hold-out test set, the following stress tests will be performed on the validation set results to ensure conclusions are robust.
+
+1.  **Simulated Cross-Validation:** The error and cost will be calculated for each of the four weeks in the 28-day validation period. Consistent performance across all four weeks indicates a more robust model.
+2.  **Naive Baseline Comparison:** The primary defense of model value. The financial savings of any proposed model will be benchmarked against a simple "Naive Forecast" (e.g., prediction = sales from 28 days ago). A significant margin of victory demonstrates true learning.
+3.  **Sensitivity Analysis:** The optimization simulation will be re-run with artificially worsened forecasts (e.g., adding 10-20% random noise). If the recommended model still provides significant savings over the baseline, the conclusion is robust against potential overfitting.

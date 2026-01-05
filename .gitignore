@@ -26,6 +26,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+lightning_logs/
+backend/logs/
 
 # =========================
 # 4. Node.js / Frontend (Next.js)
@@ -82,10 +84,7 @@ dist/
 # 6. Data Science Specifics
 # =========================
 # Large Data Files (Add your specific data folder paths here)
-python-ml/data/
-data/
-*.csv
-*.parquet
+backend/data/
 
 # Model Weights & Binaries (Prevent 2GB+ commits)
 *.h5
