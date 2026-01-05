@@ -335,6 +335,52 @@ Based on the literature review, a diverse set of **10 algorithms** has been sele
 
 Given the volume of data (59M rows), a specialized pipeline utilizing the **Polars** library was architected. This ensures efficient memory usage and allows for complex feature engineering (rolling windows, lag features) that are computationally prohibitive in standard tools like Excel or pandas.
 
+```mermaid
+graph TD
+    %% Global Styles
+    classDef storage fill:#f9f9f9,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef engine fill:#e1efff,stroke:#4a90e2,stroke-width:2px,rx:10,ry:10;
+    classDef process fill:#fff5e6,stroke:#f5a623,stroke-width:2px;
+    classDef model fill:#e8fcf5,stroke:#00b894,stroke-width:2px;
+
+    subgraph Data_Layer [Raw Data Layer]
+        A1[(sales_train.csv)]:::storage
+        A2[(calendar.csv)]:::storage
+        A3[(sell_prices.csv)]:::storage
+    end
+
+    subgraph Polars_Engine [High-Performance Ingestion Engine]
+        B1[Polars Lazy Scanning]:::engine
+        B2[Schema Enforcement & Casting]:::engine
+        B3[Melt Operation: Wide to Long]:::engine
+        B4[(melted_sales.parquet)]:::storage
+    end
+
+    subgraph Feature_Engineering [Feature Engineering Pipeline]
+        C1[Temporal Features: Day/Month/Year]:::process
+        C2[Lag Features: t-7, t-28]:::process
+        C3[Rolling Window Stats: Mean/Std]:::process
+        C4[Binary Event Encoding]:::process
+    end
+
+    subgraph Training_Inference [Model Training & Inference]
+        D1[Final Feature Matrix]:::storage
+        D2{Model Branching}
+        D3[Classical: HW/ARIMA]:::model
+        D4[ML: LightGBM/XGB]:::model
+        D5[DL: LSTM/DeepAR]:::model
+    end
+
+    %% Connections
+    A1 & A2 & A3 --> B1
+    B1 --> B2 --> B3 --> B4
+    B4 --> C1 & C2 & C3 & C4
+    C1 & C2 & C3 & C4 --> D1
+    D1 --> D2
+    D2 --> D3 & D4 & D5
+```
+*Figure 3.3: High-Performance Data Processing Pipeline utilizing Polars for 59M row ingestion.*
+
 -   **Ingestion:** Reading parquet files with schema enforcement.
 -   **Feature Engineering:** Creating lag features ($t-7, t-28$) and rolling statistics.
 -   **Validation:** Ensuring no data leakage between training (2011-2016) and validation sets.
