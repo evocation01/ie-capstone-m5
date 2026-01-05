@@ -117,3 +117,9 @@ We simulated inventory for 3,049 items over 28 days.
 
 The source code is licensed under the MIT License.  
 The final report and written content are licensed under CC BY-NC-SA 4.0.
+
+## **📚 Documentation & Reports**
+
+-   **[Final Report Template](./docs/Final_Report_Template.md):** The comprehensive technical report for this project.
+-   **[Dataset Overview](./docs/dataset-overview.md):** Detailed breakdown of the M5 data structure.
+-   **[Benchmark Report](./backend/reports/summaries/benchmark_report.md):** The results of the 10-model "drag race".
