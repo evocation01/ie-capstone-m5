@@ -1,139 +1,154 @@
 from datetime import datetime
+from pathlib import Path
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import pandas as pd
+import seaborn as sns
 
+# Set style for professional look
+sns.set_style("whitegrid")
+plt.rcParams['font.family'] = 'sans-serif'
 
 def create_gantt():
-    # 1. Define the Data (Your exact Timeline)
+    # 1. Define the Data (Project Timeline)
     data = [
-        # SECTION: IE 4197 (Current)
+        # --- PHASE I: IE 4197 (Fall 2025) ---
         {
-            "Task": "WP1: Problem Definition",
+            "Task": "WP1: Problem Definition & Scope",
             "Start": "2025-09-29",
             "End": "2025-10-17",
-            "Status": "Done",
+            "Phase": "Phase I: Definition",
+            "Completion": 100,
         },
         {
-            "Task": "WP2: Literature & Data EDA",
+            "Task": "WP2: Literature Review & EDA",
             "Start": "2025-10-20",
             "End": "2025-11-07",
-            "Status": "Done",
+            "Phase": "Phase I: Research",
+            "Completion": 100,
         },
         {
-            "Task": "WP3: Theoretical Model Design",
-            "Start": "2025-11-24",
+            "Task": "WP3: Pipeline & Methodology Design",
+            "Start": "2025-11-10",
             "End": "2025-12-12",
-            "Status": "Active",
+            "Phase": "Phase I: Design",
+            "Completion": 100,
         },
         {
-            "Task": "WP4: Data Verification & Tools",
+            "Task": "WP4: Pilot Benchmarking (10 Models)",
             "Start": "2025-12-15",
             "End": "2026-01-02",
-            "Status": "Planned",
+            "Phase": "Phase I: Validation",
+            "Completion": 100,
         },
         {
-            "Task": "Final Report Submission",
+            "Task": "Final Report Submission (IE 4197)",
             "Start": "2026-01-05",
             "End": "2026-01-06",
-            "Status": "Critical",
-        },  # 1 day duration
-        # SECTION: IE 4198 (Planned) - Added a spacer for visual separation if needed, or just continuous
+            "Phase": "Milestone",
+            "Completion": 100,
+        },
+        
+        # --- PHASE II: IE 4198 (Spring 2026) ---
         {
-            "Task": "Model Training (AI & Classic)",
+            "Task": "WP5: Full-Scale Model Training",
             "Start": "2026-02-15",
-            "End": "2026-03-30",
-            "Status": "Planned",
+            "End": "2026-03-15",
+            "Phase": "Phase II: Execution",
+            "Completion": 0,
         },
         {
-            "Task": "Inventory Optimization Logic",
-            "Start": "2026-03-01",
-            "End": "2026-04-15",
-            "Status": "Planned",
+            "Task": "WP6: Inventory Simulation & Optimization",
+            "Start": "2026-03-16",
+            "End": "2026-04-10",
+            "Phase": "Phase II: Execution",
+            "Completion": 0,
         },
         {
-            "Task": "Dashboard Integration",
+            "Task": "WP7: Dashboard Development (DSS)",
             "Start": "2026-04-01",
             "End": "2026-05-01",
-            "Status": "Planned",
+            "Phase": "Phase II: Deployment",
+            "Completion": 0,
         },
         {
-            "Task": "Final Thesis Writing",
-            "Start": "2026-04-15",
+            "Task": "WP8: Final Thesis & Defense",
+            "Start": "2026-05-01",
             "End": "2026-05-20",
-            "Status": "Planned",
+            "Phase": "Phase II: Closing",
+            "Completion": 0,
         },
     ]
 
-    # 2. Convert to DataFrame for easier handling
+    # 2. Process Data
     df = pd.DataFrame(data)
     df["Start"] = pd.to_datetime(df["Start"])
     df["End"] = pd.to_datetime(df["End"])
-    df["Duration"] = df["End"] - df["Start"]
+    df["Duration"] = (df["End"] - df["Start"]).dt.days
 
-    # Calculate duration in days for matplotlib
-    df["Duration_Days"] = df["Duration"].dt.days
-
-    # 3. Define Colors based on Status
-    color_map = {
-        "Done": "#bdc3c7",  # Grey
-        "Active": "#3498db",  # Blue
-        "Planned": "#2ecc71",  # Green
-        "Critical": "#e74c3c",  # Red
+    # Color Palette
+    phase_colors = {
+        "Phase I: Definition": "#34495e",
+        "Phase I: Research": "#3498db",
+        "Phase I: Design": "#2980b9",
+        "Phase I: Validation": "#1abc9c",
+        "Milestone": "#e74c3c",
+        "Phase II: Execution": "#f39c12",
+        "Phase II: Deployment": "#d35400",
+        "Phase II: Closing": "#8e44ad",
     }
-    colors = [color_map[status] for status in df["Status"]]
+    colors = [phase_colors[p] for p in df["Phase"]]
 
-    # 4. Create Plot
-    fig, ax = plt.subplots(figsize=(12, 6))
+    # 3. Create Figure
+    fig, ax = plt.subplots(figsize=(14, 8))
 
-    # Create horizontal bars
-    # (y, width, left, height) -> (index, duration, start_date, thickness)
+    # Draw Bars
     bars = ax.barh(
-        df.index, df["Duration_Days"], left=df["Start"], height=0.6, color=colors
+        y=df.index, 
+        width=df["Duration"], 
+        left=df["Start"], 
+        height=0.5, 
+        color=colors,
+        alpha=0.9,
+        edgecolor='black',
+        linewidth=0.5
     )
 
-    # 5. Formatting
-
-    # Y-Axis: Show Task Names
+    # 4. Formatting
+    ax.invert_yaxis()
     ax.set_yticks(df.index)
-    ax.set_yticklabels(df["Task"], fontsize=10, fontweight="bold")
-    ax.invert_yaxis()  # Put the first task at the top
-
-    # X-Axis: Date Formatting
+    ax.set_yticklabels(df["Task"], fontsize=11, fontweight='bold', color='#2c3e50')
+    
+    # X-Axis Dates
     ax.xaxis.set_major_locator(mdates.MonthLocator())
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
-    plt.xticks(rotation=45)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+    plt.xticks(rotation=0, fontsize=10)
 
-    # Grid and Labels
-    ax.grid(axis="x", linestyle="--", alpha=0.7)
-    ax.set_xlabel("Timeline")
-    ax.set_title(
-        "IE 4197/4198 Project Timeline", fontsize=14, fontweight="bold", pad=20
-    )
+    # Grid
+    ax.grid(axis='x', linestyle='--', alpha=0.6)
+    
+    # Title & Legend
+    plt.title("Project Timeline: IE 4197 / IE 4198", fontsize=16, fontweight='bold', pad=20)
+    plt.xlabel("Timeline (2025-2026)", fontsize=12)
 
-    # Add a Legend manually
+    # Add "Today" line
+    today = pd.Timestamp("2026-01-05")
+    plt.axvline(today, color='red', linestyle='--', alpha=0.8, label="Current Status")
+    
+    # Custom Legend
     from matplotlib.patches import Patch
-
-    legend_elements = [
-        Patch(facecolor=color_map["Done"], label="Done"),
-        Patch(facecolor=color_map["Active"], label="Active"),
-        Patch(facecolor=color_map["Planned"], label="Planned"),
-        Patch(facecolor=color_map["Critical"], label="Critical Deadline"),
-    ]
-    ax.legend(handles=legend_elements, loc="upper right")
-
-    # 6. Save
+    legend_elements = [Patch(facecolor=c, label=p) for p, c in phase_colors.items()]
+    # Split legend into Phase I and II if needed, or keep simple
+    # Let's just show Phase I vs II colors generally
+    
+    # 5. Save
     plt.tight_layout()
     output_dir = Path("backend/reports/diagrams/img")
     output_dir.mkdir(parents=True, exist_ok=True)
     output_file = output_dir / "local_gantt_chart.png"
-    plt.savefig(output_file, dpi=300)
-    print(f"✅ Success! Chart saved to: {output_file}")
-
-    # Optional: Show plot window
-    # plt.show()
-
+    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    print(f"✅ Success! Gantt Chart saved to: {output_file}")
 
 if __name__ == "__main__":
     create_gantt()
