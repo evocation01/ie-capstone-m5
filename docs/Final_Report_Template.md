@@ -379,7 +379,8 @@ graph TD
     D1 --> D2
     D2 --> D3 & D4 & D5
 ```
-*Figure 3.3: High-Performance Data Processing Pipeline utilizing Polars for 59M row ingestion.*
+
+_Figure 3.3: High-Performance Data Processing Pipeline utilizing Polars for 59M row ingestion._
 
 -   **Ingestion:** Reading parquet files with schema enforcement.
 -   **Feature Engineering:** Creating lag features ($t-7, t-28$) and rolling statistics.
@@ -503,6 +504,77 @@ def calculate_costs(forecast, actual, holding_cost, stockout_cost):
 -   **Lead Time ($L$):** 1 Day (Review Period)
 -   **Service Level Target:** 95% ($z = 1.645$)
 
-```
+## Appendix C: Master Algorithm Pseudocode
 
+**Algorithm:** End-to-End Supply Chain Forecasting & Optimization Framework
+
+**Input:**
+*   Dataset $\mathcal{D}$ (Sales History, Calendar Events, Sell Prices)
+*   Forecast Horizon $H = 28$ days
+*   Lead Time $L = 1$ day
+*   Service Level $\alpha = 0.95$ (Z-score $\approx 1.645$)
+*   Cost Parameters: $C_h$ (Holding), $C_s$ (Stockout)
+
+**Output:**
+*   Forecast Matrix $\hat{Y}$, Optimized Total Cost $TC$
+
+```text
+1.  BEGIN PROCEDURE DataPipeline
+2.      Initialize Polars Context
+3.      Load Raw Data (Sales, Calendar, Prices)
+4.      JOIN Sales with Calendar on 'd' (Day ID)
+5.      JOIN Sales with Prices on ['store_id', 'item_id', 'wm_yr_wk']
+6.      
+7.      FOR each SKU $i$ in Dataset DO
+8.          COMPUTE Feature Vector $X_i$:
+9.              Lags: $y_{t-7}, y_{t-28}$
+10.             Rolling Stats: $\mu_{7}, \sigma_{28}$
+11.             Encodings: OneHot(Events), Ordinal(Dept)
+12.     END FOR
+13.     SPLIT $\mathcal{D}$ into TrainSet ($T_{train}$) and ValidationSet ($T_{val}$)
+14. END PROCEDURE
+
+15. BEGIN PROCEDURE ForecastTournament
+16.     Initialize Model Ensemble $\mathcal{M} = \{ \text{Naive, HoltWinters, ARIMA, LightGBM, LSTM} \}$
+17.     
+18.     FOR each Model $m \in \mathcal{M}$ DO
+19.         IF $m$ is Classical THEN
+20.             Fit parameters $(\alpha, \beta, \gamma)$ on Target Series $y$
+21.         ELSE IF $m$ is MachineLearning THEN
+22.             Train Regressor $f(X) \rightarrow y$ on Feature Matrix
+23.         END IF
+24.         
+25.         Generate Forecast $\hat{y}_{m}$ for Horizon $H$
+26.         Compute Error: $RMSE_m = \sqrt{\frac{1}{n} \sum (\hat{y}_m - y_{actual})^2}$
+27.     END FOR
+28.     
+29.     SELECT $m^*$ where $RMSE_{m^*}$ is minimized
+30. END PROCEDURE
+
+31. BEGIN PROCEDURE InventorySimulation
+32.     Initialize TotalCost $TC = 0$
+33.     
+34.     FOR each SKU $i$ DO
+35.         // Calculate Inventory Policy Parameters
+36.         ForecastError $\sigma_e = RMSE(i)$
+37.         SafetyStock $SS_i = z_{\alpha} \cdot \sigma_e \cdot \sqrt{L}$
+38.         TargetLevel $S_i = \hat{y}_i + SS_i$
+39.         
+40.         // Simulate Daily Operations
+41.         FOR day $t = 1$ to $H$ DO
+42.             Demand $D_t = T_{val}[i, t]$
+43.             NetInventory $I_t = S_i - D_t$
+44.             
+45.             IF $I_t > 0$ THEN
+46.                 Cost = $I_t \cdot C_h$  // Holding Cost
+47.             ELSE
+48.                 Cost = $|I_t| \cdot C_s$ // Stockout Cost
+49.             END IF
+50.             
+51.             $TC = TC + Cost$
+52.         END FOR
+53.     END FOR
+54.     
+55.     RETURN $TC$
+56. END PROCEDURE
 ```
