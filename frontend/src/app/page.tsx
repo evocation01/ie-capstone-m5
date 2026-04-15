@@ -45,10 +45,8 @@ export default function Dashboard() {
   const [selectedSku, setSelectedSku] = useState<string>('');
   const [serviceLevel, setServiceLevel] = useState<number>(0.95);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<string>('overview');
   const [chartType, setChartType] = useState<'sales' | 'inventory'>('sales');
   const [showAppliedToast, setShowAppliedToast] = useState(false);
-  const [appliedServiceLevel, setAppliedServiceLevel] = useState<number>(0.95);
 
   // Constants for simulation
   const HOLDING_COST = 1.0;
@@ -203,24 +201,10 @@ export default function Dashboard() {
         </div>
         
         <nav className="space-y-1">
-          <NavItem 
-            icon={<BarChart3 size={18} />} 
-            label="Overview" 
-            active={activeTab === 'overview'} 
-            onClick={() => setActiveTab('overview')} 
-          />
-          <NavItem 
-            icon={<Database size={18} />} 
-            label="Data Explorer" 
-            active={activeTab === 'data'} 
-            onClick={() => setActiveTab('data')} 
-          />
-          <NavItem 
-            icon={<Settings size={18} />} 
-            label="Parameters" 
-            active={activeTab === 'params'} 
-            onClick={() => setActiveTab('params')} 
-          />
+          <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold bg-zinc-100 text-zinc-900">
+            <BarChart3 size={18} />
+            Dashboard
+          </div>
         </nav>
         
         <div className="mt-auto pt-10 border-t border-zinc-100 absolute bottom-10 w-48">
@@ -383,7 +367,6 @@ export default function Dashboard() {
 
             <button 
               onClick={() => {
-                setAppliedServiceLevel(serviceLevel);
                 setShowAppliedToast(true);
                 setTimeout(() => setShowAppliedToast(false), 3000);
               }}
