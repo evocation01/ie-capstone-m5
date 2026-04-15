@@ -9,7 +9,7 @@ import torch
 from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_forecasting import DeepAR, TimeSeriesDataSet
 from pytorch_forecasting.data import GroupNormalizer
-from pytorch_forecasting.metrics import NegativeBinomialDistributionLoss
+from pytorch_forecasting.metrics import PoissonLoss
 from sklearn.preprocessing import RobustScaler
 
 # Add backend root to sys.path
@@ -130,11 +130,11 @@ def main():
 
     net = DeepAR.from_dataset(
         training,
-        learning_rate=1e-4,  # Reduced from 1e-3 for stability
+        learning_rate=1e-3,
         hidden_size=32,
         rnn_layers=2,
         dropout=0.1,
-        loss=NegativeBinomialDistributionLoss(),
+        loss=PoissonLoss(),
     )
 
     # 4. Train
