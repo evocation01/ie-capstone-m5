@@ -46,7 +46,9 @@ export default function Dashboard() {
   const [serviceLevel, setServiceLevel] = useState<number>(0.95);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<string>('overview');
+  const [chartType, setChartType] = useState<'sales' | 'inventory'>('sales');
   const [showAppliedToast, setShowAppliedToast] = useState(false);
+  const [appliedServiceLevel, setAppliedServiceLevel] = useState<number>(0.95);
 
   // Constants for simulation
   const HOLDING_COST = 1.0;
@@ -94,28 +96,40 @@ export default function Dashboard() {
     
     // Add validation period
     sku.actual.forEach((val, i) => {
+      const lgbmFc = sku.forecasts['LightGBM']?.[i] || 0;
+      const naiveFc = sku.forecasts['Naive']?.[i] || 0;
+      const ss = zScore * 2.1; // Use LightGBM average RMSE for safety stock
+      
+      // For Sales view: show demand
+      // For Inventory view: show inventory level (target - actual)
+      const actualInv = chartType === 'inventory' ? Math.max(0, lgbmFc + ss - val) : val;
+      const lgbmInv = chartType === 'inventory' ? ss : lgbmFc;
+      const naiveInv = chartType === 'inventory' ? (zScore * 2.86) : naiveFc;
+      
       combined.push({
         name: `D-${i+1}`,
-        actual: val,
-        lightgbm: sku.forecasts['LightGBM']?.[i],
+        actual: actualInv,
+        lightgbm: lgbmInv,
         lstm: sku.forecasts['LSTM']?.[i],
-        naive: sku.forecasts['Naive']?.[i],
-        isHistory: false
+        naive: naiveInv,
+        isHistory: false,
+        safetyStock: ss
       });
     });
     
     return combined;
-  }, [selectedSku, data]);
+  }, [selectedSku, data, chartType, serviceLevel]);
 
-  // Inventory Simulation logic
-  const zScore = useMemo(() => {
-    // Basic z-score approximation
-    if (serviceLevel >= 0.99) return 2.33;
-    if (serviceLevel >= 0.95) return 1.645;
-    if (serviceLevel >= 0.90) return 1.28;
-    if (serviceLevel >= 0.85) return 1.04;
-    return 0.84; // 80%
-  }, [serviceLevel]);
+  // Inventory Simulation logic - z-score calculation
+  const getZScore = (level: number) => {
+    if (level >= 0.99) return 2.33;
+    if (level >= 0.95) return 1.645;
+    if (level >= 0.90) return 1.28;
+    if (level >= 0.85) return 1.04;
+    return 0.84;
+  };
+  
+  const zScore = getZScore(serviceLevel);
 
   const simulationResults = useMemo(() => {
     if (!selectedSku || !data[selectedSku] || !summary.length) return null;
@@ -266,8 +280,14 @@ export default function Dashboard() {
               <div className="flex items-center gap-3">
                 <h2 className="text-lg font-bold">Forecasting "Drag Race"</h2>
                 <div className="flex bg-zinc-100 rounded-lg p-1">
-                  <button className="px-3 py-1 text-xs font-semibold rounded-md bg-white shadow-sm">Sales</button>
-                  <button className="px-3 py-1 text-xs font-semibold rounded-md text-zinc-500">Inventory</button>
+                  <button 
+                    onClick={() => setChartType('sales')}
+                    className={`px-3 py-1 text-xs font-semibold rounded-md ${chartType === 'sales' ? 'bg-white shadow-sm' : 'text-zinc-500'}`}
+                  >Sales</button>
+                  <button 
+                    onClick={() => setChartType('inventory')}
+                    className={`px-3 py-1 text-xs font-semibold rounded-md ${chartType === 'inventory' ? 'bg-white shadow-sm' : 'text-zinc-500'}`}
+                  >Inventory</button>
                 </div>
               </div>
               <select 
@@ -354,6 +374,7 @@ export default function Dashboard() {
 
             <button 
               onClick={() => {
+                setAppliedServiceLevel(serviceLevel);
                 setShowAppliedToast(true);
                 setTimeout(() => setShowAppliedToast(false), 3000);
               }}
@@ -363,7 +384,7 @@ export default function Dashboard() {
             </button>
             {showAppliedToast && (
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold animate-pulse">
-                Applied! LightGBM policy saved to all 3,049 SKUs
+                Applied! Service level {(serviceLevel * 100).toFixed(0)}% saved to all 3,049 SKUs
               </div>
             )}
           </div>
