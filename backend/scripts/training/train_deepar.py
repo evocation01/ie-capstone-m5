@@ -2,13 +2,13 @@ import sys
 import warnings
 from pathlib import Path
 
-import lightning.pytorch as pl_lightning
 import pandas as pd
 import polars as pl
+import pytorch_lightning as pl_lightning
 import torch
-from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_forecasting import DeepAR, TimeSeriesDataSet
 from pytorch_forecasting.data import GroupNormalizer
+from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from sklearn.preprocessing import RobustScaler
 
 # Add backend root to sys.path
@@ -127,13 +127,18 @@ def main():
     # 3. Initialize Model
     logger.info("Initializing DeepAR Model...")
 
+    # Try with explicit negative_binomial likelihood for zero-inflated data
     net = DeepAR.from_dataset(
         training,
         learning_rate=1e-3,
         hidden_size=32,
         rnn_layers=2,
         dropout=0.1,
+        likelihood="negative_binomial",
     )
+
+    logger.info(f"Model type: {type(net)}")
+    logger.info(f"Is LightningModule: {hasattr(net, 'training_step')}")
 
     # 4. Train
     logger.info("Starting Training...")
