@@ -95,16 +95,25 @@ export default function Dashboard() {
     });
     
     // Add validation period
+    const getLocalZScore = (level: number) => {
+      if (level >= 0.99) return 2.33;
+      if (level >= 0.95) return 1.645;
+      if (level >= 0.90) return 1.28;
+      if (level >= 0.85) return 1.04;
+      return 0.84;
+    };
+    const localZ = getLocalZScore(serviceLevel);
+    
     sku.actual.forEach((val, i) => {
       const lgbmFc = sku.forecasts['LightGBM']?.[i] || 0;
       const naiveFc = sku.forecasts['Naive']?.[i] || 0;
-      const ss = zScore * 2.1; // Use LightGBM average RMSE for safety stock
+      const ss = localZ * 2.1; // Use LightGBM average RMSE for safety stock
       
       // For Sales view: show demand
       // For Inventory view: show inventory level (target - actual)
       const actualInv = chartType === 'inventory' ? Math.max(0, lgbmFc + ss - val) : val;
       const lgbmInv = chartType === 'inventory' ? ss : lgbmFc;
-      const naiveInv = chartType === 'inventory' ? (zScore * 2.86) : naiveFc;
+      const naiveInv = chartType === 'inventory' ? (localZ * 2.86) : naiveFc;
       
       combined.push({
         name: `D-${i+1}`,
