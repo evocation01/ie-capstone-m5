@@ -8,11 +8,11 @@ The project aims to demonstrate the financial and operational impact of using ad
 ### **Key Objectives**
 
 1. **Forecasting:** Benchmark **10+ competing models** across three tiers of complexity:
-    -   **Classical:** ARIMA, Holt-Winters, ETS, Smoothing methods.
-    -   **Machine Learning:** LightGBM, XGBoost, Prophet, Random Forest.
-    -   **Deep Learning:** LSTM (Seq2Seq).
-2.  **Optimization:** Drive a theoretical inventory policy (Reorder Point, Safety Stock) using these forecasts.
-3.  **Comparison:** Quantify the financial impact ($) of model accuracy. **Goal achieved: +19.5% cost savings ($125k).**
+    - **Classical:** ARIMA, Holt-Winters, ETS, Smoothing methods.
+    - **Machine Learning:** LightGBM, XGBoost, Prophet, Random Forest.
+    - **Deep Learning:** LSTM (Seq2Seq).
+2. **Optimization:** Drive a theoretical inventory policy (Reorder Point, Safety Stock) using these forecasts.
+3. **Comparison:** Quantify the financial impact ($) of model accuracy. **Goal achieved: +19.5% cost savings ($125k).**
 
 ## **📂 Repository Structure**
 
@@ -32,9 +32,9 @@ ie-capstone-m5/
 
 ### **Prerequisites**
 
--   **OS:** macOS (Apple Silicon M1/M2/M3 recommended) or Linux/Windows.
--   **Package Managers:** mamba (or conda) for Python, pnpm for Node.js.
--   **Git:** Version control.
+- **OS:** macOS (Apple Silicon M1/M2/M3 recommended) or Linux/Windows.
+- **Package Managers:** mamba (or conda) for Python, pnpm for Node.js.
+- **Git:** Version control.
 
 ### **1\. Python Environment Setup (Backend)**
 
@@ -80,8 +80,8 @@ Open [http://localhost:3000](https://www.google.com/search?q=http://localhost:30
 
 ### **Data Processing (Python)**
 
--   **Polars:** Used for high-performance data manipulation (the dataset has \~59M rows).
--   **Feature Engineering:** Lags, rolling windows, and categorical encoding of calendar events.
+- **Polars:** Used for high-performance data manipulation (the dataset has \~59M rows).
+- **Feature Engineering:** Lags, rolling windows, and categorical encoding of calendar events.
 
 ### **Modeling (The "Drag Race")**
 
@@ -90,28 +90,29 @@ We implemented and benchmarked **10 models** to find the champion:
 1.  **Tier 1 (Classical):** Naive, SMA, WMA, SES, Holt Linear, Holt-Winters (Winner 🥈), ETS.
 2.  **Tier 2 (ML Baselines):** XGBoost, Random Forest, Prophet, ARIMA / AutoARIMA.
 3.  **Tier 3 (Deep Learning):**
-    -   **LightGBM:** The overall **Accuracy & Financial Champion 🥇**.
-    -   **LSTM:** A deep learning baseline (struggled with sparse data).
+    - **LightGBM:** The overall **Accuracy & Financial Champion 🥇**.
+    - **LSTM:** A deep learning baseline (struggled with sparse data).
 
 ### **Optimization Results**
 
 We simulated inventory for 3,049 items over 28 days.
--   **Baseline Cost (Naive):** $640,703
--   **LightGBM Cost:** $515,513
--   **Savings:** **$125,190 (19.5%)**
+
+- **Baseline Cost (Naive):** $640,703
+- **LightGBM Cost:** $515,513
+- **Savings:** **$125,190 (19.5%)**
 
 ### **Visualization**
 
--   **Next.js 14 (App Router):** For the interactive dashboard.
--   **Recharts / D3:** For plotting forecast curves and confidence intervals.
--   **Tailwind CSS:** For styling.
+- **Next.js 14 (App Router):** For the interactive dashboard.
+- **Recharts / D3:** For plotting forecast curves and confidence intervals.
+- **Tailwind CSS:** For styling.
 
 ## **👥 Team Members**
 
--   **AI & Software Lead:** \[Your Name\] \- (Architecture, PyTorch, Pipeline, Frontend)
--   **Optimization & Reporting Lead:** \[Name\] \- (Inventory Policy, Cost Analysis)
--   **IE Analyst:** \[Name\] \- (Classical Forecasting, EDA)
--   **Project Manager:** \[Name\] \- (Documentation, Presentations)
+- **AI & Software Lead:** \[Your Name\] \- (Architecture, PyTorch, Pipeline, Frontend)
+- **Optimization & Reporting Lead:** \[Name\] \- (Inventory Policy, Cost Analysis)
+- **IE Analyst:** \[Name\] \- (Classical Forecasting, EDA)
+- **Project Manager:** \[Name\] \- (Documentation, Presentations)
 
 ## **📄 License**
 
@@ -120,6 +121,6 @@ The final report and written content are licensed under CC BY-NC-SA 4.0.
 
 ## **📚 Documentation & Reports**
 
--   **[Final Report Template](./docs/Final_Report_Template.md):** The comprehensive technical report for this project.
--   **[Dataset Overview](./docs/dataset-overview.md):** Detailed breakdown of the M5 data structure.
--   **[Benchmark Report](./backend/reports/summaries/benchmark_report.md):** The results of the 10-model "drag race".
+- **[Final Report Template](./docs/Final_Report_Template.md):** The comprehensive technical report for this project.
+- **[Dataset Overview](./docs/dataset-overview.md):** Detailed breakdown of the M5 data structure.
+- **[Benchmark Report](./backend/reports/summaries/benchmark_report.md):** The results of the 10-model "drag race".
