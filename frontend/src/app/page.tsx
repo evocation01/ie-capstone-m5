@@ -409,18 +409,22 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100">
-                {summary.map((row) => {
+                {/* Sort by cost ascending (best = lowest) */}
+                {summary
+                  .sort((a, b) => a.Total_Cost - b.Total_Cost)
+                  .map((row, idx) => {
                   const modelSavings = naiveModel ? (100 - (row.Total_Cost / naiveModel.Total_Cost * 100)).toFixed(3) : 0;
                   const costInMillions = (row.Total_Cost / 1000000).toFixed(3);
-                  const isBest = row.Model === bestModel.Model;
+                  const isBest = idx === 0;
                   const isTweedie = row.Model.includes('Tweedie');
                   
                   return (
-                    <tr key={row.Model} className={cn("hover:bg-zinc-50/50 transition-colors", isBest && "bg-blue-50/30", isTweedie && "bg-green-50/30")}>
+                    <tr key={row.Model} className={cn("hover:bg-zinc-50/50 transition-colors", isBest && "bg-green-50/30")}>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <span className={cn("w-2 h-2 rounded-full", row.Model === 'LightGBM' && !row.Model.includes('Tweedie') ? "bg-blue-500" : isTweedie ? "bg-green-600" : row.Model === 'LSTM' ? "bg-red-500" : row.Model === 'Naive' ? "bg-yellow-500" : "bg-zinc-300")} />
                           <span className="font-bold text-sm">{row.Model}</span>
+                          {isBest && <span className="ml-2 text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded-full">BEST</span>}
                         </div>
                       </td>
                       <td className="px-6 py-4 text-sm text-zinc-600">{row.RMSE.toFixed(3)}</td>
