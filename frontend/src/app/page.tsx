@@ -37,6 +37,7 @@ interface SummaryItem {
   Holding_Cost: number;
   Stockout_Cost: number;
   Total_Cost: number;
+  Note?: string;
 }
 
 export default function Dashboard() {
@@ -393,7 +394,7 @@ export default function Dashboard() {
                   <th className="px-6 py-4 text-xs font-bold text-zinc-500 uppercase">Model Architecture</th>
                   <th className="px-6 py-4 text-xs font-bold text-zinc-500 uppercase">RMSE</th>
                   <th className="px-6 py-4 text-xs font-bold text-zinc-500 uppercase text-right">Total Logistics Cost</th>
-                  <th className="px-6 py-4 text-xs font-bold text-zinc-500 uppercase text-right">Performance vs Naive</th>
+                  <th className="px-6 py-4 text-xs font-bold text-zinc-500 uppercase">Notes</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100">
@@ -401,12 +402,13 @@ export default function Dashboard() {
                   const modelSavings = naiveModel ? (100 - (row.Total_Cost / naiveModel.Total_Cost * 100)).toFixed(3) : 0;
                   const costInMillions = (row.Total_Cost / 1000000).toFixed(3);
                   const isBest = row.Model === bestModel.Model;
+                  const isTweedie = row.Model.includes('Tweedie');
                   
                   return (
-                    <tr key={row.Model} className={cn("hover:bg-zinc-50/50 transition-colors", isBest && "bg-blue-50/30")}>
+                    <tr key={row.Model} className={cn("hover:bg-zinc-50/50 transition-colors", isBest && "bg-blue-50/30", isTweedie && "bg-green-50/30")}>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <span className={cn("w-2 h-2 rounded-full", row.Model === 'LightGBM' ? "bg-blue-500" : row.Model === 'LSTM' ? "bg-red-500" : "bg-zinc-300")} />
+                          <span className={cn("w-2 h-2 rounded-full", row.Model === 'LightGBM' && !row.Model.includes('Tweedie') ? "bg-blue-500" : isTweedie ? "bg-green-600" : row.Model === 'LSTM' ? "bg-red-500" : row.Model === 'Naive' ? "bg-yellow-500" : "bg-zinc-300")} />
                           <span className="font-bold text-sm">{row.Model}</span>
                         </div>
                       </td>
@@ -420,6 +422,9 @@ export default function Dashboard() {
                         )}>
                           {Number(modelSavings) > 0 ? '+' : ''}{modelSavings}%
                         </span>
+                      </td>
+                      <td className="px-6 py-4 text-xs text-zinc-500 italic">
+                        {row.Note || '-'}
                       </td>
                     </tr>
                   );
