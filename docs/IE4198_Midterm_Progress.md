@@ -19,7 +19,8 @@ During the IE 4198 phase (Spring 2026), the team has focused on:
 
 **Key Achievements to Date:**
 - Implemented a fully functional Next.js dashboard with real-time inventory simulation
-- Created the DeepAR training pipeline with Poisson likelihood for zero-inflated data
+- Attempted DeepAR implementation (blocked by Poisson distribution + zeros issue)
+- Tested Tweedie loss for zero-inflated data (76% zeros): **MSE won by 16.8%**
 - Validated benchmark results with consistent RMSE metrics across models
 - Exported frontend-ready data for dashboard visualization
 
@@ -165,7 +166,23 @@ Where:
 
 ## 6. Challenges Encountered
 
-### 6.1. LSTM "Sparsity Penalty" (Addressed)
+### 6.1. DeepAR/Tweedie Zero-Inflated Data Experiment
+
+**Problem:** Testing whether specialized distributions (Poisson/Tweedie) outperform MSE on 76% zero-inflated retail data.
+
+**Approach:**
+- Implemented LightGBM with Tweedie loss (variance_power=1.5)
+- Ran both MSE and Tweedie on identical validation data (last 28 days, CA_1 store)
+
+**Results:**
+| Model | RMSE | Total Cost | Winner |
+|-------|------|------------|--------|
+| MSE LightGBM | 0.728 | $53,874 | **BEST** |
+| Tweedie LightGBM | 0.722 | $64,771 | |
+
+**Finding:** MSE beats Tweedie by 16.8% on total logistics cost. The +1 shift to handle zeros in Tweedie overcorrects for this dataset.
+
+### 6.2. LSTM "Sparsity Penalty" (Addressed)
 
 **Problem:** LSTM models predict continuous values, causing them to output "conditional means" (e.g., 0.2 units) for sparse items, never predicting exact zeros or true spikes.
 
