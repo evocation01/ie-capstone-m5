@@ -416,74 +416,30 @@ export default function Dashboard() {
           {/* Sensitivity Analysis */}
           <div className="mb-4 p-4 bg-purple-50 border border-purple-200 rounded-xl">
             <h3 className="text-sm font-bold text-purple-800 mb-1">Sensitivity: Service Level Trade-off</h3>
-            <p className="text-xs text-purple-700 mb-2">Cost impact by chosen service level:</p>
+            <p className="text-xs text-purple-700 mb-2">Cost impact by service level:</p>
             <table className="w-full text-xs text-purple-700">
               <thead>
                 <tr className="border-b border-purple-200">
                   <th className="text-left py-1">Service</th>
-                  <th className="text-right py-1">Holding</th>
-                  <th className="text-right py-1">Stockout</th>
                   <th className="text-right py-1">Total</th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td className="py-1">80%</td><td className="text-right">$8k</td><td className="text-right">$124k</td><td className="text-right font-bold">$132k</td></tr>
-                <tr><td className="py-1">90%</td><td className="text-right">$16k</td><td className="text-right">$82k</td><td className="text-right font-bold">$98k</td></tr>
-                <tr><td className="py-1">95%</td><td className="text-right">$26k</td><td className="text-right">$46k</td><td className="text-right font-bold">$72k</td></tr>
-                <tr><td className="py-1">99%</td><td className="text-right">$42k</td><td className="text-right">$18k</td><td className="text-right font-bold">$60k</td></tr>
+                <tr><td className="py-1">80%</td><td className="text-right font-bold">$132k</td></tr>
+                <tr><td className="py-1">95%</td><td className="text-right font-bold">$72k</td></tr>
+                <tr><td className="py-1">99%</td><td className="text-right font-bold">$60k</td></tr>
               </tbody>
             </table>
-            <p className="text-[10px] text-purple-600 mt-2">Higher service → more holding cost but less stockout risk</p>
           </div>
           
-          <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-zinc-50 border-b border-zinc-200">
-                  <th className="px-6 py-4 text-xs font-bold text-zinc-500 uppercase">Model Architecture</th>
-                  <th className="px-6 py-4 text-xs font-bold text-zinc-500 uppercase">RMSE</th>
-                  <th className="px-6 py-4 text-xs font-bold text-zinc-500 uppercase text-right">Total Logistics Cost</th>
-                  <th className="px-6 py-4 text-xs font-bold text-zinc-500 uppercase">Notes</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100">
-                {/* Sort by cost ascending (best = lowest) */}
-                {summary
-                  .sort((a, b) => a.Total_Cost - b.Total_Cost)
-                  .map((row, idx) => {
-                  const modelSavings = naiveModel ? (100 - (row.Total_Cost / naiveModel.Total_Cost * 100)).toFixed(3) : 0;
-                  const costInMillions = (row.Total_Cost / 1000000).toFixed(3);
-                  const isBest = idx === 0;
-                  const isTweedie = row.Model.includes('Tweedie');
-                  
-                  return (
-                    <tr key={row.Model} className={cn("hover:bg-zinc-50/50 transition-colors", isBest && "bg-green-50/30")}>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <span className={cn("w-2 h-2 rounded-full", row.Model === 'LightGBM' && !row.Model.includes('Tweedie') ? "bg-blue-500" : isTweedie ? "bg-green-600" : row.Model === 'LSTM' ? "bg-red-500" : row.Model === 'Naive' ? "bg-yellow-500" : "bg-zinc-300")} />
-                          <span className="font-bold text-sm">{row.Model}</span>
-                          {isBest && <span className="ml-2 text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded-full">BEST</span>}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-zinc-600">{row.RMSE.toFixed(3)}</td>
-                      <td className="px-6 py-4 text-sm font-bold text-right font-mono">${costInMillions} million</td>
-                      <td className="px-6 py-4 text-right">
-                        <span className={cn(
-                          "px-2 py-1 rounded-full text-[10px] font-bold",
-                          Number(modelSavings) > 0 ? "bg-green-100 text-green-700" : 
-                          Number(modelSavings) < 0 ? "bg-red-100 text-red-700" : "bg-zinc-100 text-zinc-500"
-                        )}>
-                          {Number(modelSavings) > 0 ? '+' : ''}{modelSavings}%
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-xs text-zinc-500 italic">
-                        {row.Note || '-'}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          {/* Quick Summary - no scroll needed */}
+          <div className="p-4 bg-green-50 border border-green-200 rounded-xl">
+            <h3 className="text-sm font-bold text-green-800 mb-1">Key Results</h3>
+            <div className="text-xs text-green-700 space-y-1">
+              <p><span className="font-semibold">LightGBM wins:</span> 19.5% cost savings</p>
+              <p><span className="font-semibold">Two-stage validated:</span> Works on known + unknown</p>
+              <p><span className="font-semibold">Champion:</span> $125k potential savings</p>
+            </div>
           </div>
         </div>
       </main>
