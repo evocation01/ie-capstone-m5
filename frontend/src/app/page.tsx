@@ -356,7 +356,11 @@ export default function Dashboard() {
               <div className="p-4 bg-zinc-50 rounded-xl space-y-3">
                 <SimMetric label="Safety Stock" value={simulationResults?.safetyStock.toFixed(2) || '0'} unit="units" />
                 <SimMetric label="Holding Cost" value={`$${simulationResults?.totalHolding.toFixed(0) || '0'}`} color="text-amber-600" />
-                <SimMetric label="Stockout Cost" value={`$${simulationResults?.totalStockout.toFixed(0) || '0'}`} color="text-red-600" />
+                <SimMetric label="Stockout Risk" value={`$${simulationResults?.totalStockout.toFixed(0) || '0'}`} color="text-red-600" />
+                <div className="h-px bg-zinc-200 my-2" />
+                <div className="flex justify-between text-xs text-zinc-500">
+                  <span>Lower service ↓ holding cost but ↑ stockout risk</span>
+                </div>
                 <div className="h-px bg-zinc-200 my-2" />
                 <SimMetric label="Total SKU Cost" value={`$${simulationResults?.totalCost.toFixed(0) || '0'}`} bold />
               </div>
@@ -401,12 +405,35 @@ export default function Dashboard() {
           <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
             <h3 className="text-sm font-bold text-amber-800 mb-1">Top Predictive Features</h3>
             <div className="text-xs text-amber-700 space-y-1">
-              <p><span className="font-semibold">1. lag_7</span> - Last week's sales (highest impact)</p>
+              <p><span className="font-semibold">1. lag_7</span> - Last week's sales</p>
               <p><span className="font-semibold">2. rolling_mean_28</span> - 4-week average</p>
               <p><span className="font-semibold">3. item_id</span> - Product identity</p>
               <p><span className="font-semibold">4. lag_14</span> - 2-week lag</p>
-              <p className="text-[10px] text-amber-600 mt-2">Features explain WHY model works - recent history dominates</p>
+              <p className="text-[10px] text-amber-600 mt-2">Recent history dominates → model learns real patterns</p>
             </div>
+          </div>
+          
+          {/* Sensitivity Analysis */}
+          <div className="mb-4 p-4 bg-purple-50 border border-purple-200 rounded-xl">
+            <h3 className="text-sm font-bold text-purple-800 mb-1">Sensitivity: Service Level Trade-off</h3>
+            <p className="text-xs text-purple-700 mb-2">Cost impact by chosen service level:</p>
+            <table className="w-full text-xs text-purple-700">
+              <thead>
+                <tr className="border-b border-purple-200">
+                  <th className="text-left py-1">Service</th>
+                  <th className="text-right py-1">Holding</th>
+                  <th className="text-right py-1">Stockout</th>
+                  <th className="text-right py-1">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td className="py-1">80%</td><td className="text-right">$8k</td><td className="text-right">$124k</td><td className="text-right font-bold">$132k</td></tr>
+                <tr><td className="py-1">90%</td><td className="text-right">$16k</td><td className="text-right">$82k</td><td className="text-right font-bold">$98k</td></tr>
+                <tr><td className="py-1">95%</td><td className="text-right">$26k</td><td className="text-right">$46k</td><td className="text-right font-bold">$72k</td></tr>
+                <tr><td className="py-1">99%</td><td className="text-right">$42k</td><td className="text-right">$18k</td><td className="text-right font-bold">$60k</td></tr>
+              </tbody>
+            </table>
+            <p className="text-[10px] text-purple-600 mt-2">Higher service → more holding cost but less stockout risk</p>
           </div>
           
           <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden">

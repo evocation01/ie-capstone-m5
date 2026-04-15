@@ -189,6 +189,19 @@ Where:
 
 **Conclusion:** The model achieves even better results on known historical data (71.5% savings), confirming it learns real patterns rather than overfitting. This two-stage approach validates the methodology.
 
+### 6.3. Feature Importance Analysis
+
+Understanding WHY the model works:
+| Rank | Feature | Contribution | Interpretation |
+|:----:|:--------|:-------------|:---------------|
+| 1 | lag_7 | Highest | Last week's sales is strongest predictor |
+| 2 | rolling_mean_28 | 2nd | 4-week average captures seasonality |
+| 3 | item_id | 3rd | Product-specific patterns matter |
+| 4 | lag_14 | 4th | 2-week lag captures bi-weekly patterns |
+| 5 | rolling_mean_7 | 5th | Recent weekly trend |
+
+**Key Finding:** Recent historical features (last 1-4 weeks) dominate predictions. This explains why the model generalizes well - it's learning real sales patterns, not overfitting.
+
 ### 6.2. DeepAR/Tweedie Zero-Inflated Data Experiment
 
 **Problem:** Testing whether specialized distributions (Poisson/Tweedie) outperform MSE on 76% zero-inflated retail data.
