@@ -1,0 +1,12 @@
+[
+  {"name": "lag_7", "importance": 110579041},
+  {"name": "rolling_mean_28", "importance": 106914265},
+  {"name": "item_id", "importance": 37147445},
+  {"name": "lag_14", "importance": 32318458},
+  {"name": "rolling_mean_7", "importance": 23199621},
+  {"name": "lag_21", "importance": 16107911},
+  {"name": "lag_28", "importance": 5440403},
+  {"name": "wday", "importance": 3426514},
+  {"name": "price_momentum", "importance": 2998617},
+  {"name": "sell_price", "importance": 2219696}
+]

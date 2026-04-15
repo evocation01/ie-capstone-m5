@@ -388,13 +388,25 @@ export default function Dashboard() {
         <div className="mt-10">
           <h2 className="text-lg font-bold mb-2">Benchmark Results</h2>
           
-          {/* Model Comparison Info */}
+          {/* Validation Approach */}
           <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-            <h3 className="text-sm font-bold text-blue-800 mb-1">Validation Approach</h3>
+            <h3 className="text-sm font-bold text-blue-800 mb-1">Two-Stage Validation</h3>
             <p className="text-xs text-blue-700 leading-relaxed">
-              <span className="font-semibold">Two-stage validation:</span> (1) Known data 1856-1885: RMSE 0.19, 71.5% cost savings. 
-              (2) Unknown data 1886-1913: 19.5% savings. This confirms model learns real patterns!
+              <span className="font-semibold">Stage 1 (Known):</span> Days 1856-1885: 71.5% savings | 
+              <span className="font-semibold">Stage 2 (Unknown):</span> Days 1886-1913: 19.5% savings
             </p>
+          </div>
+          
+          {/* Top Features */}
+          <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+            <h3 className="text-sm font-bold text-amber-800 mb-1">Top Predictive Features</h3>
+            <div className="text-xs text-amber-700 space-y-1">
+              <p><span className="font-semibold">1. lag_7</span> - Last week's sales (highest impact)</p>
+              <p><span className="font-semibold">2. rolling_mean_28</span> - 4-week average</p>
+              <p><span className="font-semibold">3. item_id</span> - Product identity</p>
+              <p><span className="font-semibold">4. lag_14</span> - 2-week lag</p>
+              <p className="text-[10px] text-amber-600 mt-2">Features explain WHY model works - recent history dominates</p>
+            </div>
           </div>
           
           <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden">
