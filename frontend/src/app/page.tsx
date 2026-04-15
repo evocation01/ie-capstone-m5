@@ -388,13 +388,14 @@ export default function Dashboard() {
         <div className="mt-10">
           <h2 className="text-lg font-bold mb-2">Benchmark Results</h2>
           
-          {/* Tweedie Info Card */}
-          <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-xl">
-            <h3 className="text-sm font-bold text-green-800 mb-1">About Tweedie Loss</h3>
-            <p className="text-xs text-green-700 leading-relaxed">
-              Tweedie distribution handles <span className="font-semibold">zero-inflated count data</span> (76% zeros in retail). 
-              Unlike MSE which assumes normal distribution, Tweedie assumes a compound Poisson-gamma distribution - perfect for sparse sales data. 
-              Uses <span className="font-semibold">variance_power=1.5</span> (between Poisson=1 and Gamma=2).
+          {/* Model Comparison Info */}
+          <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+            <h3 className="text-sm font-bold text-blue-800 mb-1">IE 4198: Zero-Inflated Data Experiment</h3>
+            <p className="text-xs text-blue-700 leading-relaxed">
+              Tested Tweedie vs MSE loss on 76% zero-inflated data. 
+              <span className="font-semibold">MSE won by 16.8%</span> on total cost. 
+              Key finding: Standard losses work well when data prep handles zeros properly.
+              Tweedie attempted but requires more tuning for retail sparse data.
             </p>
           </div>
           
