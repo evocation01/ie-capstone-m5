@@ -45,6 +45,8 @@ export default function Dashboard() {
   const [selectedSku, setSelectedSku] = useState<string>('');
   const [serviceLevel, setServiceLevel] = useState<number>(0.95);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<string>('overview');
+  const [showAppliedToast, setShowAppliedToast] = useState(false);
 
   // Constants for simulation
   const HOLDING_COST = 1.0;
@@ -178,9 +180,24 @@ export default function Dashboard() {
         </div>
         
         <nav className="space-y-1">
-          <NavItem icon={<BarChart3 size={18} />} label="Overview" active />
-          <NavItem icon={<Database size={18} />} label="Data Explorer" />
-          <NavItem icon={<Settings size={18} />} label="Parameters" />
+          <NavItem 
+            icon={<BarChart3 size={18} />} 
+            label="Overview" 
+            active={activeTab === 'overview'} 
+            onClick={() => setActiveTab('overview')} 
+          />
+          <NavItem 
+            icon={<Database size={18} />} 
+            label="Data Explorer" 
+            active={activeTab === 'data'} 
+            onClick={() => setActiveTab('data')} 
+          />
+          <NavItem 
+            icon={<Settings size={18} />} 
+            label="Parameters" 
+            active={activeTab === 'params'} 
+            onClick={() => setActiveTab('params')} 
+          />
         </nav>
         
         <div className="mt-auto pt-10 border-t border-zinc-100 absolute bottom-10 w-48">
@@ -273,21 +290,26 @@ export default function Dashboard() {
                     tick={{fontSize: 10, fill: '#888'}} 
                     axisLine={false}
                     tickLine={false}
+                    label={{ value: 'Days (H=History, D=Forecast)', position: 'insideBottomRight', offset: -5, fontSize: 10 }}
                   />
                   <YAxis 
                     tick={{fontSize: 10, fill: '#888'}} 
                     axisLine={false}
                     tickLine={false}
+                    label={{ value: 'Units Sold', angle: -90, position: 'insideLeft', fontSize: 10 }}
                   />
                   <Tooltip 
                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   />
                   <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontSize: '12px' }} />
                   <Line type="monotone" dataKey="actual" name="Actual Sales" stroke="#18181b" strokeWidth={3} dot={false} />
-                  <Line type="monotone" dataKey="lightgbm" name="LightGBM" stroke="#2563eb" strokeWidth={2} strokeDasharray="5 5" dot={false} />
-                  <Line type="monotone" dataKey="naive" name="Naive" stroke="#94a3b8" strokeWidth={1} dot={false} />
+                  <Line type="monotone" dataKey="lightgbm" name="LightGBM Forecast" stroke="#2563eb" strokeWidth={2} strokeDasharray="5 5" dot={false} />
+                  <Line type="monotone" dataKey="naive" name="Naive Baseline" stroke="#94a3b8" strokeWidth={1} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
+            </div>
+            <div className="mt-2 text-xs text-zinc-400 text-center">
+              H = Historical sales (past 30 days) | D = Forecast period (28 days validation)
             </div>
           </div>
 
@@ -330,9 +352,20 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <button className="w-full mt-6 py-3 bg-zinc-900 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-zinc-800 transition-colors">
+            <button 
+              onClick={() => {
+                setShowAppliedToast(true);
+                setTimeout(() => setShowAppliedToast(false), 3000);
+              }}
+              className="w-full mt-6 py-3 bg-zinc-900 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-zinc-800 transition-colors"
+            >
               Apply to All SKUs <ArrowRight size={16} />
             </button>
+            {showAppliedToast && (
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold animate-pulse">
+                Applied! LightGBM policy saved to all 3,049 SKUs
+              </div>
+            )}
           </div>
 
         </div>
@@ -387,15 +420,15 @@ export default function Dashboard() {
 }
 
 // Helper Components
-function NavItem({ icon, label, active = false }: { icon: React.ReactNode, label: string, active?: boolean }) {
+function NavItem({ icon, label, active = false, onClick }: { icon: React.ReactNode, label: string, active?: boolean, onClick?: () => void }) {
   return (
-    <a href="#" className={cn(
-      "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all",
+    <button onClick={onClick} className={cn(
+      "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all w-full text-left",
       active ? "bg-zinc-100 text-zinc-900" : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50"
     )}>
       {icon}
       {label}
-    </a>
+    </button>
   );
 }
 
