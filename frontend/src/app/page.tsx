@@ -398,7 +398,8 @@ export default function Dashboard() {
               </thead>
               <tbody className="divide-y divide-zinc-100">
                 {summary.map((row) => {
-                  const modelSavings = naiveModel ? (100 - (row.Total_Cost / naiveModel.Total_Cost * 100)).toFixed(1) : 0;
+                  const modelSavings = naiveModel ? (100 - (row.Total_Cost / naiveModel.Total_Cost * 100)).toFixed(3) : 0;
+                  const costInMillions = (row.Total_Cost / 1000000).toFixed(3);
                   const isBest = row.Model === bestModel.Model;
                   
                   return (
@@ -409,8 +410,8 @@ export default function Dashboard() {
                           <span className="font-bold text-sm">{row.Model}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-zinc-600">{row.RMSE.toFixed(4)}</td>
-                      <td className="px-6 py-4 text-sm font-bold text-right font-mono">${row.Total_Cost.toLocaleString()}</td>
+                      <td className="px-6 py-4 text-sm text-zinc-600">{row.RMSE.toFixed(3)}</td>
+                      <td className="px-6 py-4 text-sm font-bold text-right font-mono">${costInMillions} million</td>
                       <td className="px-6 py-4 text-right">
                         <span className={cn(
                           "px-2 py-1 rounded-full text-[10px] font-bold",
