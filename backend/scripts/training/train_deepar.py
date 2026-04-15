@@ -9,7 +9,6 @@ import torch
 from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_forecasting import DeepAR, TimeSeriesDataSet
 from pytorch_forecasting.data import GroupNormalizer
-from pytorch_forecasting.metrics import PoissonLoss
 from sklearn.preprocessing import RobustScaler
 
 # Add backend root to sys.path
@@ -42,7 +41,7 @@ def main():
     logger.info("Converting to Pandas for PyTorch Forecasting...")
     df = df_pl.to_pandas()
 
-    # FIX: Ensure target 'sales' is FLOAT.
+    # Ensure target 'sales' is FLOAT
     df["sales"] = df["sales"].astype(float)
 
     # FIX: Filter out items with ZERO sales history.
@@ -134,7 +133,6 @@ def main():
         hidden_size=32,
         rnn_layers=2,
         dropout=0.1,
-        loss=PoissonLoss(),
     )
 
     # 4. Train
