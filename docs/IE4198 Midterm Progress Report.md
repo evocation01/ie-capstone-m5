@@ -30,6 +30,14 @@ The project has successfully transitioned from a research framework to a functio
 - **Validation Results:** Current experiments on the M5 dataset (CA stores) show that the LightGBM model maintains a consistent 19.5% cost-saving advantage over the naive baseline.
 - **Root Cause Analysis:** A fishbone (Ishikawa) diagram has been constructed to identify the drivers of high inventory costs, highlighting "Forecast Information Quality" as the primary controllable factor.
 
+#### **2.2 Decision Support System - Dashboard Interface**
+
+The Decision Support System (DSS) implements a multi-page Next.js dashboard with sidebar navigation and real-time forecasting capabilities:
+
+![Dashboard Overview](../docs/images/frontend/dashboard.png)
+
+_Figure X: Complete dashboard interface with sidebar navigation and What-If sensitivity analysis panel_
+
 #### **2.1 Root Cause Analysis - Inventory Cost Drivers**
 
 The following fishbone diagram identifies the primary causes of elevated inventory costs in retail supply chains:
