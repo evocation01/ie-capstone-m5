@@ -95,20 +95,23 @@ The frontend dashboard has been completely rebuilt as an interactive DSS:
 
 **Dashboard Screenshots:**
 
-![Main Dashboard Overview](./images/dashboard_main.png)
-*Figure 1: Main dashboard showing forecasting interface, SKU selector, and inventory simulation controls*
+_**Figure 1**: Main dashboard showing forecasting interface, SKU selector, and inventory simulation controls_
+![Main Dashboard Overview](./images/frontend/dashboard_main.png)
 
-![Multi-Page Navigation](./images/dashboard_sidebar.png)
-*Figure 2: Sidebar navigation showing available DSS sections (Dashboard, Sensitivity, Benchmark, Comparison)*
+_**Figure 2**: Sidebar navigation showing available DSS sections (Dashboard, Sensitivity, Benchmark, Comparison)_
+![Multi-Page Navigation](./images/frontend/dashboard_sidebar.png)
 
-![Sensitivity Analysis](./images/sensitivity_analysis.png)
-*Figure 3: What-If scenario analysis with interactive parameter controls for holding cost, stockout cost, and lead time*
+_**Figure 3**: What-If scenario analysis with interactive parameter controls for holding cost, stockout cost, and lead time_
+![Sensitivity Analysis](./images/frontend/sensitivity_analysis.png)
 
-![Benchmark Results](./images/benchmark_results.png)
-*Figure 4: Comprehensive model performance comparison with RMSE, cost savings, and category breakdown*
+_**Figure 4**: Comprehensive model performance comparison with RMSE, cost savings, and category breakdown_
+![Benchmark Results-1](./images/frontend/benchmark_results1.png)
+![Benchmark Results-2](./images/frontend/benchmark_results2.png)
 
-![Model Comparison](./images/model_comparison.png)
-*Figure 5: Detailed model analysis showing strengths, weaknesses, and recommended use cases*
+_**Figure 5**: Detailed model analysis showing strengths, weaknesses, and recommended use cases_
+![Model Comparison-1](./images/frontend/model_comparison1.png)
+![Model Comparison-2](./images/frontend/model_comparison2.png)
+![Model Comparison-3](./images/frontend/model_comparison3.png)
 
 **Technical Stack:**
 
@@ -245,13 +248,13 @@ Understanding WHY the model works:
 **Results:**
 
 ![Multi-Store Validation Results](./images/multi_store_validation.png)
-*Figure 6: Cross-store performance validation showing LightGBM generalizability across CA_1, CA_2, and CA_3 stores*
+_Figure 6: Cross-store performance validation showing LightGBM generalizability across CA_1, CA_2, and CA_3 stores_
 
-| Store | RMSE | Total Cost | Performance vs CA_1 |
-|-------|------|------------|-------------------|
-| CA_1 | 2.116 | $63,981 | Baseline |
-| CA_2 | 1.962 | $62,519 | **+7.1% better** |
-| CA_3 | 2.653 | $88,490 | -25.4% worse |
+| Store | RMSE  | Total Cost | Performance vs CA_1 |
+| ----- | ----- | ---------- | ------------------- |
+| CA_1  | 2.116 | $63,981    | Baseline            |
+| CA_2  | 1.962 | $62,519    | **+7.1% better**    |
+| CA_3  | 2.653 | $88,490    | -25.4% worse        |
 
 **Finding:** Model performance varies across stores (RMSE std dev: 0.296), indicating store-specific patterns exist. However, all stores show significant improvement over naive baselines. CA_2 performs best, suggesting the model captures generalizable demand patterns while adapting to local store characteristics.
 
@@ -262,7 +265,7 @@ Understanding WHY the model works:
 **Solution:** Custom LSTM implementation with log transformation:
 
 ![LSTM Architecture with Log Transform](./images/lstm_log_transform.png)
-*Figure 7: Custom LSTM architecture addressing sparsity penalty through log transformation of zero-inflated sales data*
+_Figure 7: Custom LSTM architecture addressing sparsity penalty through log transformation of zero-inflated sales data_
 
 - Transform target: `log(sales + 1)` maps zeros→zeros, positive values→positive
 - Apply MSE in log space (equivalent to weighted loss favoring zero prediction)
@@ -300,17 +303,17 @@ Understanding WHY the model works:
 | ---- | -------------------------- | -------- | ---------------------------------------------------------------- |
 | B.1  | Complete DeepAR training   | April 25 | Completed - Implemented custom LSTM with log transform for zeros |
 | B.2  | Validate DeepAR results    | April 27 | Completed - RMSE 3.62, addresses sparsity penalty                |
-| B.3  | Update financial analysis  | April 29 | Completed - Cost projections integrated into report               |
+| B.3  | Update financial analysis  | April 29 | Completed - Cost projections integrated into report              |
 | B.4  | Compare DeepAR vs LightGBM | May 1    | Completed - Architecture validated, competitive performance      |
 
 ### Phase C: Dashboard Enhancement (Week 3-4: April 27 - May 8)
 
-| Task | Description                | Deadline | Status                                            |
-| ---- | -------------------------- | -------- | ------------------------------------------------- |
+| Task | Description                | Deadline | Status                                             |
+| ---- | -------------------------- | -------- | -------------------------------------------------- |
 | C.1  | Add DeepAR to frontend     | May 3    | Completed - LSTM results integrated into dashboard |
-| C.2  | What-If scenario simulator | May 5    | Completed - Interactive parameter controls added  |
-| C.3  | Sensitivity analysis UI    | May 7    | Completed - Cost impact visualization implemented |
-| C.4  | UI polish and team info    | May 8    | Completed - Linting and type fixes applied        |
+| C.2  | What-If scenario simulator | May 5    | Completed - Interactive parameter controls added   |
+| C.3  | Sensitivity analysis UI    | May 7    | Completed - Cost impact visualization implemented  |
+| C.4  | UI polish and team info    | May 8    | Completed - Linting and type fixes applied         |
 
 ### Phase D: Final Report (Week 5-6: May 11 - June)
 
