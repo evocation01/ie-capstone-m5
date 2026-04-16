@@ -93,6 +93,23 @@ The frontend dashboard has been completely rebuilt as an interactive DSS:
 - **Safety Stock Calculation:** Dynamic z-score based on selected confidence level
 - **Model Leaderboard:** Comparative table with RMSE and TLC metrics
 
+**Dashboard Screenshots:**
+
+![Main Dashboard Overview](./images/dashboard_main.png)
+*Figure 1: Main dashboard showing forecasting interface, SKU selector, and inventory simulation controls*
+
+![Multi-Page Navigation](./images/dashboard_sidebar.png)
+*Figure 2: Sidebar navigation showing available DSS sections (Dashboard, Sensitivity, Benchmark, Comparison)*
+
+![Sensitivity Analysis](./images/sensitivity_analysis.png)
+*Figure 3: What-If scenario analysis with interactive parameter controls for holding cost, stockout cost, and lead time*
+
+![Benchmark Results](./images/benchmark_results.png)
+*Figure 4: Comprehensive model performance comparison with RMSE, cost savings, and category breakdown*
+
+![Model Comparison](./images/model_comparison.png)
+*Figure 5: Detailed model analysis showing strengths, weaknesses, and recommended use cases*
+
 **Technical Stack:**
 
 - Next.js 16 (App Router)
@@ -226,6 +243,10 @@ Understanding WHY the model works:
 - Calculated RMSE and estimated financial impact for each store
 
 **Results:**
+
+![Multi-Store Validation Results](./images/multi_store_validation.png)
+*Figure 6: Cross-store performance validation showing LightGBM generalizability across CA_1, CA_2, and CA_3 stores*
+
 | Store | RMSE | Total Cost | Performance vs CA_1 |
 |-------|------|------------|-------------------|
 | CA_1 | 2.116 | $63,981 | Baseline |
@@ -239,6 +260,9 @@ Understanding WHY the model works:
 **Problem:** Original LSTM suffered from "sparsity penalty" - MSE loss on raw sales data causes predictions to hover around means instead of capturing zeros or spikes.
 
 **Solution:** Custom LSTM implementation with log transformation:
+
+![LSTM Architecture with Log Transform](./images/lstm_log_transform.png)
+*Figure 7: Custom LSTM architecture addressing sparsity penalty through log transformation of zero-inflated sales data*
 
 - Transform target: `log(sales + 1)` maps zeros→zeros, positive values→positive
 - Apply MSE in log space (equivalent to weighted loss favoring zero prediction)
