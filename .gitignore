@@ -99,5 +99,9 @@ backend/data/
 # =========================
 # 7. Project Specific Misc
 # =========================
+# Generated files
+*.pdf
+*.docx
+
 # Specific folders mentioned in your snippets
 capstone/
