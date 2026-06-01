@@ -32,7 +32,7 @@ export default function SidebarLayout({ children }: SidebarLayoutProps) {
   const pathname = usePathname();
 
   return (
-    <div className="min-h-screen bg-slate-50 flex overflow-hidden">
+    <div className="h-screen bg-slate-50 flex overflow-hidden">
       {/* Sidebar Navigation - Hidden during PDF Print */}
       <nav className="w-64 bg-slate-50 border-r border-slate-200 text-slate-900 flex-shrink-0 flex flex-col print-hidden relative z-20">
         <div className="p-6 h-full flex flex-col">

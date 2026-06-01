@@ -429,8 +429,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Feature Importance and Sensitivity */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 bg-amber-50 border border-amber-200 rounded-xl p-6">
               <h3 className="text-sm font-bold text-amber-800 mb-1">Top Predictive Features (SHAP)</h3>
               <div className="text-xs text-amber-700 space-y-2 mb-3 mt-3">
                 {shapData.slice(0, 5).map((d, i) => {
@@ -448,7 +448,7 @@ export default function DashboardPage() {
                   return (
                     <div key={d.feature} className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold w-28 truncate">{i + 1}. {d.feature}</span>
+                        <span className="font-bold w-40 truncate">{i + 1}. {d.feature}</span>
                         <div className="flex-1 h-2 bg-amber-200 rounded-full overflow-hidden">
                           <div 
                             className="h-full bg-amber-500" 
@@ -456,7 +456,7 @@ export default function DashboardPage() {
                           />
                         </div>
                       </div>
-                      <span className="text-[10px] text-amber-600/90 ml-30 pl-[120px] leading-tight">↳ {desc}</span>
+                      <span className="text-[10px] text-amber-600/90 ml-30 pl-[170px] leading-tight">↳ {desc}</span>
                     </div>
                   );
                 })}
