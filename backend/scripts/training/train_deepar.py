@@ -23,6 +23,14 @@ warnings.filterwarnings("ignore")
 
 
 def main():
+    """
+    IE Capstone Project - Phase II
+    DeepAR Probabilistic Forecasting Model
+    
+    This script implements a DeepAR model to address the 'Sparsity Penalty'
+    observed in standard LSTMs. It uses a Negative Binomial likelihood 
+    to properly model zero-inflated, intermittent retail demand.
+    """
     logger.info("🚀 Starting DeepAR Training Pipeline...")
 
     # 1. Load Data

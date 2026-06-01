@@ -52,6 +52,7 @@ def main():
     forecast_files = {
         "LightGBM": paths.FORECASTS_DIR / "forecast_lgbm.csv",
         "LSTM": paths.FORECASTS_DIR / "forecast_lstm.csv",
+        "DeepAR": paths.FORECASTS_DIR / "forecast_deepar.csv",
         "Naive": None # We'll generate it from history
     }
 
