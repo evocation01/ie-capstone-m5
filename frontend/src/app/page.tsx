@@ -150,9 +150,11 @@ export default function DashboardPage() {
     return combined;
   }, [selectedSku, data, serviceLevel]);
 
-  const bestModel = summary.reduce((prev, curr) => prev.RMSE < curr.RMSE ? prev : curr, summary[0]);
+  const bestModel = summary.reduce((prev, curr) => prev.Total_Cost < curr.Total_Cost ? prev : curr, summary[0]);
   const naiveModel = summary.find(s => s.Model === 'Naive');
   const savings = naiveModel ? ((naiveModel.Total_Cost - bestModel.Total_Cost) / naiveModel.Total_Cost * 100) : 0;
+  
+  const sortedSummary = [...summary].sort((a, b) => a.Total_Cost - b.Total_Cost);
   
   const simMetrics = simulationResults || { safetyStock: 0, totalHolding: 0, totalStockout: 0, totalCost: 0 };
 
@@ -351,7 +353,7 @@ export default function DashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-200">
-                  {summary.map((item, index) => (
+                  {sortedSummary.map((item, index) => (
                     <tr key={item.Model} className={index === 0 ? 'bg-green-50' : ''}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
