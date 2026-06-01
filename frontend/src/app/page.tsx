@@ -36,6 +36,8 @@ interface SummaryItem {
   Holding_Cost: number;
   Stockout_Cost: number;
   Total_Cost: number;
+  Overstock_Units?: number;
+  Understock_Units?: number;
   Note?: string;
 }
 
@@ -44,26 +46,30 @@ export default function DashboardPage() {
   const [summary, setSummary] = useState<SummaryItem[]>([]);
   const [selectedSku, setSelectedSku] = useState<string>('');
   const [serviceLevel, setServiceLevel] = useState<number>(0.95);
-  const [holdingCost] = useState<number>(1.00);
-  const [stockoutCost] = useState<number>(10.00);
+  const [holdingCost, setHoldingCost] = useState<number>(1.00);
+  const [stockoutCost, setStockoutCost] = useState<number>(10.00);
   const [leadTime] = useState<number>(1);
   const [loading, setLoading] = useState(true);
   const [chartType, setChartType] = useState<'sales' | 'inventory'>('sales');
+  const [shapData, setShapData] = useState<Array<{feature: string, importance: number}>>([]);
 
   // Load data on mount
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [skuRes, summaryRes] = await Promise.all([
+        const [skuRes, summaryRes, shapRes] = await Promise.all([
           fetch('/data/sku_data.json'),
-          fetch('/data/summary.json')
+          fetch('/data/summary.json'),
+          fetch('/data/shap_importance.json').catch(() => ({ json: () => [] }))
         ]);
 
         const skuData = await skuRes.json();
         const summaryData = await summaryRes.json();
+        const shapJson = await (shapRes as Response).json();
 
         setData(skuData);
         setSummary(summaryData);
+        setShapData(shapJson);
 
         // Set first SKU as default
         const firstSku = Object.keys(skuData)[0];
@@ -150,11 +156,31 @@ export default function DashboardPage() {
     return combined;
   }, [selectedSku, data, serviceLevel]);
 
-  const bestModel = summary.reduce((prev, curr) => prev.Total_Cost < curr.Total_Cost ? prev : curr, summary[0]);
-  const naiveModel = summary.find(s => s.Model === 'Naive');
+  // Recalculate summary based on dynamic holding/stockout costs
+  const dynamicSummary = useMemo(() => {
+    return summary.map(item => {
+      // If the backend didn't provide units, fallback to original cost
+      if (item.Overstock_Units === undefined || item.Understock_Units === undefined) {
+        return item;
+      }
+      
+      const newHoldingCost = item.Overstock_Units * holdingCost;
+      const newStockoutCost = item.Understock_Units * stockoutCost;
+      
+      return {
+        ...item,
+        Holding_Cost: newHoldingCost,
+        Stockout_Cost: newStockoutCost,
+        Total_Cost: newHoldingCost + newStockoutCost
+      };
+    });
+  }, [summary, holdingCost, stockoutCost]);
+
+  const bestModel = dynamicSummary.reduce((prev, curr) => prev.Total_Cost < curr.Total_Cost ? prev : curr, dynamicSummary[0]);
+  const naiveModel = dynamicSummary.find(s => s.Model === 'Naive');
   const savings = naiveModel ? ((naiveModel.Total_Cost - bestModel.Total_Cost) / naiveModel.Total_Cost * 100) : 0;
   
-  const sortedSummary = [...summary].sort((a, b) => a.Total_Cost - b.Total_Cost);
+  const sortedSummary = [...dynamicSummary].sort((a, b) => a.Total_Cost - b.Total_Cost);
   
   const simMetrics = simulationResults || { safetyStock: 0, totalHolding: 0, totalStockout: 0, totalCost: 0 };
 
@@ -302,18 +328,40 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4 mt-6">
                   <div className="p-4 bg-slate-50 rounded-xl">
                     <InfoTooltip title="Holding Cost" content="The daily cost of storing one unsold unit. High holding costs penalize models that over-forecast.">
-                      <div className="text-xs font-bold text-slate-500 uppercase mb-1">Holding Cost</div>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-xs font-bold text-slate-500 uppercase">Holding Cost</span>
+                        <span className="text-sm font-bold text-slate-900">${holdingCost.toFixed(2)}</span>
+                      </div>
                     </InfoTooltip>
-                    <div className="text-xl font-bold text-slate-900">${Math.round(simMetrics.totalHolding).toLocaleString()}</div>
+                    <input
+                      type="range"
+                      min="0.1"
+                      max="5.0"
+                      step="0.1"
+                      value={holdingCost}
+                      onChange={(e) => setHoldingCost(parseFloat(e.target.value))}
+                      className="w-full h-1.5 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+                    />
                   </div>
                   <div className="p-4 bg-slate-50 rounded-xl">
                     <InfoTooltip title="Stockout Cost" content="The financial penalty for missing a sale (e.g. lost profit margin). High stockout costs penalize models that under-forecast.">
-                      <div className="text-xs font-bold text-slate-500 uppercase mb-1">Stockout Cost</div>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-xs font-bold text-slate-500 uppercase">Stockout Cost</span>
+                        <span className="text-sm font-bold text-slate-900">${stockoutCost.toFixed(2)}</span>
+                      </div>
                     </InfoTooltip>
-                    <div className="text-xl font-bold text-slate-900">${Math.round(simMetrics.totalStockout).toLocaleString()}</div>
+                    <input
+                      type="range"
+                      min="1.0"
+                      max="25.0"
+                      step="1.0"
+                      value={stockoutCost}
+                      onChange={(e) => setStockoutCost(parseFloat(e.target.value))}
+                      className="w-full h-1.5 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+                    />
                   </div>
                 </div>
 
@@ -364,10 +412,10 @@ export default function DashboardPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-900">{item.RMSE.toFixed(2)}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-900">${item.Total_Cost.toLocaleString()}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`text-sm font-semibold ${item.Total_Cost < (summary.find(s => s.Model === 'Naive')?.Total_Cost || Infinity) ? 'text-green-600' : 'text-zinc-600'}`}>
+                        <span className={`text-sm font-semibold ${item.Total_Cost < (dynamicSummary.find(s => s.Model === 'Naive')?.Total_Cost || Infinity) ? 'text-green-600' : 'text-zinc-600'}`}>
                           {(() => {
                             if (item.Model === 'Naive') return 'Baseline';
-                            const naiveCost = summary.find(s => s.Model === 'Naive')?.Total_Cost || 1;
+                            const naiveCost = dynamicSummary.find(s => s.Model === 'Naive')?.Total_Cost || 1;
                             const savings = ((naiveCost - item.Total_Cost) / naiveCost * 100).toFixed(1);
                             return `+${savings}%`;
                           })()}
@@ -383,14 +431,22 @@ export default function DashboardPage() {
           {/* Feature Importance and Sensitivity */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
-              <h3 className="text-sm font-bold text-amber-800 mb-1">Top Predictive Features</h3>
-              <div className="text-xs text-amber-700 space-y-1">
-                <p><span className="font-semibold">1. lag_7</span> - Last week&apos;s sales</p>
-                <p><span className="font-semibold">2. rolling_mean_28</span> - 4-week average</p>
-                <p><span className="font-semibold">3. item_id</span> - Product identity</p>
-                <p><span className="font-semibold">4. lag_14</span> - 2-week lag</p>
-                <p className="text-[10px] text-amber-600 mt-2">Recent history dominates → model learns real patterns</p>
+              <h3 className="text-sm font-bold text-amber-800 mb-1">Top Predictive Features (SHAP)</h3>
+              <div className="text-xs text-amber-700 space-y-1 mb-2">
+                {shapData.slice(0, 5).map((d, i) => (
+                  <div key={d.feature} className="flex items-center gap-2">
+                    <span className="font-semibold w-24 truncate">{i + 1}. {d.feature}</span>
+                    <div className="flex-1 h-2 bg-amber-200 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-amber-500" 
+                        style={{ width: `${(d.importance / shapData[0].importance) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+                {shapData.length === 0 && <p className="text-amber-600/70 italic">Loading SHAP Explanations...</p>}
               </div>
+              <p className="text-[10px] text-amber-600 mt-2">SHAP values show mathematically what drives LightGBM predictions.</p>
             </div>
 
             <div className="bg-purple-50 border border-purple-200 rounded-xl p-6">

@@ -89,6 +89,14 @@ def main():
         with open(output_dir / "summary.json", "w") as f:
             json.dump(summary_list, f)
             
+    # 6. Export SHAP Explainability
+    shap_path = paths.RESULTS_DIR / "explainability" / "shap_importance.json"
+    if shap_path.exists():
+        with open(shap_path, "r") as f:
+            shap_data = json.load(f)
+        with open(output_dir / "shap_importance.json", "w") as f:
+            json.dump(shap_data, f)
+            
     print(f"✅ Exported data to {output_dir}")
 
 if __name__ == "__main__":

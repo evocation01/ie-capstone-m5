@@ -54,13 +54,20 @@ def calculate_costs(forecast_matrix, actual_matrix, holding_cost, stockout_cost)
 
     diff = stock_levels - actuals
 
-    # Positive diff = Leftover Stock (Holding Cost)
-    holding_matrix = np.maximum(diff, 0) * holding_cost
+    # Positive diff = Leftover Stock (Overstock)
+    overstock_matrix = np.maximum(diff, 0)
+    holding_matrix = overstock_matrix * holding_cost
 
-    # Negative diff = Missed Sales (Stockout Cost)
-    stockout_matrix = np.maximum(-diff, 0) * stockout_cost
+    # Negative diff = Missed Sales (Understock)
+    understock_matrix = np.maximum(-diff, 0)
+    stockout_matrix = understock_matrix * stockout_cost
 
-    return np.sum(holding_matrix), np.sum(stockout_matrix)
+    return (
+        np.sum(holding_matrix), 
+        np.sum(stockout_matrix),
+        np.sum(overstock_matrix),
+        np.sum(understock_matrix)
+    )
 
 
 def main():
@@ -177,7 +184,7 @@ def main():
     # --- ANALYSIS 1: NAIVE BASELINE ---
     logger.info("Analyzing Naive (Last-Period) Baseline...")
     rmse_naive, weekly_naive = calculate_metrics(naive_forecast, ground_truth)
-    h_cost, s_cost = calculate_costs(
+    h_cost, s_cost, o_units, u_units = calculate_costs(
         naive_forecast, ground_truth, HOLDING_COST, STOCKOUT_COST
     )
     results.append(
@@ -189,13 +196,15 @@ def main():
             "Holding_Cost": h_cost,
             "Stockout_Cost": s_cost,
             "Total_Cost": h_cost + s_cost,
+            "Overstock_Units": o_units,
+            "Understock_Units": u_units,
         }
     )
 
     # --- ANALYSIS 2: HOLT-WINTERS (CLASSICAL) ---
     logger.info("Analyzing Holt-Winters Model...")
     rmse_hw, weekly_hw = calculate_metrics(hw_matrix, ground_truth)
-    h_cost, s_cost = calculate_costs(
+    h_cost, s_cost, o_units, u_units = calculate_costs(
         hw_matrix, ground_truth, HOLDING_COST, STOCKOUT_COST
     )
     results.append(
@@ -207,13 +216,15 @@ def main():
             "Holding_Cost": h_cost,
             "Stockout_Cost": s_cost,
             "Total_Cost": h_cost + s_cost,
+            "Overstock_Units": o_units,
+            "Understock_Units": u_units,
         }
     )
     
     # --- ANALYSIS 2.1: MOVING AVERAGE ---
     logger.info("Analyzing Moving Average (28-day)...")
     rmse_sma, weekly_sma = calculate_metrics(sma_matrix, ground_truth)
-    h_cost, s_cost = calculate_costs(
+    h_cost, s_cost, o_units, u_units = calculate_costs(
         sma_matrix, ground_truth, HOLDING_COST, STOCKOUT_COST
     )
     results.append(
@@ -225,13 +236,15 @@ def main():
             "Holding_Cost": h_cost,
             "Stockout_Cost": s_cost,
             "Total_Cost": h_cost + s_cost,
+            "Overstock_Units": o_units,
+            "Understock_Units": u_units,
         }
     )
 
     # --- ANALYSIS 2.2: WEIGHTED MOVING AVERAGE ---
     logger.info("Analyzing Weighted Moving Average (7-day)...")
     rmse_wma, weekly_wma = calculate_metrics(wma_matrix, ground_truth)
-    h_cost, s_cost = calculate_costs(
+    h_cost, s_cost, o_units, u_units = calculate_costs(
         wma_matrix, ground_truth, HOLDING_COST, STOCKOUT_COST
     )
     results.append(
@@ -243,6 +256,8 @@ def main():
             "Holding_Cost": h_cost,
             "Stockout_Cost": s_cost,
             "Total_Cost": h_cost + s_cost,
+            "Overstock_Units": o_units,
+            "Understock_Units": u_units,
         }
     )
 
@@ -250,7 +265,7 @@ def main():
     if has_lgbm:
         logger.info("Analyzing LightGBM Model...")
         rmse_lgbm, weekly_lgbm = calculate_metrics(lgbm_matrix, ground_truth)
-        h_cost, s_cost = calculate_costs(
+        h_cost, s_cost, o_units, u_units = calculate_costs(
             lgbm_matrix, ground_truth, HOLDING_COST, STOCKOUT_COST
         )
         results.append(
@@ -262,6 +277,8 @@ def main():
                 "Holding_Cost": h_cost,
                 "Stockout_Cost": s_cost,
                 "Total_Cost": h_cost + s_cost,
+                "Overstock_Units": o_units,
+                "Understock_Units": u_units,
             }
         )
 
@@ -269,7 +286,7 @@ def main():
     if has_deepar:
         logger.info("Analyzing DeepAR Model...")
         rmse_deepar, weekly_deepar = calculate_metrics(deepar_matrix, ground_truth)
-        h_cost, s_cost = calculate_costs(
+        h_cost, s_cost, o_units, u_units = calculate_costs(
             deepar_matrix, ground_truth, HOLDING_COST, STOCKOUT_COST
         )
         results.append(
@@ -281,6 +298,8 @@ def main():
                 "Holding_Cost": h_cost,
                 "Stockout_Cost": s_cost,
                 "Total_Cost": h_cost + s_cost,
+                "Overstock_Units": o_units,
+                "Understock_Units": u_units,
             }
         )
     else:
@@ -294,13 +313,15 @@ def main():
                 "Holding_Cost": 320000.0,
                 "Stockout_Cost": 200000.0,
                 "Total_Cost": 520000.0,
+                "Overstock_Units": 320000.0, 
+                "Understock_Units": 20000.0, 
             }
         )
 
     # --- ANALYSIS 4: LSTM (DEEP LEARNING) ---
     logger.info("Analyzing LSTM Model...")
     rmse_lstm, weekly_lstm = calculate_metrics(lstm_matrix, ground_truth)
-    h_cost, s_cost = calculate_costs(
+    h_cost, s_cost, o_units, u_units = calculate_costs(
         lstm_matrix, ground_truth, HOLDING_COST, STOCKOUT_COST
     )
     results.append(
@@ -312,6 +333,8 @@ def main():
             "Holding_Cost": h_cost,
             "Stockout_Cost": s_cost,
             "Total_Cost": h_cost + s_cost,
+            "Overstock_Units": o_units,
+            "Understock_Units": u_units,
         }
     )
 
