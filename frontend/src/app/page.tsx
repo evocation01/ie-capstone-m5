@@ -235,13 +235,13 @@ export default function DashboardPage() {
                   <div className="flex bg-zinc-100 rounded-lg p-1">
                     <button
                       onClick={() => setChartType('sales')}
-                      className={`px-3 py-1 text-xs font-semibold rounded-md ${chartType === 'sales' ? 'bg-white shadow-sm' : 'text-zinc-500'}`}
+                      className={`px-3 py-1 text-xs font-semibold rounded-md ${chartType === 'sales' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
                     >
                       Sales
                     </button>
                     <button
                       onClick={() => setChartType('inventory')}
-                      className={`px-3 py-1 text-xs font-semibold rounded-md ${chartType === 'inventory' ? 'bg-white shadow-sm' : 'text-zinc-500'}`}
+                      className={`px-3 py-1 text-xs font-semibold rounded-md ${chartType === 'inventory' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
                     >
                       Inventory
                     </button>
@@ -251,7 +251,7 @@ export default function DashboardPage() {
                 <select
                   value={selectedSku}
                   onChange={(e) => setSelectedSku(e.target.value)}
-                  className="px-3 py-2 border border-zinc-200 rounded-lg text-sm"
+                  className="px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white text-zinc-900 font-medium"
                 >
                   {Object.keys(data).map(sku => (
                     <option key={sku} value={sku}>{sku}</option>
@@ -278,8 +278,8 @@ export default function DashboardPage() {
             {/* Inventory Simulator */}
             <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-6 flex flex-col">
               <div className="flex items-center gap-2 mb-6">
-                <Settings className="text-zinc-400 w-5 h-5" />
-                <h2 className="text-lg font-bold">Inventory Simulator</h2>
+                <Settings className="text-zinc-700 w-5 h-5" />
+                <h2 className="text-lg font-bold text-slate-900">Inventory Simulator</h2>
               </div>
 
               <div className="space-y-6 flex-1">
