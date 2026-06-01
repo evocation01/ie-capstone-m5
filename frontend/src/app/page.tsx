@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import InfoTooltip from '@/components/InfoTooltip';
 import SidebarLayout from '@/components/SidebarLayout';
+import { DashboardSkeleton } from '@/components/Skeleton';
 
 function cn(...inputs: string[]) {
   return inputs.filter(Boolean).join(' ');
@@ -158,13 +159,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <SidebarLayout>
-        <div className="p-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-center h-64">
-              <div className="text-zinc-500">Loading dashboard...</div>
-            </div>
-          </div>
-        </div>
+        <DashboardSkeleton />
       </SidebarLayout>
     );
   }
@@ -236,7 +231,7 @@ export default function DashboardPage() {
             <div className="lg:col-span-2 bg-white rounded-2xl border border-zinc-200 shadow-sm p-6">
               <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-3">
-                  <h2 className="text-lg font-bold">Forecasting &ldquo;Drag Race&rdquo;</h2>
+                  <h2 className="text-lg font-bold text-slate-900">Forecasting &ldquo;Drag Race&rdquo;</h2>
                   <div className="flex bg-zinc-100 rounded-lg p-1">
                     <button
                       onClick={() => setChartType('sales')}
@@ -267,8 +262,8 @@ export default function DashboardPage() {
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
+                  <XAxis dataKey="name" tick={{ fill: '#334155', fontWeight: 600 }} />
+                  <YAxis tick={{ fill: '#334155', fontWeight: 600 }} />
                   <Tooltip />
                   <Legend />
                   <Line type="monotone" dataKey="actual" name="Actual Sales" stroke="#0f172a" strokeWidth={2.5} />

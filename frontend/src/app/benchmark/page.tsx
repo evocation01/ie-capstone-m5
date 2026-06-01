@@ -5,6 +5,7 @@ import SidebarLayout from '@/components/SidebarLayout';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Trophy, ArrowDownRight, ArrowUpRight, Zap, Target } from 'lucide-react';
 import InfoTooltip from '@/components/InfoTooltip';
+import { PageSkeleton } from '@/components/Skeleton';
 
 interface SummaryItem {
   Model: string;
@@ -38,12 +39,7 @@ export default function BenchmarkPage() {
   if (loading) {
     return (
       <SidebarLayout>
-        <div className="flex items-center justify-center h-screen">
-          <div className="animate-pulse flex flex-col items-center gap-4">
-            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-slate-500 font-semibold">Loading Benchmark Data...</p>
-          </div>
-        </div>
+        <PageSkeleton />
       </SidebarLayout>
     );
   }
@@ -170,8 +166,8 @@ export default function BenchmarkPage() {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={summary} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#e2e8f0" />
-                  <XAxis type="number" domain={[0, 'dataMax + 0.5']} />
-                  <YAxis dataKey="Model" type="category" axisLine={false} tickLine={false} tick={{ fill: '#475569', fontWeight: 600 }} />
+                  <XAxis type="number" domain={[0, 'dataMax + 0.5']} tick={{ fill: '#334155', fontWeight: 600 }} />
+                  <YAxis dataKey="Model" type="category" axisLine={false} tickLine={false} tick={{ fill: '#334155', fontWeight: 600 }} />
                   <RechartsTooltip 
                     cursor={{fill: '#f1f5f9'}}
                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
