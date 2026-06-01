@@ -2,7 +2,7 @@
 
 import React from 'react';
 import SidebarLayout from '@/components/SidebarLayout';
-import { Target, Layers, TrendingUp, CheckCircle2 } from 'lucide-react';
+import { Target, Layers, TrendingUp, CheckCircle2, Download } from 'lucide-react';
 
 export default function AboutPage() {
   return (
@@ -18,6 +18,15 @@ export default function AboutPage() {
             <p className="text-xl text-slate-500 font-medium">
               Bridging the gap between statistical accuracy and financial viability in retail supply chains.
             </p>
+            <div className="pt-4 print-hidden">
+              <button 
+                onClick={() => window.print()}
+                className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5"
+              >
+                <Download className="w-4 h-4" />
+                Download PDF Report
+              </button>
+            </div>
           </header>
 
           <div className="glass-panel p-8 rounded-3xl animate-fade-in" style={{ animationDelay: '100ms' }}>

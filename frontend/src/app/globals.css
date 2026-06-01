@@ -89,3 +89,31 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+/* Print Styles for PDF Export */
+@media print {
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: white !important;
+    background-image: none !important;
+  }
+  .print-hidden {
+    display: none !important;
+  }
+  .print-expanded {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .glass-panel {
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+    background: white !important;
+  }
+  /* Ensure charts fit nicely on a page */
+  .recharts-wrapper {
+    max-width: 100% !important;
+  }
+}
