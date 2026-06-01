@@ -151,8 +151,8 @@ export default function SensitivityPage() {
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={curveData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                    <XAxis dataKey="serviceLevel" tick={{ fill: '#64748b', fontSize: 12 }} tickLine={false} />
-                    <YAxis tick={{ fill: '#64748b', fontSize: 12 }} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+                    <XAxis dataKey="serviceLevel" tick={{ fill: '#334155', fontSize: 12, fontWeight: 600 }} tickLine={false} />
+                    <YAxis tick={{ fill: '#334155', fontSize: 12, fontWeight: 600 }} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
                     <Tooltip 
                       contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
