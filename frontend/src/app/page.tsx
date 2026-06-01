@@ -432,39 +432,68 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
               <h3 className="text-sm font-bold text-amber-800 mb-1">Top Predictive Features (SHAP)</h3>
-              <div className="text-xs text-amber-700 space-y-1 mb-2">
-                {shapData.slice(0, 5).map((d, i) => (
-                  <div key={d.feature} className="flex items-center gap-2">
-                    <span className="font-semibold w-24 truncate">{i + 1}. {d.feature}</span>
-                    <div className="flex-1 h-2 bg-amber-200 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-amber-500" 
-                        style={{ width: `${(d.importance / shapData[0].importance) * 100}%` }}
-                      />
+              <div className="text-xs text-amber-700 space-y-2 mb-3 mt-3">
+                {shapData.slice(0, 5).map((d, i) => {
+                  const featureDescriptions: Record<string, string> = {
+                    'rolling_mean_28': '4-week sales average (Captures monthly trends)',
+                    'lag_7': 'Sales exactly 1 week ago (Captures weekly seasonality)',
+                    'lag_14': 'Sales exactly 2 weeks ago (Validates weekly patterns)',
+                    'item_id': 'Product identity (Model learns item-specific baselines)',
+                    'rolling_mean_7': '1-week sales average (Captures immediate momentum)',
+                    'sell_price': 'Current price of the item',
+                    'event_name_1': 'Special events or holidays (e.g., SuperBowl)',
+                  };
+                  const desc = featureDescriptions[d.feature] || d.feature;
+                  
+                  return (
+                    <div key={d.feature} className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold w-28 truncate">{i + 1}. {d.feature}</span>
+                        <div className="flex-1 h-2 bg-amber-200 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-amber-500" 
+                            style={{ width: `${(d.importance / shapData[0].importance) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                      <span className="text-[10px] text-amber-600/90 ml-30 pl-[120px] leading-tight">↳ {desc}</span>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
                 {shapData.length === 0 && <p className="text-amber-600/70 italic">Loading SHAP Explanations...</p>}
               </div>
-              <p className="text-[10px] text-amber-600 mt-2">SHAP values show mathematically what drives LightGBM predictions.</p>
+              <p className="text-[10px] text-amber-600 mt-2 font-medium">SHAP values use Game Theory to prove exactly which variables drive LightGBM predictions.</p>
             </div>
 
-            <div className="bg-purple-50 border border-purple-200 rounded-xl p-6">
-              <h3 className="text-sm font-bold text-purple-800 mb-1">Sensitivity: Service Level Trade-off</h3>
-              <p className="text-xs text-purple-700 mb-2">Cost impact by service level:</p>
-              <table className="w-full text-xs text-purple-700">
-                <thead>
-                  <tr className="border-b border-purple-200">
-                    <th className="text-left py-1">Service</th>
-                    <th className="text-right py-1">Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td className="py-1">80%</td><td className="text-right font-bold">$132k</td></tr>
-                  <tr><td className="py-1">95%</td><td className="text-right font-bold">$72k</td></tr>
-                  <tr><td className="py-1">99%</td><td className="text-right font-bold">$60k</td></tr>
-                </tbody>
-              </table>
+            <div className="bg-purple-50 border border-purple-200 rounded-xl p-6 flex flex-col justify-center">
+              <h3 className="text-sm font-bold text-purple-800 mb-2">Newsvendor Economics: Why did {bestModel.Model} win?</h3>
+              {(() => {
+                const cr = stockoutCost / (stockoutCost + holdingCost);
+                if (cr < 0.5) {
+                  return (
+                    <p className="text-xs text-purple-700 leading-relaxed">
+                      <strong>Low Critical Ratio ({(cr*100).toFixed(1)}%):</strong> Holding inventory is more expensive than missing sales. 
+                      Models that systematically <strong>under-forecast</strong> (like LSTM) artificially win because they refuse to hold stock, entirely avoiding the massive holding penalty. 
+                      This is a "Conservative" supply chain strategy.
+                    </p>
+                  );
+                } else if (cr > 0.90) {
+                  return (
+                    <p className="text-xs text-purple-700 leading-relaxed">
+                      <strong>High Critical Ratio ({(cr*100).toFixed(1)}%):</strong> Stockouts are incredibly expensive (e.g. high-margin electronics). 
+                      Models that systematically <strong>over-forecast</strong> (like DeepAR) gain an advantage because missing a sale is heavily penalized. 
+                      This is an "Aggressive" supply chain strategy.
+                    </p>
+                  );
+                } else {
+                  return (
+                    <p className="text-xs text-purple-700 leading-relaxed">
+                      <strong>Balanced Critical Ratio ({(cr*100).toFixed(1)}%):</strong> Costs are proportional. 
+                      In this scenario, statistical accuracy matters most. The model with the lowest error (<strong>{bestModel.Model}</strong>) wins because it perfectly balances the risks of overstocking and understocking.
+                    </p>
+                  );
+                }
+              })()}
             </div>
           </div>
         </div>
