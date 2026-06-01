@@ -120,29 +120,30 @@ def main():
     naive_cols = [c for c in df_actual.columns if c.startswith("d_")][-56:-28]
     naive_forecast = df_actual.set_index("id").loc[unique_ids, naive_cols].values
 
-    # Generate Holt-Winters Forecasts (Classical Champion)
-    logger.info("Generating Holt-Winters Forecasts (this might take a few minutes)...")
+    # Generate Classical Forecasts
+    logger.info("Generating Classical Forecasts (Holt-Winters, MA, WMA)...")
     train_cols = [c for c in df_actual.columns if c.startswith("d_")][:-28]
     
     # Filter for the same unique_ids
     subset_df = df_actual.set_index("id").loc[unique_ids, train_cols]
     
     hw_matrix = []
+    sma_matrix = []
+    wma_matrix = []
     total_items = len(subset_df)
     
     # Use tqdm if available, else simple print
     try:
         from tqdm import tqdm
-        iterator = tqdm(subset_df.iterrows(), total=total_items, desc="Holt-Winters")
+        iterator = tqdm(subset_df.iterrows(), total=total_items, desc="Classical Models")
     except ImportError:
         iterator = subset_df.iterrows()
         logger.info("tqdm not found, using simple loop")
 
     for idx, row in iterator:
         y_train = row.astype(float)
-        # Optimization: slice from first non-zero to improve Holt-Winters fit
+        # Optimization: slice from first non-zero to improve fit
         if (y_train != 0).any():
-             # Find first non-zero index efficiently
              y_vals = y_train.values
              start_loc = np.argmax(y_vals != 0)
              y_train_clean = y_train.iloc[start_loc:]
@@ -150,11 +151,22 @@ def main():
              y_train_clean = y_train
              
         fc = ClassicalForecaster(y_train_clean, horizon=28)
-        # We only use Holt-Winters as it was the Classical Winner
-        pred = fc.holt_winters().fillna(0).values
-        hw_matrix.append(pred)
+        
+        # 1. Holt-Winters
+        pred_hw = fc.holt_winters().fillna(0).values
+        hw_matrix.append(pred_hw)
+        
+        # 2. Moving Average
+        pred_sma = fc.moving_average(window=28).fillna(0).values
+        sma_matrix.append(pred_sma)
+        
+        # 3. Weighted Moving Average (7-day weights prioritizing recent days)
+        pred_wma = fc.weighted_moving_average(weights=[0.3, 0.2, 0.2, 0.1, 0.1, 0.05, 0.05]).fillna(0).values
+        wma_matrix.append(pred_wma)
     
     hw_matrix = np.array(hw_matrix)
+    sma_matrix = np.array(sma_matrix)
+    wma_matrix = np.array(wma_matrix)
 
     # Cost Parameters
     HOLDING_COST = 1.0  # Simplified cost per unit of excess inventory
@@ -192,6 +204,42 @@ def main():
             "RMSE": rmse_hw,
             "W1_RMSE": weekly_hw[0],
             "W4_RMSE": weekly_hw[3],
+            "Holding_Cost": h_cost,
+            "Stockout_Cost": s_cost,
+            "Total_Cost": h_cost + s_cost,
+        }
+    )
+    
+    # --- ANALYSIS 2.1: MOVING AVERAGE ---
+    logger.info("Analyzing Moving Average (28-day)...")
+    rmse_sma, weekly_sma = calculate_metrics(sma_matrix, ground_truth)
+    h_cost, s_cost = calculate_costs(
+        sma_matrix, ground_truth, HOLDING_COST, STOCKOUT_COST
+    )
+    results.append(
+        {
+            "Model": "Moving Average",
+            "RMSE": rmse_sma,
+            "W1_RMSE": weekly_sma[0],
+            "W4_RMSE": weekly_sma[3],
+            "Holding_Cost": h_cost,
+            "Stockout_Cost": s_cost,
+            "Total_Cost": h_cost + s_cost,
+        }
+    )
+
+    # --- ANALYSIS 2.2: WEIGHTED MOVING AVERAGE ---
+    logger.info("Analyzing Weighted Moving Average (7-day)...")
+    rmse_wma, weekly_wma = calculate_metrics(wma_matrix, ground_truth)
+    h_cost, s_cost = calculate_costs(
+        wma_matrix, ground_truth, HOLDING_COST, STOCKOUT_COST
+    )
+    results.append(
+        {
+            "Model": "Weighted MA",
+            "RMSE": rmse_wma,
+            "W1_RMSE": weekly_wma[0],
+            "W4_RMSE": weekly_wma[3],
             "Holding_Cost": h_cost,
             "Stockout_Cost": s_cost,
             "Total_Cost": h_cost + s_cost,
