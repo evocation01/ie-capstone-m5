@@ -9,10 +9,11 @@ import {
   Package,
   AlertCircle,
   DollarSign,
-  BarChart3,
   Settings,
-  ArrowRight
+  ArrowRight,
+  BookOpen
 } from 'lucide-react';
+import InfoTooltip from '@/components/InfoTooltip';
 import SidebarLayout from '@/components/SidebarLayout';
 
 function cn(...inputs: string[]) {
@@ -42,9 +43,9 @@ export default function DashboardPage() {
   const [summary, setSummary] = useState<SummaryItem[]>([]);
   const [selectedSku, setSelectedSku] = useState<string>('');
   const [serviceLevel, setServiceLevel] = useState<number>(0.95);
-  const [holdingCost, setHoldingCost] = useState<number>(1.00);
-  const [stockoutCost, setStockoutCost] = useState<number>(10.00);
-  const [leadTime, setLeadTime] = useState<number>(1);
+  const [holdingCost] = useState<number>(1.00);
+  const [stockoutCost] = useState<number>(10.00);
+  const [leadTime] = useState<number>(1);
   const [loading, setLoading] = useState(true);
   const [chartType, setChartType] = useState<'sales' | 'inventory'>('sales');
 
@@ -139,6 +140,7 @@ export default function DashboardPage() {
       actual: sku.actual?.[0] || 0,
       lightgbm: lgbmFc,
       lstm: sku.forecasts['LSTM']?.[0],
+      deepar: sku.forecasts['DeepAR']?.[0],
       naive: naiveFc,
       isHistory: false,
       safetyStock: ss
@@ -147,9 +149,11 @@ export default function DashboardPage() {
     return combined;
   }, [selectedSku, data, serviceLevel]);
 
-  const bestModel = summary.reduce((prev, curr) => prev.Total_Cost < curr.Total_Cost ? prev : curr, summary[0]);
+  const bestModel = summary.reduce((prev, curr) => prev.RMSE < curr.RMSE ? prev : curr, summary[0]);
   const naiveModel = summary.find(s => s.Model === 'Naive');
   const savings = naiveModel ? ((naiveModel.Total_Cost - bestModel.Total_Cost) / naiveModel.Total_Cost * 100) : 0;
+  
+  const simMetrics = simulationResults || { safetyStock: 0, totalHolding: 0, totalStockout: 0, totalCost: 0 };
 
   if (loading) {
     return (
@@ -169,21 +173,32 @@ export default function DashboardPage() {
     <SidebarLayout>
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
-          <header className="flex justify-between items-end mb-10">
+          <header className="animate-fade-in flex flex-col md:flex-row md:items-start justify-between gap-4 mb-10">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Inventory Optimization Dashboard</h1>
-              <p className="text-zinc-500 mt-1">A Decision Support System for M5 Supply Chain Forecasting</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-zinc-400 italic">Target Store: CA_1</span>
-              <div className="h-4 w-px bg-zinc-200 mx-2" />
-              <div className="flex -space-x-2">
-                {[1, 2, 3, 4].map(i => (
-                  <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-zinc-200 flex items-center justify-center text-[10px] font-bold">U{i}</div>
-                ))}
-              </div>
+              <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">Decision Support System</h1>
+              <p className="text-slate-500 mt-2 font-medium max-w-2xl">
+                Evaluate model predictions dynamically transformed into actionable inventory costs for the CA_1 store subset.
+              </p>
             </div>
           </header>
+
+          {/* New Educational Panel */}
+          <div className="glass-panel p-6 rounded-2xl border border-blue-100/50 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 animate-fade-in mb-10" style={{ animationDelay: '50ms' }}>
+            <div className="flex items-start gap-4">
+              <div className="bg-blue-100 p-3 rounded-xl mt-1">
+                <BookOpen className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-slate-900">How to Read This Dashboard</h3>
+                <p className="text-sm text-slate-600 mt-1 max-w-4xl leading-relaxed">
+                  This system connects <strong>statistical forecasting</strong> with <strong>financial impact</strong>. 
+                  Use the <span className="font-semibold text-slate-800">Parameters</span> below to set the business environment (e.g. how expensive is a stockout vs holding stock?). 
+                  The simulation then runs a 28-day inventory test using each model&apos;s predictions as the daily order quantity. 
+                  The <strong>Champion Model</strong> is the one that results in the lowest Total Cost (Holding + Stockouts).
+                </p>
+              </div>
+            </div>
+          </div>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
@@ -205,12 +220,14 @@ export default function DashboardPage() {
               value="3,049"
               sub="CA_1 Store SKUs"
             />
-            <StatCard
-              icon={<DollarSign className="text-amber-600" />}
-              label="Theoretical Impact"
-              value={`$${(bestModel?.Total_Cost / 1000).toFixed(0) || '0'}K`}
-              sub="28-day cost savings"
-            />
+            <div className="glass-panel p-6 rounded-2xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-gradient-to-br from-emerald-200 to-teal-400 rounded-full blur-2xl opacity-50 group-hover:opacity-70 transition-opacity" />
+              <DollarSign className="w-8 h-8 text-emerald-500 mb-4 relative z-10" />
+              <InfoTooltip title="Total Cost" content="The sum of holding unsold inventory and penalties for missed sales over the 28-day period. Lower is better.">
+                <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider relative z-10">Total Cost</h3>
+              </InfoTooltip>
+              <p className="text-3xl font-extrabold text-slate-900 mt-1 relative z-10">${Math.round(bestModel.Total_Cost).toLocaleString()}</p>
+            </div>
           </div>
 
           {/* SKU Selector and Chart */}
@@ -254,10 +271,11 @@ export default function DashboardPage() {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="actual" name="Actual Sales" stroke="#000000" strokeWidth={2} />
-                  <Line type="monotone" dataKey="lightgbm" name="LightGBM Forecast" stroke="#2563eb" strokeWidth={2} strokeDasharray="5 5" dot={false} />
-                  <Line type="monotone" dataKey="lstm" name="LSTM Forecast" stroke="#7c3aed" strokeWidth={2} strokeDasharray="8 8" dot={false} />
-                  <Line type="monotone" dataKey="naive" name="Naive Baseline" stroke="#94a3b8" strokeWidth={1} dot={false} />
+                  <Line type="monotone" dataKey="actual" name="Actual Sales" stroke="#0f172a" strokeWidth={2.5} />
+                  <Line type="monotone" dataKey="lightgbm" name="LightGBM" stroke="#2563eb" strokeWidth={2.5} strokeDasharray="5 5" dot={false} />
+                  <Line type="monotone" dataKey="deepar" name="DeepAR" stroke="#ea580c" strokeWidth={2.5} strokeDasharray="5 5" dot={false} />
+                  <Line type="monotone" dataKey="lstm" name="LSTM" stroke="#7c3aed" strokeWidth={2} strokeDasharray="8 8" dot={false} opacity={0.6} />
+                  <Line type="monotone" dataKey="naive" name="Naive" stroke="#94a3b8" strokeWidth={1.5} dot={false} opacity={0.5} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -271,10 +289,9 @@ export default function DashboardPage() {
 
               <div className="space-y-6 flex-1">
                 <div>
-                  <div className="flex justify-between mb-2">
-                    <label className="text-sm font-semibold text-zinc-700">Service Level (α)</label>
-                    <span className="text-sm font-bold text-blue-600">{(serviceLevel * 100).toFixed(0)}%</span>
-                  </div>
+                  <InfoTooltip title="Service Level" content="The probability of not stocking out during the lead time. Higher values require more safety stock, increasing holding costs but reducing stockouts.">
+                    <label className="text-sm font-semibold text-slate-700 block mb-3">Service Level: <span className="text-blue-600 font-bold">{Math.round(serviceLevel * 100)}%</span></label>
+                  </InfoTooltip>
                   <input
                     type="range"
                     min="0.80" max="0.99" step="0.01"
@@ -288,20 +305,25 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div className="p-4 bg-zinc-50 rounded-xl space-y-3">
-                  <SimMetric label="Safety Stock" value={simulationResults?.safetyStock.toFixed(2) || '0'} unit="units" />
-                  <SimMetric label="Holding Cost" value={`$${simulationResults?.totalHolding.toFixed(0) || '0'}`} color="text-amber-600" />
-                  <SimMetric label="Stockout Risk" value={`$${simulationResults?.totalStockout.toFixed(0) || '0'}`} color="text-red-600" />
-                  <div className="h-px bg-zinc-200 my-2" />
-                  <div className="flex justify-between text-xs text-zinc-500">
-                    <span>Lower service ↓ holding cost but ↑ stockout risk</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 bg-slate-50 rounded-xl">
+                    <InfoTooltip title="Holding Cost" content="The daily cost of storing one unsold unit. High holding costs penalize models that over-forecast.">
+                      <div className="text-xs font-bold text-slate-500 uppercase mb-1">Holding Cost</div>
+                    </InfoTooltip>
+                    <div className="text-xl font-bold text-slate-900">${Math.round(simMetrics.totalHolding).toLocaleString()}</div>
                   </div>
-                  <div className="h-px bg-zinc-200 my-2" />
-                  <SimMetric label="Total SKU Cost" value={`$${simulationResults?.totalCost.toFixed(0) || '0'}`} bold />
+                  <div className="p-4 bg-slate-50 rounded-xl">
+                    <InfoTooltip title="Stockout Cost" content="The financial penalty for missing a sale (e.g. lost profit margin). High stockout costs penalize models that under-forecast.">
+                      <div className="text-xs font-bold text-slate-500 uppercase mb-1">Stockout Cost</div>
+                    </InfoTooltip>
+                    <div className="text-xl font-bold text-slate-900">${Math.round(simMetrics.totalStockout).toLocaleString()}</div>
+                  </div>
                 </div>
 
-                <div className="text-[11px] text-zinc-500 leading-relaxed italic">
-                  * Safety Stock is calculated as z * RMSE * sqrt(L). Higher service levels increase holding costs but minimize expensive stockouts.
+                <div className="p-4 bg-zinc-50 rounded-xl space-y-3">
+                  <SimMetric label="Safety Stock" value={simMetrics.safetyStock.toFixed(2)} unit="units" />
+                  <div className="h-px bg-zinc-200 my-2" />
+                  <SimMetric label="Total SKU Cost" value={`$${Math.round(simMetrics.totalCost)}`} bold />
                 </div>
               </div>
 
@@ -366,7 +388,7 @@ export default function DashboardPage() {
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
               <h3 className="text-sm font-bold text-amber-800 mb-1">Top Predictive Features</h3>
               <div className="text-xs text-amber-700 space-y-1">
-                <p><span className="font-semibold">1. lag_7</span> - Last week's sales</p>
+                <p><span className="font-semibold">1. lag_7</span> - Last week&apos;s sales</p>
                 <p><span className="font-semibold">2. rolling_mean_28</span> - 4-week average</p>
                 <p><span className="font-semibold">3. item_id</span> - Product identity</p>
                 <p><span className="font-semibold">4. lag_14</span> - 2-week lag</p>
@@ -401,14 +423,14 @@ export default function DashboardPage() {
 // Helper Components
 function StatCard({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub: string }) {
   return (
-    <div className="bg-white rounded-xl border border-zinc-200 p-6">
+    <div className="glass-panel rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-zinc-500">{label}</p>
-          <p className="text-2xl font-bold text-zinc-900 mt-1">{value}</p>
-          <p className="text-xs text-zinc-400 mt-1">{sub}</p>
+          <p className="text-sm font-semibold text-slate-500 mb-1">{label}</p>
+          <p className="text-3xl font-extrabold text-slate-900 tracking-tight">{value}</p>
+          <p className="text-xs font-medium text-slate-400 mt-2">{sub}</p>
         </div>
-        <div className="text-zinc-400">
+        <div className="p-3 bg-white/80 rounded-xl shadow-sm border border-slate-100">
           {icon}
         </div>
       </div>
@@ -416,7 +438,7 @@ function StatCard({ icon, label, value, sub }: { icon: React.ReactNode; label: s
   );
 }
 
-function SimMetric({ label, value, color = "text-zinc-900", unit = "", bold = false }: {
+function SimMetric({ label, value, color = "text-slate-900", unit = "", bold = false }: {
   label: string;
   value: string;
   color?: string;
@@ -424,10 +446,10 @@ function SimMetric({ label, value, color = "text-zinc-900", unit = "", bold = fa
   bold?: boolean;
 }) {
   return (
-    <div className="flex justify-between items-center">
-      <span className="text-sm text-zinc-600">{label}</span>
-      <span className={cn("text-sm", color, bold ? "font-bold" : "")}>
-        {value}{unit && ` ${unit}`}
+    <div className="flex justify-between items-center py-1">
+      <span className="text-sm font-medium text-slate-600">{label}</span>
+      <span className={cn("text-sm tracking-tight", color, bold ? "font-bold text-lg" : "font-semibold")}>
+        {value}{unit && <span className="text-xs text-slate-400 font-normal ml-1">{unit}</span>}
       </span>
     </div>
   );
