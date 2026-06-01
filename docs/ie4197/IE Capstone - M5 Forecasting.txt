@@ -1,0 +1,178 @@
+A Comparative Analysis of Forecasting for Supply Chain Optimization
+Industrial Engineering Capstone Project | IE 4197
+Hakan İspir • Boran Turan • Deniz Yağmur Adaş • Ali Kahya Supervisor: Prof. Dr. Serol BULKAN
+
+Table of Contents
+Problem Definition
+Research Objectives
+Data Characteristics
+Supply Chain Challenges
+Methodology
+Benchmark Results & Recommendations
+Sustainability & ESG
+Roadmap to IE4198
+Image Sources & References
+Questions
+
+Problem Definition
+Mitigating the Bullwhip Effect in Modern Retail
+
+Research Objectives
+Accuracy Benchmarking
+Compare Classical (ARIMA/HW) vs. ML (LightGBM) vs. Deep Learning (LSTM) performance.
+System Scalability
+Implement a "Dual-Track" pipeline using Polars to process 59M rows of Walmart data.
+Financial Impact
+Quantify "Value of Information" through Total Logistics Cost (Holding + Stockout) simulation.
+
+Data Characteristics: M5 Challenge
+Scale: 30,490 SKUs across 10 Walmart stores.
+Volume: 1,913 days of history; ~58 Million melted rows.
+Complexity: High seasonality and hierarchical dependencies.
+Intermittency: Massive zero-inflation (sparse sales patterns).
+
+Demand Volatility: High product variety (30,490 SKUs) leading to "zero-inflated" or intermittent demand patterns.
+The Bullwhip Effect: Small retail demand fluctuations causing amplified variances upstream, leading to waste.
+Financial Imbalance: The constant trade-off between excessive holding costs and the risk of costly stockouts.
+Modeling Gap: Traditional statistical methods struggle with exogenous variables like price changes and SNAP holidays.
+Supply Chain Challenges
+
+Methodology: The Dual-Track System
+Track A: Python Full-Scale
+Processing the entire hierarchy using high-performance libraries.
+Track B: Classical IE Baseline
+Analyzing a stratified sample of SKUs (CA_1 Store Pilot).
+•
+LightGBM (Gradient Boosting)
+•
+PyTorch (LSTM Architectures)
+•
+Exogenous Covariates (Price, Holidays)
+•
+Manual ARIMA (Box-Jenkins)
+•
+Holt-Winters Triple Smoothing
+•
+Naive & Moving Average baselines
+
+Big Data Strategy: Polars ETL
+Memory-Efficient Pipelines
+Traditional tools (Pandas) fails at 50M rows. Our Polars framework ensures:
+•
+Lazy Evaluation & Query Optimization.
+•
+Schema Enforcement for Parquet files.
+•
+Sub-second Feature Engineering (Lags, Rolling Means).
+
+Model Mechanic: LightGBM
+Leaf-wise Decision Trees
+•
+Leaf-wise Growth: Splitting based on max loss reduction; superior for Walmart's scale.
+•
+Regression Objective: Optimized using Mean Squared Error (MSE) for the target sales column.
+•
+EFB: Exclusive Feature Bundling reduces the high-dimensional SKU categorical space.
+•
+Histogram Binning: Discretizes continuous prices to accelerate training.
+
+Model Mechanic: LSTM
+Neural Sequence Modeling
+•
+Gating Logic: Uses Forget, Input, and Output gates to maintain long-term memory.
+•
+Global Approach: A single network learns shared patterns across all 30k products.
+•
+Embeddings: Learns high-dimensional representations of Store and Item IDs.
+
+Classical
+ARIMA, Holt-Winters, and Smoothing. Robust for stable cycles but limited by univariate history.
+Machine Learning
+LightGBM and XGBoost. Superior at mapping prices, SNAP events, and calendar covariates.
+Deep Learning
+PyTorch LSTM and Transformers. High capacity for global patterns across millions of rows.
+Forecasting Paradigms
+
+Methodology: Pilot Study Design
+Pilot Focus: Store California 1 (CA_1)
+Dataset Sample: 3,049 items with 5 years of daily history.
+Logic: Algorithm selection through controlled benchmarking on high-variance retail environments.
+Benchmarked 10 distinct algorithm configurations.
+Aggregated results across all SKUs for statistically significant selection.
+
+Forecast Accuracy Results (CA_1 Pilot)
+Average RMSE across 3,049 items in Store CA_1. Lower is better.
+
+The "Sparsity Penalty"
+Why LSTM Underperformed
+On zero-sales days, LSTM predicts a "safe mean" (e.g., 0.3 units) instead of a true zero.
+Operational Friction: Fractional forecasts trigger unnecessary reorders, exploding holding costs in sparse retail environments.
+LightGBM's tree-splits handled zero-inflation significantly better.
+
+Inventory Optimization Framework
+Simulation Parameter
+Value
+Description
+Target Service Level (α)
+95%
+Probability of meeting demand during lead time.
+Lead Time (L)
+7 Days
+Assumption for replenishment cycle.
+Holding Cost (H)
+$1.00 / unit
+Cost to store inventory per period.
+Stockout Cost (P)
+$10.00 / unit
+Lost margin and penalty for unmet demand.
+
+Financial Impact: Simulated Savings
+Total Estimated Annual Savings: $125,190
+Achieved through 19.5% Logistics Cost reduction via ML-driven accuracy.
+
+Managerial Recommendations
+Algorithm Choice: Use LightGBM/GBDT for sparse retail SKUs; LSTM requires significant "zero-handling" tuning to be viable.
+Tooling ROI: Polars is essential for IE systems involving big data (50M+ rows) to avoid hardware bottlenecks.
+Decision Support: IE focus should shift from minimizing RMSE to minimizing Total Logistics Cost to align with business KPIs.
+
+Waste Reduction
+Higher accuracy in FOODS reduces spoilage and physical waste of expired items.
+Emissions
+Minimizing "Rush Shipments" allows for high-efficiency scheduled logistics routing.a
+Sustainability & ESG Impact
+-19.5%
+Lower Warehouse Energy Footprint (HVAC/Lighting) via reduced inventory levels.
+
+Roadmap to IE 4198
+Recursive Inference: Developing Day-by-Day lag updates to prevent data leakage in 28-day horizons.
+Global Scaling: Training the LightGBM champion on all 10 Walmart stores (30,490 SKUs).
+Dashboard Deployment: Finalizing the Next.js DSS for real-time inventory sensitivity analysis.
+Horizontal Scaling: Training other complex algorithms like DeepAR to test it against others.
+Inventory Simulation: Run inventory simulation and optimize the results 
+
+Image Sources
+https://www.crwflags.com/fotw/images/t/tr_marm2.gif
+Source: www.crwflags.com
+https://careers.dwp.gov.uk/wp-content/uploads/2022/01/Banner-data-engineer-1.jpg?x67701
+Source: careers.dwp.gov.uk
+https://lightgbm.readthedocs.io/en/latest/_images/leaf-wise.png
+Source: lightgbm.readthedocs.io
+https://pluralsight2.imgix.net/guides/8a8ac7c1-8bac-4e89-ace8-9e28813ab635_3.JPG
+Source: www.pluralsight.com
+https://gosmartlog.com/wp-content/uploads/2017/04/bullwhip-effect.jpg
+Source: gosmartlog.com
+
+References
+Hochreiter, S., & Schmidhuber, J. (1997). Long short-term memory. Neural computation, 9(8), 1735-1780.
+Makridakis, S., Spiliotis, E., & Assimakopoulos, V. (2018). Statistical and Machine Learning forecasting methods: Concerns and ways forward. PloS one, 13(3), e0194889.
+Makridakis, S., Spiliotis, E., & Assimakopoulos, V. (2022). M5 accuracy competition: Results, findings, and conclusions. International journal of forecasting, 38(4), 1346-1364.
+Ashish, V. (2017). Attention is all you need. Advances in neural information processing systems, 30, I.
+Syntetos, A. A., Boylan, J. E., & Disney, S. M. (2009). Forecasting for inventory planning: a 50-year review. Journal of the Operational Research Society, 60(sup1), S149-S160.
+Lee, H. L., Padmanabhan, V., & Whang, S. (1997). The bullwhip effect in supply chains.
+Ke, G., Meng, Q., Finley, T., Wang, T., Chen, W., Ma, W., ... & Liu, T. Y. (2017). Lightgbm: A highly efficient gradient boosting decision tree. Advances in neural information processing systems, 30.
+Theodorou, E., Wang, S., Kang, Y., Spiliotis, E., Makridakis, S., & Assimakopoulos, V. (2022). Exploring the representativeness of the M5 competition data. International Journal of Forecasting, 38(4), 1500-1506.
+Benidis, K., Rangapuram, S. S., Flunkert, V., Wang, Y., Maddix, D., Turkmen, C., ... & Januschowski, T. (2022). Deep learning for time series forecasting: Tutorial and literature survey. ACM Computing Surveys, 55(6), 1-36.
+
+Questions?
+A Comparative Analysis of Classical and Deep Learning Forecasting for Supply Chain Inventory Optimization
+Hakan İspir • Boran Turan • Deniz Yağmur Adaş • Ali Kahya Marmara University | Industrial Engineering Department
