@@ -1,0 +1,62 @@
+[
+    {
+        "feature": "rolling_mean_28",
+        "importance": 0.3041467541075703
+    },
+    {
+        "feature": "lag_7",
+        "importance": 0.21269588421478877
+    },
+    {
+        "feature": "lag_14",
+        "importance": 0.1147379031561559
+    },
+    {
+        "feature": "item_id",
+        "importance": 0.08843302061884295
+    },
+    {
+        "feature": "rolling_mean_7",
+        "importance": 0.08664464926678385
+    },
+    {
+        "feature": "lag_21",
+        "importance": 0.07602336192457693
+    },
+    {
+        "feature": "dept_id",
+        "importance": 0.04254175700836391
+    },
+    {
+        "feature": "wday",
+        "importance": 0.04110511864694699
+    },
+    {
+        "feature": "store_id",
+        "importance": 0.024022857349060435
+    },
+    {
+        "feature": "price_momentum",
+        "importance": 0.022750760222450116
+    },
+    {
+        "feature": "sell_price",
+        "importance": 0.02136309947517195
+    },
+    {
+        "feature": "snap_TX",
+        "importance": 0.013407212779227183
+    },
+    {
+        "feature": "snap_CA",
+        "importance": 0.012806317853087912
+    },
+    {
+        "feature": "snap_WI",
+        "importance": 0.011928142861184448
+    },
+    {
+        "feature": "lag_28",
+        "importance": 0.01178698945445446
+    }
+]
