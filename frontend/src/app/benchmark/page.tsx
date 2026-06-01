@@ -1,222 +1,191 @@
-import SidebarLayout from '@/components/SidebarLayout';
-import { BarChart3, TrendingUp, Trophy, AlertCircle } from 'lucide-react';
+"use client";
 
-export default function BenchmarkResultsPage() {
-  const benchmarkData = [
-    { model: 'LightGBM', rmse: 2.10, cost: 515513, savings: 19.5, category: 'ML' },
-    { model: 'Holt-Winters', rmse: 2.31, cost: 529096, savings: 17.4, category: 'Classical' },
-    { model: 'LSTM (Log Transform)', rmse: 3.62, cost: 550000, savings: 14.0, category: 'DL' },
-    { model: 'Naive', rmse: 2.86, cost: 640703, savings: 0, category: 'Baseline' },
-    { model: 'LSTM (Original)', rmse: 3.58, cost: 1229646, savings: -91.0, category: 'DL' },
-  ];
+import React, { useState, useEffect } from 'react';
+import SidebarLayout from '@/components/SidebarLayout';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from 'recharts';
+import { Trophy, ArrowDownRight, ArrowUpRight, Zap, Target } from 'lucide-react';
+import InfoTooltip from '@/components/InfoTooltip';
+
+interface SummaryItem {
+  Model: string;
+  RMSE: number;
+  W1_RMSE: number;
+  W4_RMSE: number;
+  Holding_Cost: number;
+  Stockout_Cost: number;
+  Total_Cost: number;
+}
+
+export default function BenchmarkPage() {
+  const [summary, setSummary] = useState<SummaryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/data/summary.json')
+      .then(res => res.json())
+      .then(data => {
+        // Sort by RMSE ascending
+        const sorted = [...data].sort((a, b) => a.RMSE - b.RMSE);
+        setSummary(sorted);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <SidebarLayout>
+        <div className="flex items-center justify-center h-screen">
+          <div className="animate-pulse flex flex-col items-center gap-4">
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-slate-500 font-semibold">Loading Benchmark Data...</p>
+          </div>
+        </div>
+      </SidebarLayout>
+    );
+  }
+
+  const bestModel = summary[0];
 
   return (
     <SidebarLayout>
       <div className="p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-zinc-900 mb-2">Benchmark Results</h1>
-            <p className="text-zinc-600">Comprehensive evaluation of 10+ forecasting models on the M5 retail dataset</p>
-          </div>
+        <div className="max-w-7xl mx-auto space-y-10">
+          
+          <header className="animate-fade-in">
+            <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">Benchmark Results</h1>
+            <p className="text-slate-500 mt-2 font-medium max-w-2xl">
+              Comprehensive evaluation of 10+ forecasting models across 3 tiers (Classical, ML, Deep Learning) 
+              evaluated on the CA_1 store subset over a 28-day validation period.
+            </p>
+          </header>
 
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white rounded-xl border border-zinc-200 p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <Trophy className="w-6 h-6 text-yellow-500" />
-                <div>
-                  <p className="text-sm text-zinc-500">Champion Model</p>
-                  <p className="text-lg font-bold text-zinc-900">LightGBM</p>
-                </div>
-              </div>
-              <p className="text-2xl font-bold text-green-600">19.5%</p>
-              <p className="text-sm text-zinc-500">Cost Savings</p>
+          {/* Top Level Insights */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in" style={{ animationDelay: '100ms' }}>
+            <div className="glass-panel p-6 rounded-2xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-gradient-to-br from-amber-200 to-yellow-400 rounded-full blur-2xl opacity-50 group-hover:opacity-70 transition-opacity" />
+              <Trophy className="w-8 h-8 text-amber-500 mb-4 relative z-10" />
+              <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider relative z-10">Overall Champion</h3>
+              <p className="text-3xl font-extrabold text-slate-900 mt-1 relative z-10">{bestModel?.Model}</p>
+              <p className="text-sm font-medium text-slate-600 mt-2 relative z-10">Achieved lowest RMSE ({bestModel?.RMSE.toFixed(3)})</p>
+            </div>
+            
+            <div className="glass-panel p-6 rounded-2xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-gradient-to-br from-emerald-200 to-green-400 rounded-full blur-2xl opacity-50 group-hover:opacity-70 transition-opacity" />
+              <Zap className="w-8 h-8 text-emerald-500 mb-4 relative z-10" />
+              <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider relative z-10">Max Cost Reduction</h3>
+              <p className="text-3xl font-extrabold text-slate-900 mt-1 relative z-10">19.5%</p>
+              <p className="text-sm font-medium text-slate-600 mt-2 relative z-10">Savings vs Naive Baseline</p>
             </div>
 
-            <div className="bg-white rounded-xl border border-zinc-200 p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <BarChart3 className="w-6 h-6 text-blue-500" />
-                <div>
-                  <p className="text-sm text-zinc-500">Best RMSE</p>
-                  <p className="text-lg font-bold text-zinc-900">2.10</p>
-                </div>
-              </div>
-              <p className="text-2xl font-bold text-blue-600">LightGBM</p>
-              <p className="text-sm text-zinc-500">Units</p>
-            </div>
-
-            <div className="bg-white rounded-xl border border-zinc-200 p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <TrendingUp className="w-6 h-6 text-purple-500" />
-                <div>
-                  <p className="text-sm text-zinc-500">Deep Learning</p>
-                  <p className="text-lg font-bold text-zinc-900">LSTM</p>
-                </div>
-              </div>
-              <p className="text-2xl font-bold text-purple-600">14.0%</p>
-              <p className="text-sm text-zinc-500">Best DL Savings</p>
-            </div>
-
-            <div className="bg-white rounded-xl border border-zinc-200 p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <AlertCircle className="w-6 h-6 text-red-500" />
-                <div>
-                  <p className="text-sm text-zinc-500">Worst Performer</p>
-                  <p className="text-lg font-bold text-zinc-900">LSTM</p>
-                </div>
-              </div>
-              <p className="text-2xl font-bold text-red-600">-91%</p>
-              <p className="text-sm text-zinc-500">Original Model</p>
+            <div className="glass-panel p-6 rounded-2xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-gradient-to-br from-purple-200 to-indigo-400 rounded-full blur-2xl opacity-50 group-hover:opacity-70 transition-opacity" />
+              <Target className="w-8 h-8 text-purple-500 mb-4 relative z-10" />
+              <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider relative z-10">Deep Learning Focus</h3>
+              <p className="text-3xl font-extrabold text-slate-900 mt-1 relative z-10">DeepAR</p>
+              <p className="text-sm font-medium text-slate-600 mt-2 relative z-10">Solved the sparsity penalty</p>
             </div>
           </div>
 
-          {/* Detailed Results Table */}
-          <div className="bg-white rounded-xl border border-zinc-200 overflow-hidden mb-8">
-            <div className="px-6 py-4 border-b border-zinc-200">
-              <h3 className="text-lg font-semibold text-zinc-900">Model Performance Comparison</h3>
-              <p className="text-sm text-zinc-600">28-day forecast accuracy and financial impact on CA_1 store (3,049 SKUs)</p>
+          {/* Full Table */}
+          <div className="glass-panel rounded-2xl overflow-hidden animate-fade-in" style={{ animationDelay: '200ms' }}>
+            <div className="px-6 py-5 border-b border-slate-200/50 bg-white/50 flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900">The &quot;Drag Race&quot; Leaderboard</h2>
+                <p className="text-sm text-slate-500 font-medium mt-1">Ranked by Root Mean Square Error (RMSE)</p>
+              </div>
+              <InfoTooltip title="Root Mean Square Error" content="RMSE measures the average magnitude of the forecasting errors. A lower RMSE means the model's predictions were closer to the actual sales.">
+                <span className="text-xs font-bold text-blue-600 bg-blue-100 px-3 py-1 rounded-full">What is RMSE?</span>
+              </InfoTooltip>
             </div>
-
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-zinc-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wider">Model</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wider">Category</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wider">RMSE</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wider">Total Cost</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wider">Savings</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wider">Status</th>
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-50/50">
+                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">Rank</th>
+                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">Model Name</th>
+                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">Tier</th>
+                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">RMSE</th>
+                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">Total Cost</th>
+                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">Performance vs Baseline</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-200">
-                  {benchmarkData.map((item, index) => (
-                    <tr key={item.model} className={index === 0 ? 'bg-green-50' : ''}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          {index === 0 && <Trophy className="w-4 h-4 text-yellow-500 mr-2" />}
-                          <span className="text-sm font-medium text-zinc-900">{item.model}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          item.category === 'ML' ? 'bg-blue-100 text-blue-800' :
-                          item.category === 'DL' ? 'bg-purple-100 text-purple-800' :
-                          item.category === 'Classical' ? 'bg-green-100 text-green-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {item.category}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-900">{item.rmse.toFixed(2)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-900">${item.cost.toLocaleString()}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`text-sm font-semibold ${
-                          item.savings > 0 ? 'text-green-600' : item.savings === 0 ? 'text-zinc-600' : 'text-red-600'
-                        }`}>
-                          {item.savings > 0 ? '+' : ''}{item.savings.toFixed(1)}%
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          index === 0 ? 'bg-green-100 text-green-800' :
-                          item.savings > 10 ? 'bg-blue-100 text-blue-800' :
-                          item.savings > 0 ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-red-100 text-red-800'
-                        }`}>
-                          {index === 0 ? 'Champion' :
-                           item.savings > 10 ? 'Strong' :
-                           item.savings > 0 ? 'Moderate' : 'Poor'}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
+                <tbody className="divide-y divide-slate-100">
+                  {summary.map((item, idx) => {
+                    const isBaseline = item.Model === 'Naive';
+                    const baselineCost = summary.find(s => s.Model === 'Naive')?.Total_Cost || 640000;
+                    const diff = ((baselineCost - item.Total_Cost) / baselineCost) * 100;
+                    
+                    let tier = 'Classical';
+                    if (['LightGBM', 'XGBoost', 'RandomForest'].includes(item.Model)) tier = 'Machine Learning';
+                    if (['LSTM', 'DeepAR'].includes(item.Model)) tier = 'Deep Learning';
+                    if (isBaseline) tier = 'Baseline';
+
+                    return (
+                      <tr key={item.Model} className={`hover:bg-slate-50/50 transition-colors ${idx === 0 ? 'bg-blue-50/30' : ''}`}>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${idx === 0 ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600'}`}>
+                            {idx + 1}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 font-bold text-slate-900">
+                          {item.Model} {idx === 0 && <span className="ml-2 text-amber-500 text-sm">🏆</span>}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 text-xs font-semibold">
+                            {tier}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 font-mono font-semibold text-slate-700">
+                          {item.RMSE.toFixed(3)}
+                        </td>
+                        <td className="px-6 py-4 font-mono font-semibold text-slate-700">
+                          ${Math.round(item.Total_Cost).toLocaleString()}
+                        </td>
+                        <td className="px-6 py-4">
+                          {isBaseline ? (
+                            <span className="text-slate-400 font-semibold text-sm">--</span>
+                          ) : (
+                            <div className={`flex items-center gap-1 font-bold text-sm ${diff > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                              {diff > 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+                              {Math.abs(diff).toFixed(1)}%
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           </div>
 
-          {/* Category Analysis */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white rounded-xl border border-zinc-200 p-6">
-              <h3 className="text-lg font-semibold text-zinc-900 mb-4">Classical Methods</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-sm text-zinc-600">Best Performance</span>
-                  <span className="text-sm font-semibold text-zinc-900">Holt-Winters (17.4%)</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-zinc-600">Average RMSE</span>
-                  <span className="text-sm font-semibold text-zinc-900">2.59</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-zinc-600">Strengths</span>
-                  <span className="text-sm font-semibold text-green-600">Stable, Interpretable</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl border border-zinc-200 p-6">
-              <h3 className="text-lg font-semibold text-zinc-900 mb-4">Machine Learning</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-sm text-zinc-600">Best Performance</span>
-                  <span className="text-sm font-semibold text-zinc-900">LightGBM (19.5%)</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-zinc-600">Average RMSE</span>
-                  <span className="text-sm font-semibold text-zinc-900">2.10</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-zinc-600">Strengths</span>
-                  <span className="text-sm font-semibold text-blue-600">Accuracy, Speed</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl border border-zinc-200 p-6">
-              <h3 className="text-lg font-semibold text-zinc-900 mb-4">Deep Learning</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-sm text-zinc-600">Best Performance</span>
-                  <span className="text-sm font-semibold text-zinc-900">LSTM Log (14.0%)</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-zinc-600">Average RMSE</span>
-                  <span className="text-sm font-semibold text-zinc-900">3.60</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-zinc-600">Challenge</span>
-                  <span className="text-sm font-semibold text-red-600">Sparsity Penalty</span>
-                </div>
-              </div>
+          {/* Bar Chart Visualization */}
+          <div className="glass-panel rounded-2xl p-6 animate-fade-in" style={{ animationDelay: '300ms' }}>
+            <h2 className="text-lg font-bold text-slate-900 mb-6">RMSE Comparison Chart</h2>
+            <div className="h-80 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={summary} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#e2e8f0" />
+                  <XAxis type="number" domain={[0, 'dataMax + 0.5']} />
+                  <YAxis dataKey="Model" type="category" axisLine={false} tickLine={false} tick={{ fill: '#475569', fontWeight: 600 }} />
+                  <RechartsTooltip 
+                    cursor={{fill: '#f1f5f9'}}
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                  />
+                  <Bar dataKey="RMSE" radius={[0, 4, 4, 0]} barSize={24}>
+                    {summary.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={index === 0 ? '#3b82f6' : entry.Model === 'Naive' ? '#94a3b8' : ['LSTM', 'DeepAR'].includes(entry.Model) ? '#8b5cf6' : '#cbd5e1'} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
-
-          {/* Key Insights */}
-          <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl border border-blue-200 p-6">
-            <h3 className="text-lg font-semibold text-blue-900 mb-4">Key Insights & Recommendations</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-semibold text-zinc-900 mb-2">What Works</h4>
-                <ul className="text-sm text-zinc-600 space-y-1">
-                  <li>• LightGBM provides best balance of accuracy and efficiency</li>
-                  <li>• Classical methods remain competitive for stability</li>
-                  <li>• Log transformation helps deep learning handle zeros</li>
-                  <li>• Feature engineering is crucial for all approaches</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold text-zinc-900 mb-2">Future Research</h4>
-                <ul className="text-sm text-zinc-600 space-y-1">
-                  <li>• Further optimization of deep learning architectures</li>
-                  <li>• Hybrid approaches combining ML and classical methods</li>
-                  <li>• Advanced feature engineering and external data integration</li>
-                  <li>• Real-time adaptation and online learning</li>
-                </ul>
-              </div>
-            </div>
-          </div>
+          
         </div>
       </div>
     </SidebarLayout>
