@@ -2,22 +2,44 @@ import sys
 from pathlib import Path
 
 import joblib
-import lightgbm as lgb
+import numpy as np
 import pandas as pd
 import polars as pl
+import lightgbm as lgb
 
 # Add backend root to sys.path
 project_root = Path(__file__).resolve().parents[2]
 sys.path.append(str(project_root))
 
 from src.config import paths
+from src.features.engineer import (
+    create_date_features,
+    create_lag_features,
+    create_price_features,
+)
 from src.utils.logger import get_logger
 
 logger = get_logger("predict_lgbm")
 
+def prepare_features(df, cal, prices):
+    """
+    Re-runs feature engineering on a specific dataframe subset.
+    """
+    if "wm_yr_wk" not in df.columns:
+        df = df.join(cal, left_on="d", right_on="d", how="left")
+
+    if "sell_price" not in df.columns:
+        df = df.join(prices, on=["store_id", "item_id", "wm_yr_wk"], how="left")
+
+    df = create_date_features(df)
+    df = create_price_features(df, prices)
+    df = df.sort(["id", "date"])
+    df = create_lag_features(df)
+
+    return df
 
 def main():
-    logger.info("🚀 Starting LightGBM Inference Pipeline...")
+    logger.info("🚀 Starting LightGBM Recursive Inference Pipeline...")
 
     # 1. Load Model
     model_path = paths.MODELS_DIR / "baseline_lgbm.pkl"
@@ -27,75 +49,116 @@ def main():
 
     logger.info(f"Loading model from {model_path}...")
     model = joblib.load(model_path)
-
-    # 2. Load Data (Validation Period)
-    data_path = paths.PROCESSED_DATA_DIR / "final_train.parquet"
-    logger.info(f"Loading data from {data_path}...")
-    df = pl.read_parquet(data_path)
-
-    # Filter for Validation period
-    split_date = "2016-03-27"
-    val = df.filter(pl.col("date") > pl.lit(split_date).str.to_date())
-
-    logger.info(f"Validation data shape: {val.shape}")
-
-    # 3. Prepare Features
-    # FIX: We MUST include item_id and store_id in the features passed to the model!
-    # We only drop target ('sales'), time index ('date'), and unique row identifier ('id')
-    # Everything else (including item_id, store_id) is a valid feature.
-    features = [c for c in val.columns if c not in ["sales", "date", "id"]]
-
-    # Convert to Pandas
-    X_val = val.select(features).to_pandas()
-
-    # FIX: Robust Categorical Casting & Ordering
-    # Get exact feature names from the model to ensure 100% match
     model_features = model.feature_name()
 
-    # Check if we are missing any columns
-    missing_cols = set(model_features) - set(X_val.columns)
-    if missing_cols:
-        logger.error(f"Missing features in validation data: {missing_cols}")
-        return
+    # 2. Load Data
+    data_path = paths.PROCESSED_DATA_DIR / "melted_sales.parquet"
+    cal_path = paths.PROCESSED_DATA_DIR / "calendar.parquet"
+    price_path = paths.PROCESSED_DATA_DIR / "sell_prices.parquet"
 
-    # Reorder columns to match model's expectation exactly
-    X_val = X_val[model_features]
+    logger.info("Loading raw data history for all 30,490 SKUs...")
+    
+    full_df = pl.read_parquet(data_path)
+    cal = pl.read_parquet(cal_path)
+    prices = pl.read_parquet(price_path).with_columns(
+        [
+            pl.col("store_id").cast(pl.Categorical),
+            pl.col("item_id").cast(pl.Categorical),
+        ]
+    )
 
-    # Identify object columns that need casting
-    # In Polars they might be Int/Cat, but in Pandas conversion they might revert or need explicit 'category' dtype
-    # We check all columns that ARE categorical in the original training logic
-    # or just blindly cast all object columns.
-    cat_cols = X_val.select_dtypes(include=["object"]).columns
+    unique_ids = full_df["id"].unique().to_list()
+    items_count = len(unique_ids)
+    logger.info(f"Forecasting for {items_count} items...")
 
-    if len(cat_cols) > 0:
-        logger.info(f"Casting categorical columns: {list(cat_cols)}")
+    horizon = 28
+    last_day = 1913
+    
+    # Keep last 100 days of history for lag calculations
+    history = full_df.filter(
+        pl.col("d").str.extract(r"(\d+)").cast(pl.Int32) > (last_day - 100)
+    ).with_columns(pl.col("sales").cast(pl.Float32))
+
+    current_df = history
+    forecasts = []
+
+    logger.info("Starting recursive loop (28 days)...")
+    
+    # We need a meta map to append rows properly
+    meta_cols = ["id", "item_id", "store_id", "dept_id", "cat_id", "state_id"]
+    meta_map = history.select(meta_cols).unique(subset=["id"])
+    
+    for day in range(1, horizon + 1):
+        target_d = f"d_{last_day + day}"
+        print(f"Predicting {target_d}...", end="\\r")
+
+        # 1. Add placeholder row for target_d (sales=0) so prepare_features can process it
+        # We must add it for all 30,490 items
+        new_rows = pl.DataFrame(
+            {
+                "id": sorted(unique_ids),
+                "d": [target_d] * items_count,
+                "sales": [0.0] * items_count,
+            },
+            schema={"id": pl.String, "d": pl.String, "sales": pl.Float32}
+        ).join(meta_map, on="id", how="left")
+        
+        # Concat the new rows
+        current_df = pl.concat([current_df, new_rows.select(current_df.columns)], how="vertical")
+        
+        # 2. Feature Engineering (Recalculate lags for the target day)
+        rich_df = prepare_features(current_df, cal, prices)
+
+        # 3. Filter to only the day we are predicting
+        day_df = rich_df.filter(pl.col("d") == target_d)
+        
+        # Prepare features for LightGBM
+        features = [c for c in day_df.columns if c not in ["sales", "date", "id", "d", "wm_yr_wk", "weekday"]]
+        X_val = day_df.select(features).to_pandas()
+        X_val = X_val[model_features] # Reorder
+        
+        # Cast categoricals
+        cat_cols = X_val.select_dtypes(include=["object"]).columns
         for col in cat_cols:
             X_val[col] = X_val[col].astype("category")
 
-    # 4. Predict
-    logger.info("Generating predictions...")
-
-    try:
+        # 4. Predict
         preds = model.predict(X_val)
-    except ValueError as e:
-        logger.error(f"Prediction failed: {e}")
-        raise e
-
-    # 5. Format Output
-    output_df = val.select(["id", "date"]).to_pandas()
-    output_df["pred"] = preds
-
-    # Pivot
-    pivot_df = output_df.pivot(index="id", columns="date", values="pred")
-    pivot_df.columns = [f"F{i+1}" for i in range(28)]
-    pivot_df = pivot_df.reset_index()
+        preds = np.maximum(preds, 0) # No negative sales
+        
+        forecasts.append(preds)
+        
+        # 5. Update the current_df with the actual predictions so the next day's lag uses them
+        # We need to update the last `items_count` rows of current_df
+        # Since we just appended them, they are at the end, but to be safe, we join or update
+        # Actually, since Polars dataframes are immutable, we recreate current_df
+        # Replacing the 0.0 sales with preds for the target_d
+        
+        # We can just drop the placeholder rows and append the predicted rows!
+        current_df = current_df.filter(pl.col("d") != target_d)
+        
+        pred_rows = pl.DataFrame(
+            {
+                "id": day_df["id"].to_list(),
+                "d": [target_d] * items_count,
+                "sales": preds.tolist(),
+            },
+            schema={"id": pl.String, "d": pl.String, "sales": pl.Float32}
+        ).join(meta_map, on="id", how="left")
+        
+        current_df = pl.concat([current_df, pred_rows.select(current_df.columns)], how="vertical")
+        
+    logger.info("\\nRecursive Inference Complete!")
+    
+    # 6. Format Output
+    forecast_array = np.array(forecasts).T
+    out_df = pd.DataFrame(forecast_array, columns=[f"F{i}" for i in range(1, 29)])
+    out_df["id"] = day_df["id"].to_list() # Uses the sorted IDs from day_df
 
     # Save
-    logger.info(f"Saving submission file...")
     out_path = paths.FORECASTS_DIR / "forecast_lgbm.csv"
-    submission.to_csv(out_path, index=False)
-    logger.info(f"Submission file saved to {out_path}")
-
+    out_df.to_csv(out_path, index=False)
+    logger.info(f"✅ Saved LightGBM forecast to {out_path}")
 
 if __name__ == "__main__":
     main()
