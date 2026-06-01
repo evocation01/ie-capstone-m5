@@ -159,7 +159,7 @@ def main():
     output_df["id"] = ids
 
     # Save
-    out_path = paths.EXPERIMENTS_DIR / "forecast_deepar.csv"
+    out_path = paths.FORECASTS_DIR / "forecast_deepar.csv"
     output_df.to_csv(out_path, index=False)
     logger.info(f"✅ Saved DeepAR forecast to {out_path}")
 
