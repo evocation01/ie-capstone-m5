@@ -41,7 +41,7 @@ def test_calculate_costs_holding_only():
     holding_cost_rate = 1.0
     stockout_cost_rate = 10.0
     
-    h_cost, s_cost = calculate_costs(forecast, actual, holding_cost_rate, stockout_cost_rate)
+    h_cost, s_cost, _, _ = calculate_costs(forecast, actual, holding_cost_rate, stockout_cost_rate)
     
     assert h_cost == 10.0 * 1.0  # 10 units excess * $1 holding
     assert s_cost == 0.0         # No stockouts
@@ -54,7 +54,7 @@ def test_calculate_costs_stockout_only():
     holding_cost_rate = 1.0
     stockout_cost_rate = 10.0
     
-    h_cost, s_cost = calculate_costs(forecast, actual, holding_cost_rate, stockout_cost_rate)
+    h_cost, s_cost, _, _ = calculate_costs(forecast, actual, holding_cost_rate, stockout_cost_rate)
     
     assert h_cost == 0.0         # No excess inventory
     assert s_cost == 5.0 * 10.0  # 5 units missing * $10 stockout
@@ -72,7 +72,7 @@ def test_calculate_costs_mixed():
     holding_cost_rate = 2.0
     stockout_cost_rate = 15.0
     
-    h_cost, s_cost = calculate_costs(forecast, actual, holding_cost_rate, stockout_cost_rate)
+    h_cost, s_cost, _, _ = calculate_costs(forecast, actual, holding_cost_rate, stockout_cost_rate)
     
     # Expected Holding: (2 units on Item1_Day1) + (2 units on Item2_Day2) = 4 units
     expected_h = 4 * 2.0

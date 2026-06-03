@@ -138,20 +138,22 @@ export default function DashboardPage() {
       return 1.28;
     };
 
-    const lgbmFc = sku.forecasts['LightGBM']?.[0] || 0;
-    const naiveFc = sku.forecasts['Naive']?.[0] || 0;
     const ss = getLocalZScore(serviceLevel) * 2.1; // Use LightGBM average RMSE for safety stock
 
-    combined.push({
-      name: `D-1`,
-      actual: sku.actual?.[0] || 0,
-      lightgbm: lgbmFc,
-      lstm: sku.forecasts['LSTM']?.[0],
-      deepar: sku.forecasts['DeepAR']?.[0],
-      naive: naiveFc,
-      isHistory: false,
-      safetyStock: ss
-    });
+    if (sku.actual && sku.actual.length > 0) {
+      sku.actual.forEach((act, i) => {
+        combined.push({
+          name: `D+${i+1}`,
+          actual: act,
+          lightgbm: sku.forecasts['LightGBM']?.[i] ?? 0,
+          lstm: sku.forecasts['LSTM']?.[i] ?? 0,
+          deepar: sku.forecasts['DeepAR']?.[i] ?? 0,
+          naive: sku.forecasts['Naive']?.[i] ?? 0,
+          isHistory: false,
+          safetyStock: ss
+        });
+      });
+    }
 
     return combined;
   }, [selectedSku, data, serviceLevel]);
@@ -431,8 +433,8 @@ export default function DashboardPage() {
           {/* Feature Importance and Sensitivity */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 bg-amber-50 border border-amber-200 rounded-xl p-6">
-              <h3 className="text-sm font-bold text-amber-800 mb-1">Top Predictive Features (SHAP)</h3>
-              <div className="text-xs text-amber-700 space-y-2 mb-3 mt-3">
+              <h3 className="text-lg font-bold text-amber-800 mb-2">Top Predictive Features (SHAP)</h3>
+              <div className="text-sm text-amber-700 space-y-3 mb-3 mt-3">
                 {shapData.slice(0, 5).map((d, i) => {
                   const featureDescriptions: Record<string, string> = {
                     'rolling_mean_28': '4-week sales average (Captures monthly trends)',
@@ -456,22 +458,22 @@ export default function DashboardPage() {
                           />
                         </div>
                       </div>
-                      <span className="text-[10px] text-amber-600/90 ml-30 pl-[170px] leading-tight">↳ {desc}</span>
+                      <span className="text-xs text-amber-600/90 ml-30 pl-[170px] leading-tight">↳ {desc}</span>
                     </div>
                   );
                 })}
                 {shapData.length === 0 && <p className="text-amber-600/70 italic">Loading SHAP Explanations...</p>}
               </div>
-              <p className="text-[10px] text-amber-600 mt-2 font-medium">SHAP values use Game Theory to prove exactly which variables drive LightGBM predictions.</p>
+              <p className="text-xs text-amber-600 mt-2 font-medium">SHAP values use Game Theory to prove exactly which variables drive LightGBM predictions.</p>
             </div>
 
             <div className="bg-purple-50 border border-purple-200 rounded-xl p-6 flex flex-col justify-center">
-              <h3 className="text-sm font-bold text-purple-800 mb-2">Newsvendor Economics: Why did {bestModel.Model} win?</h3>
+              <h3 className="text-lg font-bold text-purple-800 mb-3">Newsvendor Economics: Why did {bestModel.Model} win?</h3>
               {(() => {
                 const cr = stockoutCost / (stockoutCost + holdingCost);
                 if (cr < 0.5) {
                   return (
-                    <p className="text-xs text-purple-700 leading-relaxed">
+                    <p className="text-sm text-purple-700 leading-relaxed">
                       <strong>Low Critical Ratio ({(cr*100).toFixed(1)}%):</strong> Holding inventory is more expensive than missing sales. 
                       Models that systematically <strong>under-forecast</strong> (like LSTM) artificially win because they refuse to hold stock, entirely avoiding the massive holding penalty. 
                       This is a "Conservative" supply chain strategy.
@@ -479,7 +481,7 @@ export default function DashboardPage() {
                   );
                 } else if (cr > 0.90) {
                   return (
-                    <p className="text-xs text-purple-700 leading-relaxed">
+                    <p className="text-sm text-purple-700 leading-relaxed">
                       <strong>High Critical Ratio ({(cr*100).toFixed(1)}%):</strong> Stockouts are incredibly expensive (e.g. high-margin electronics). 
                       Models that systematically <strong>over-forecast</strong> (like DeepAR) gain an advantage because missing a sale is heavily penalized. 
                       This is an "Aggressive" supply chain strategy.
@@ -487,7 +489,7 @@ export default function DashboardPage() {
                   );
                 } else {
                   return (
-                    <p className="text-xs text-purple-700 leading-relaxed">
+                    <p className="text-sm text-purple-700 leading-relaxed">
                       <strong>Balanced Critical Ratio ({(cr*100).toFixed(1)}%):</strong> Costs are proportional. 
                       In this scenario, statistical accuracy matters most. The model with the lowest error (<strong>{bestModel.Model}</strong>) wins because it perfectly balances the risks of overstocking and understocking.
                     </p>

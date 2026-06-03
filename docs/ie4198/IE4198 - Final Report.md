@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="/frontend/public/marmara-uni-logo.png" alt="Marmara University Logo" width="150"/>
+  <img src="../../frontend/public/marmara-uni-logo.png" alt="Marmara University Logo" width="150"/>
 </div>
 
 **MARMARA UNIVERSITY**
@@ -22,11 +22,15 @@ Prof. Dr. Serol BULKAN
 
 ISTANBUL, 2026
 
+<div style="page-break-before: always;"></div>
+
 # **ACKNOWLEDGEMENTS**
 
 We would like to sincerely thank our supervisor, Prof. Dr. Serol Bulkan,for his valuable guidance, ongoing support, and expert knowledge ofOptimization Theory during this project. His mentorship helped set the direction for this study and provided guidance on how to approach the design of the inventory policy. We also thank the Marmara University Industrial Engineering Department for providing us with the academic background required to conduct such a detailed study. We would like to thank the open-source community and the Makridakis Open Forecasting Center (MOFC) for providing the M5 Forecasting Dataset, which was essential to our research.
 
 **January, 2026	 	Hakan İspir, Boran Turan, Ali Kahya, Deniz Yağmur Adaş**
+
+<div style="page-break-before: always;"></div>
 
 # **TABLE OF CONTENTS**
 
@@ -116,6 +120,8 @@ We would like to sincerely thank our supervisor, Prof. Dr. Serol Bulkan,for his 
 
 [Appendix D: Next.js Decision Support System Architecture	41](#appendix-d:-next.js-decision-support-system-architecture)
 
+<div style="page-break-before: always;"></div>
+
 # **ABSTRACT**
 
 **A Comparative Analysis of Classical and Deep Learning Forecasting for Supply Chain Inventory Optimization**
@@ -127,6 +133,8 @@ For IE 4198, two parallel approaches were adopted. One followed conventional met
 Unexpected gains emerged when LightGBM entered the testing phase, and its performance surpassed that of both the naive method and LSTM. Although LSTM kept its logarithmic errors small, it stumbled in practical impact due to a quirk: forecasting tiny but nonzero sales during dead periods, which quietly raised storage expenses. In contrast, shifting to LightGBM trimmed overall logistics spending by nearly one-fifth against standard practice, translating into roughly $125,000 saved per year within the modeled conditions. These findings were further operationalized via a Next.js-based Decision Support System (DSS) allowing for real-time Newsvendor sensitivity analysis and SHAP-driven Game Theory explainability. When demand appears rarely and unpredictably, gradient-boosted trees appear better suited than recurrent networks for aligning prediction precision with economic outcomes.
 
 **Key words: Supply Chain Forecasting, Inventory Optimization, Deep Learning, LightGBM, M5 Dataset.**
+
+<div style="page-break-before: always;"></div>
 
 # **ÖZET**
 
@@ -141,6 +149,8 @@ IE 4198 kapsamında iki paralel yaklaşım geliştirilmiştir. Birinci kanal, te
 LightGBM test aşamasına dahil olduğunda beklenmedik kazanımlar elde edilmiştir; modelin performansı hem Naive (saf) yöntemini hem de LSTM’i geride bırakmıştır. LSTM modeli logaritmik hata oranlarını düşük tutsa da, pratik uygulama aşamasında teknik bir engele takılmıştır: Satışın olmadığı ölü dönemlerde çok küçük ancak "sıfır olmayan" değerler tahmin ederek depolama masraflarını sessizce artırmıştır. Buna karşın LightGBM'e geçiş, standart uygulamaya kıyasla toplam lojistik harcamalarını yaklaşık beşte bir oranında azaltmış; bu da modellenen koşullar altında yıllık yaklaşık 125.000 dolarlık bir tasarrufa tekabül etmiştir. Sonuç olarak; talebin nadir ve öngörülemez olduğu durumlarda, gradyan artırımlı ağaçların (gradient-boosted trees), tahmin hassasiyetini ekonomik çıktılarla uyumlu hale getirme konusunda yinelemeli ağlardan (recurrent networks) çok daha başarılı olduğu kanıtlanmıştır.
 
 **Anahtar kelimeler:** Tedarik Zinciri Tahminleme, Envanter Optimizasyonu, Derin Öğrenme, LightGBM, M5 Veri Seti.
+
+<div style="page-break-before: always;"></div>
 
 # **LIST OF SYMBOLS**
 
@@ -159,6 +169,8 @@ LightGBM test aşamasına dahil olduğunda beklenmedik kazanımlar elde edilmiş
 | Z      | Standard Normal Z-score for service level |
 |        | Target Service Level (e.g., 95%)          |
 | e      | Standard deviation of forecast error      |
+
+<div style="page-break-before: always;"></div>
 
 # **ABBREVIATIONS**
 
@@ -180,6 +192,8 @@ LightGBM test aşamasına dahil olduğunda beklenmedik kazanımlar elde edilmiş
 | **WRMSSE** | Weighted Root Mean Squared Scaled Error  |
 | **TLC**    | Total Logistics Cost                     |
 
+<div style="page-break-before: always;"></div>
+
 # **LIST OF FIGURES**
 
 Figure 1.1. Cause-and-effect (Fishbone) diagram illustrating the root causes of excess inventory costs, highlighting Forecast Error as a primary driver…………………………………………………15
@@ -196,16 +210,23 @@ Figure 5.3. Comparative financial analysis showing the reduction in Total Logist
 Figure 5.4. SHAP Feature Importance summary plot detailing predictive drivers. ……………………31
 Figure 5.5. The Interactive Decision Support System dashboard illustrating Newsvendor sensitivity. …32
 
+<div style="page-break-before: always;"></div>
+
 # **LIST OF TABLES**
 
 Table 4.1. A list of categories, algorithms and their characteristics. ………………………………….23
 Table 5.1. Detailed performance metrics (RMSE, WRMSSE) across the tested algorithms. ………...27
 Table 5.2: Inventory Optimization Simulation Results ……………………………………………….29
 
+<div style="page-break-before: always;"></div>
+
 # **WORK PLAN**
 
-**Duration**: 1 – 3 weeks**Work Package 1:** Defining the Problem**Activities:**
+## **Phase 1: IE4197 (Fall Semester - Project Proposal & Research)**
 
+**Duration**: 1 – 3 weeks
+**Work Package 1:** Defining the Problem
+**Activities:**
 * Looking into the Bullwhip Effect within today’s retail supply networks reveals how flawed predictions often lead to too much stock. One major cause behind surplus inventory turns out to be unreliable demand forecasts.
 * Started by outlining what the M5 Forecasting Challenge covered, particularly how balancing leftover stock expenses shaped decisions instead of running out too often. Costs tied to excess storage played off against those linked to missing sales. This balance guided the entire approach taken throughout the study.
 * Early discussions took place with the project supervisor, Professor Doctor Serol Bulkan, ensuring research goals matched academic expectations. Starting these conversations helped clarify direction early on.
@@ -214,56 +235,82 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 **Deliveries of WP1:** Project Proposal Form, Problem Statement, Fishbone Diagram.
 **Work package responsibility:** All group members
 
-**Duration**: 4 – 7 weeks**Work Package 2:** Literature review and examination of the application within the organization**Activities:**
-
-* A thorough analysis of scholarly work on traditional prediction methods \- such as Box-Jenkins and ARIMA \- was carried out alongside newer techniques like Deep Learning and LSTM. While older models rely heavily on statistical assumptions, recent alternatives leverage layered neural networks. Some studies highlight accuracy gains with LSTM in complex time series, whereas others stress robustness in classical frameworks. Contrasting these approaches revealed differing performance depending on data structure. Insights emerged not only from model architecture but also from training demands and interpretability limits.
-* Looking into the outcomes of the initial M5 Competition (Makridakis et al., 2022\) \[9\], insight emerged about current benchmark standards.
-* Looked into how sparse demand patterns appear in retail datasets, then examined effects on standard accuracy measures such as RMSE. Because irregular sales distort average errors, common evaluation methods may mislead. When purchases happen rarely, prediction mistakes weigh differently across time. So, models tuned to dense data often fail here. Thus, relying only on root mean square error risks wrong conclusions.
+**Duration**: 4 – 7 weeks
+**Work Package 2:** Literature Review & Examination of the Application
+**Activities:**
+* A thorough analysis of scholarly work on traditional prediction methods - such as Box-Jenkins and ARIMA - was carried out alongside newer techniques like Deep Learning and LSTM. 
+* Looking into the outcomes of the initial M5 Competition (Makridakis et al., 2022) [9], insight emerged about current benchmark standards.
+* Looked into how sparse demand patterns appear in retail datasets, then examined effects on standard accuracy measures such as RMSE. 
 * Looking into common inventory methods, particularly the (Q, r) approach used in continuous monitoring.
 
 **Deliveries of WP2:** Literature Review Chapter, List of Selected Algorithms (e.g. ARIMA, LightGBM, LSTM).
 **Work package responsibility:** Boran Turan (ML Literature), Hakan İspir (Classical Literature).
 
-**Duration**: 9 – 11 weeks**Work Package 3:** Method Identification and Conceptual Modeling**Activities:**
-
-* A new structure called "Dual-Track" was built so that traditional models could operate at the same time as machine learning ones. One path handles rule-based processing while the other manages data-driven predictions. This setup allows both approaches to contribute without interfering. Simultaneous execution improves response accuracy under variable conditions. Each track updates independently, maintaining flexibility across changing inputs.
+**Duration**: 9 – 11 weeks
+**Work Package 3:** Method Identification & Conceptual Modeling
+**Activities:**
+* A new structure called "Dual-Track" was built so that traditional models could operate at the same time as machine learning ones.
 * Established a mathematical link connecting Forecast Error, measured by RMSE, to Safety Stock using the expression SS equals Z times the square root of L.
-* For measuring accuracy, RMSE was chosen; regarding operational results, Total Logistics Cost served as the key indicator. Performance checks relied on these two distinct but complementary standards.
-* A diagram took shape through Mermaid.js, forming a conceptual model. Data movement found clarity in visual structure. With code as the base, relationships emerged clearly across components. Visualization made abstract ideas tangible. The model mapped how information travels step by step.
+* For measuring accuracy, RMSE was chosen; regarding operational results, Total Logistics Cost served as the key indicator.
+* A diagram took shape through Mermaid.js, forming a conceptual model.
 
 **Deliveries of WP3:** System Architecture Diagram, Mathematical Model for Safety Stock.
 **Work package responsibility:** Ali Kahya (System Design), Deniz Yağmur Adaş (Mathematical Modeling).
 
-**Duration**: 12 – 14 weeks**Work Package 4:** Validating Data and Identifying Tools**Activities:**
-
-* Fresh off the platform, the M5 Dataset arrived intact \- checked down to its 58 million entries. Verification confirmed every row matched the original checksum without deviation.
-* Started by installing Python, then add Polars to handle data efficiently. Next comes PyTorch \- use it for building models later on. Each tool plays a distinct role in the workflow.
-* Starting with a look at the data, patterns in sales were mapped over time. Visual tools helped spot recurring seasonal shifts throughout the year. At times, many days showed no sales at all \- this was carefully noted. The process highlighted areas where values clustered near zero. Overall, the analysis shaped understanding of underlying behavior in the dataset.
+**Duration**: 12 – 14 weeks
+**Work Package 4:** Validating Data & Identifying Tools
+**Activities:**
+* Fresh off the platform, the M5 Dataset arrived intact - checked down to its 58 million entries. 
+* Started by installing Python, then add Polars to handle data efficiently. Next comes PyTorch - use it for building models later on.
+* Starting with a look at the data, patterns in sales were mapped over time. Visual tools helped spot recurring seasonal shifts throughout the year.
 * Created a GitHub repository to manage code versions while enabling team collaboration.
 
 **Deliveries of WP4:** Cleaned Dataset, EDA Report, GitHub Repository, Final Project Plan.
 **Work package responsibility:** Hakan İspir (Programmer)
 
-| PROJECT SCHEDULE |                                        |                      |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-| :--------------: | :------------------------------------: | :-------------------: | :-------------: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
-| **\# Wp** |          **Name of Wp**          | **Responsible** | **Weeks** |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|                  |                                        |                      |       w1       | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 |
-|  **1\.**  |          Defining the Problem          |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|  **1.1.**  | Analyze Bullwhip Effect & Define Scope |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|  **2\.**  |   Literature Review & App. Analysis   |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|  **3\.**  |    Method ID & Conceptual Modeling    |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|  **3.1.**  |    Design "Dual-Track" Architecture    |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|  **3.2.**  | Math Model for Safety Stock & Metrics |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|  **3.3**  |   Conceptual Model Diagram (Mermaid)   |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|  **4\.**  | Validating Data and Identifying Tools |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|  **4.1.**  |    M5 Data Ingestion & Polars Setup    |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|  **4.2.**  |    Exploratory Data Analysis (EDA)    |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|  **4.3.**  |    Final Project Plan & GitHub Repo    |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|  **5\.**  |      Final Report & Presentation      |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|  **5.1**  |      Writing Final Report Content      |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|  **5.2**  |       Final Review & Formatting       |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|  **5.3**  |        Submission to Supervisor        |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
-|  **6.0**  |           Final Presentation           |   All Group Members   |                |    |    |    |    |    |    |    |    |    |    |    |    |    |
+## **Phase 2: IE4198 (Spring Semester - Execution & Results)**
+
+**Duration**: 1 – 3 weeks
+**Work Package 5:** Global Scaling & Pipeline Optimization
+**Activities:**
+* Refactoring the data processing pipeline to use Polars, addressing the out-of-memory limitations encountered with Pandas in the previous semester.
+* Ingesting and processing the full 59-million row M5 Dataset across all 10 Walmart stores and 30,490 SKUs, expanding the scope from the initial pilot study.
+* Designing and implementing a recursive inference loop to prevent data leakage during multi-horizon forecasting, ensuring that future sales data isn't inadvertently used in lag feature generation.
+
+**Deliveries of WP5:** Scaled Polars ETL scripts, Cleaned 59M Dataset.
+**Work package responsibility:** Hakan İspir, Boran Turan
+
+**Duration**: 4 – 7 weeks
+**Work Package 6:** Advanced Model Development & Training
+**Activities:**
+* Engineering complex temporal features, including 28-day rolling means and staggered lag variables.
+* Training the LightGBM ensemble architecture on the global dataset, tuning hyperparameters for sparse data handling.
+* Implementing and training the DeepAR architecture using PyTorch, evaluating its autoregressive handling of zero-inflated items.
+* Benchmarking the models against the Naive Baseline and classical Holt-Winters approaches using RMSE and WRMSSE.
+
+**Deliveries of WP6:** Trained LightGBM and DeepAR models, Global RMSE evaluation metrics.
+**Work package responsibility:** Boran Turan, Ali Kahya
+
+**Duration**: 8 – 11 weeks
+**Work Package 7:** Decision Support System (DSS) & Economics Simulation
+**Activities:**
+* Creating an interactive Decision Support System (DSS) using the Next.js React framework.
+* Designing the Newsvendor simulation to translate raw forecasting errors into financial impact (Total Logistics Cost).
+* Implementing SHAP (SHapley Additive exPlanations) to interpret the LightGBM model and expose the predictive drivers to supply chain managers via the dashboard.
+* Conducting dynamic sensitivity analysis to observe how shifting the Critical Ratio (Stockout vs. Holding costs) impacts algorithm choice.
+
+**Deliveries of WP7:** Deployed Next.js DSS Dashboard, Newsvendor Simulation Results.
+**Work package responsibility:** Hakan İspir, Deniz Yağmur Adaş
+
+**Duration**: 12 – 14 weeks
+**Work Package 8:** Final Evaluation & Documentation
+**Activities:**
+* Synthesizing the experimental data and financial simulation results into actionable business insights.
+* Finalizing the academic documentation and drafting the capstone final report.
+* Designing the final defense presentation to showcase the dashboard and mathematical findings.
+
+**Deliveries of WP8:** IE4198 Final Report, Project Defense Presentation.
+**Work package responsibility:** All group members
 
 1. # **INTRODUCTION**
 
@@ -273,9 +320,9 @@ With the rise of large-scale data collection alongside progress in artificial in
 
 This work tackles the issue through simulation of a practical inventory challenge, drawing on the M5 Forecasting data. Instead of simply comparing accuracy, it weighs traditional approaches alongside cutting-edge AI systems \- focusing on their actual impact on supply chain profitability.
 
-![][image1]
-
 **Figure 1.1.** Cause-and-effect (Fishbone) diagram illustrating the root causes of excess inventory costs, highlighting Forecast Error as a primary driver.
+
+![][image1]
 
 ## **1.1. Project Content**
 
@@ -297,8 +344,11 @@ This project serves as the culmination of efforts begun in IE 4197. Over the cou
 4. **Game Theory Explainability:** Integrating SHAP (SHapley Additive exPlanations) to crack open the black-box nature of the models and provide transparency into feature influence.
 5. **Interactive Decision Support System (DSS):** Developing a fully functional Next.js/React web dashboard that operationalizes the optimization results, enabling real-time sensitivity analysis of Newsvendor economics.
 
-**Figure 1.2.** Project timeline and Gantt chart illustrating the four primary work packages (WP1-WP4).
-![](./images/ie4198-gantt-chart.png)
+**Figure 1.2.** Project timeline and Gantt chart illustrating the four primary work packages (WP1-WP4)
+
+<div align="center">
+  <img src="images/ie4198-gantt-chart.png" alt="IE4198 Gantt Chart" width=""/>
+</div>
 
 2. # **RESEARCH OBJECTIVE**
 
@@ -312,6 +362,8 @@ Specific research goals are as follows:
 4. To achieve  scalability, the system uses a two-path approach for forecasts, built on Polaris,  to handle complex supply chain datasets efficiently. This setup shows how current data tools manage heavy computational  loads without slowing down analysis workflows.
 
 This project seeks to build a practical tool for supply chain decisions, pinpointing when AI-based forecasts outweigh basic models depending on product category, sales levels, or demand swings, not by default, but only where added computation brings clear value.
+
+<div style="page-break-before: always;"></div>
 
 # **3\. RELATED LITERATURE**
 
@@ -342,32 +394,34 @@ LightGBM came into play through work by Ke et al. (2017) \[20\], chosen here bec
 
 The transition towards complex models like LightGBM and DeepAR in supply chain forecasting often introduces a "black box" dilemma, where models are highly accurate but notoriously difficult to interpret. Arrieta et al. (2020) emphasize that Explainable Artificial Intelligence (XAI) is critical for responsible AI deployment in industrial sectors. To resolve this, recent literature has gravitated toward SHapley Additive exPlanations (SHAP), introduced by Lundberg and Lee (2017). SHAP utilizes cooperative game theory to assign a unified importance value to each feature, ensuring that operations managers can trust the predictive drivers. Furthermore, as Power (2002) outlines, raw mathematical outputs are insufficient for executive planning without an interactive Decision Support System (DSS) to bridge the gap between data science and managerial decision-making.
 
+<div style="page-break-before: always;"></div>
+
 # **4\. METHODOLOGY**
 
 This investigation uses a numerical, hands-on approach called the "Dual-Track" method. A major dataset (M5) moves separately through two paths \- one rooted in traditional techniques, the other in machine learning \- to examine how each performs under identical test conditions.
 
-![][image4]
-
 **Figure 4.1.** The proposed "Dual-Track" forecasting pipeline integrating Polars for feature engineering and PyTorch/LightGBM for prediction.
+
+![][image4]
 
 ## **4.1. Data Description**
 
 * Using the M5 Forecasting Dataset forms the basis of this research, a collection often seen at the top tier for retail demand predictions across levels. Though many datasets exist, few match its depth when tracking sales over time within structured groups.
 * Spread across three states \- California, Texas, Wisconsin \- are ten stores offering items in seven departments. These form part of a structure covering three main groups: Food, Hobbies, and Household. Within them exist 30,490 unique products.
+* **Figure 4.2.** Aggregate sales volume distribution across the 10 distinct stores in California (CA), Texas (TX), and Wisconsin (WI).
 
 ![][image5]
 
-**Figure 4.2.** Aggregate sales volume distribution across the 10 distinct stores in California (CA), Texas (TX), and Wisconsin (WI).
-
 * Spanning six years from 2011 to 2016, the collection holds records across 1,913 individual days. When reshaped into a flat structure, it expands to nearly 58 million entries. This breadth offers extensive temporal coverage for analysis. Still, each row remains tied to specific time points within that window.
-* Zero-sales days occur frequently, making demand intermittent \- a key trait that complicates efforts to minimize RMSE. Though common, these gaps disrupt standard forecasting accuracy measures more than expected.
+* Zero-sales days occur frequently, making demand intermittent \- a key trait that complicates efforts to minimwize RMSE. Though common, these gaps disrupt standard forecasting accuracy measures more than expected.
+
+**Figure 4.3.** Histogram analysis showing the high degree of sparsity (zero-inflated demand) in the retail dataset.
 
 ![][image6]
 
-**Figure 4.3.** Histogram analysis showing the high degree of sparsity (zero-inflated demand) in the retail dataset.
-![][image7]
-
 **Figure 4.4.** Daily sales trajectory for item FOODS\_3\_090, illustrating high intermittency and zero-inflation characteristics.
+
+![img][image7]
 
 ## **4.2. Forecasting Models**
 
@@ -388,9 +442,9 @@ Fewer comparisons happen without these models, since they set the standard other
 Instead of relying on fixed assumptions, these models build tree structures that respond flexibly to patterns in variables like pricing, calendar dates, or shop identifiers. While splitting data recursively, they uncover complex relationships without predefined mathematical forms. Each branch reflects a real shift observed in historical behavior across different locations and time points.
 
 6. **Random Forest:** A collection of decision trees forms what is known as a *Random Forest*. Each tree grows using a sample drawn at random from the original data. These samples allow separate models to develop independently during training. Instead of relying on one model, results emerge by combining outputs across all trees. Combining predictions happens through averaging in regression or voting in classification. This process tends to smooth out errors that individual trees might make. Variability drops because no single tree dominates the outcome. Overfitting becomes less likely thanks to this shared decision structure. Multiple weak learners together support more stable outcomes.
-7. **XGBoost*:*** Starting off strong, *XGBoost* improves predictions by stacking decision trees one after another. Each subsequent tree targets mistakes made earlier in the process. Instead of stopping there, it applies penalties through L1 and L2 methods to prevent overfitting. Known for efficiency, the method fine-tunes how much each tree contributes. Rather than growing wild, the structure stays controlled thanks to built-in constraints. Performance often rises because of these careful adjustments behind the scenes.
+7. ****XGBoost*:*** Starting off strong, *XGBoost* improves predictions by stacking decision trees one after another. Each subsequent tree targets mistakes made earlier in the process. Instead of stopping there, it applies penalties through L1 and L2 methods to prevent overfitting. Known for efficiency, the method fine-tunes how much each tree contributes. Rather than growing wild, the structure stays controlled thanks to built-in constraints. Performance often rises because of these careful adjustments behind the scenes.
 8. **LightGBM:** Developed at Microsoft, it relies on Gradient-based One-Side Sampling along with Exclusive Feature Bundling to boost performance. Speed stands out \- especially across big data \- making it notably quicker than *XGBoost*. In challenges centered on structured tables, it now sets the standard. Though built for efficiency, its strength shows most when scaling up.
-9. **CatBoost*:*** It stands out by working directly with categories such as Store ID or Item Type \- no extra steps required. Its design skips traditional encoding methods, which often complicate modeling efforts. Because it integrates these values naturally, the chance of data contamination drops noticeably. Fewer manual transformations mean fewer opportunities for errors to creep in during training.
+9. ****CatBoost*:*** It stands out by working directly with categories such as Store ID or Item Type \- no extra steps required. Its design skips traditional encoding methods, which often complicate modeling efforts. Because it integrates these values naturally, the chance of data contamination drops noticeably. Fewer manual transformations mean fewer opportunities for errors to creep in during training.
 
 ### **4.2.3. Deep Learning Architectures**
 
@@ -423,8 +477,9 @@ To handle 59 million rows, a custom workflow was built using the Polars library.
 * **Feature Engineering:** Seven days back, plus twenty-eight earlier \- those time gaps shaped new data points. Rolling averages emerged through moving calculations across past values.
 * **Validation:** Checking that information does not cross from the training period (2011–2016) into the validation group.
 
-![][image8]
 **Figure 4.5:** High-Performance Data Processing Pipeline utilizing Polars for 59M row ingestion.
+
+![][image8]
 
 ## **4.4. Recursive Inference Engineering**
 
@@ -437,6 +492,8 @@ To demystify the "black box" nature of machine learning algorithms, this study i
 ## **4.6. Decision Support System (DSS) Architecture**
 
 To bridge the gap between algorithmic accuracy and operational planning, we developed an interactive Decision Support System (DSS) using modern web technologies (Next.js, Tailwind CSS, and Recharts). This dashboard ingests the optimization outputs and allows supply chain planners to conduct real-time sensitivity analysis. By adjusting the Stockout and Holding Cost sliders, decision-makers can observe dynamically how the Critical Ratio ($CR = \frac{C_s}{C_s + C_h}$) impacts algorithm selection and Newsvendor economics.
+
+<div style="page-break-before: always;"></div>
 
 # **5\. APPLICATION AND RESULTS**
 
@@ -472,6 +529,7 @@ Although ARIMA relies solely on past values, LightGBM captures shifts in demand 
 A close look at how LSTMs handle zero-heavy inputs uncovered an unexpected pattern. Despite their strong learning potential, these models showed reduced effectiveness during initial testing. We call this drop in performance the "Sparsity Penalty." This effect emerged clearly when data contained many zeros
 
 **Figure 5.2.** Impact of data sparsity on forecast error; Deep Learning performance degrades as the percentage of zero-sales increases (The "Sparsity Penalty").
+![][image11]
 
 Figure 5.2 shows how the LSTM often settled near an average value when handling sparsely demanded items. Rather than outputting zero, it produced small decimal predictions \- between 0 and 1 units \- in many cases. This behavior reduces error metrics used in training, yet causes practical issues downstream. In real-world operations, such values are treated as signs of expected need. That signal activates restocking routines even if no actual orders follow, slowly building up excess inventory over time.
 
@@ -479,7 +537,7 @@ Figure 5.2 shows how the LSTM often settled near an average value when handling 
 
 Our main goal here was measuring what information is worth. Using each model's RMSE, a (Q, r) setup simulated supply chain activity \- total logistics cost emerged under a 95% service aim. That outcome helps clarify whether spending more computing power on AI forecasts makes practical sense.
 
- **Table 5.2:** Inventory Optimization Simulation Results (Extreme CR: Holding Cost 0.10)
+**Table 5.2:** Inventory Optimization Simulation Results (Extreme CR: Holding Cost 0.10)
 
 | Model                    | Total Cost ($)     | Savings vs. Naive |
 | :----------------------- | :----------------- | :---------------- |
@@ -494,8 +552,10 @@ Our main goal here was measuring what information is worth. Using each model's R
 ### **5.2.1. Cost Trade-offs and Safety Stock Optimization**
 
 Looking at Table 5.2, which illustrates a specific low-holding-cost scenario generated by the DSS, DeepAR dominates the simulation by saving over 61% compared to the Naive baseline. While LightGBM remains the champion at standard Critical Ratios, identifying DeepAR's superiority at extreme intermittent conditions proves the immense value of dynamic scenario planning.
-![][image12]
-**Figure 5.3. Comparative financial analysis showing the reduction in Total Logistics Cost achieved by the AI models.**
+
+**Figure 5.3.** Comparative financial analysis showing the reduction in Total Logistics Cost achieved by the AI models.
+
+![img][image12]
 
 A spike in holding costs emerged under the LSTM approach. On days with no sales, its forecasts still showed small but persistent demand values. As a result, inventory levels stayed unusually high throughout the period. Efficiency dropped by 91 percent when measured against standard performance. For low-traffic retail items, straightforward decision trees or traditional seasonal methods tend to deliver stronger financial outcomes than intricate recurrent networks.
 Ultimately, though precision measures help assess data models, economic modeling shows top performance comes from correctly predicting frequent no-sales periods in store inventories.
@@ -511,15 +571,17 @@ What sets this initiative apart isn’t just cost savings \- it tackles a hidden
 
 The integration of SHAP revealed exactly what drives LightGBM's superior accuracy. The analysis highlighted that temporal lags (particularly `lag_7` and `lag_14`) and rolling aggregations (`rolling_mean_28`) possess the highest SHAP values, vastly outweighing static categorical identifiers like department or store ID.
 
-SHAP Feature Importance Analysis
 **Figure 5.4.** SHAP Feature Importance summary plot detailing predictive drivers along with the interactive DSS.
+
+![](./images/comparison.png)
 
 ## **5.5. Dynamic Sensitivity Analysis & Economics**
 
 The interactive Decision Support System (DSS) was used to conduct a sensitivity analysis on the Holding and Stockout costs, demonstrating the non-linear relationship between RMSE and financial utility.
 
-DSS Sensitivity Analysis
 **Figure 5.5.** The Interactive Decision Support System dashboard illustrating Newsvendor sensitivity.
+
+![](./images/dashboard.png)
 
 Interestingly, adjusting the Critical Ratio ($CR$) shifts the optimal model choice in counterintuitive ways. When $CR$ is extremely high (e.g., Stockout Cost >> Holding Cost), conservative models like LSTM or DeepAR might theoretically minimize expected cost because they inherently over-forecast, providing a wider safety buffer against severe stockout penalties. Conversely, at low $CR$, models that forecast closer to zero minimize holding costs on intermittent items. LightGBM remained globally optimal across standard and balanced parameter ranges, showcasing its robustness.
 
@@ -529,16 +591,24 @@ A major flaw discovered during the initial phases of this study (IE 4197) was "h
 
 By implementing the recursive inference loop in IE 4198—which forces the model to predict day 1, append the prediction, and mathematically recalculate all rolling means and lags before predicting day 2—the true operational accuracy was revealed. While the *theoretical* RMSE initially appeared worse after the fix, the *operational* robustness improved drastically. The strict recursive pipeline ensured that the resulting Total Logistics Cost simulations in the Newsvendor model were realistic and immune to real-world deployment failures, validating the pipeline for true enterprise use.
 
+<div style="page-break-before: always;"></div>
+
 # **6\. CONCLUSION**
 
-This project successfully implemented and compared three forecasting paradigms: Classical (ARIMA), Machine Learning (LightGBM), and Deep Learning (LSTM).**Key Findings:**
+This project successfully implemented and compared three forecasting paradigms: Classical (ARIMA), Machine Learning (LightGBM), and Deep Learning (LSTM).
+
+**Key Findings:**
 
 1. **Accuracy:** When it comes to predicting retail trends, LightGBM performs better overall. Its structure manages large, sparse datasets \- like those in the M5 competition \- with greater ease compared to ARIMA or basic LSTM models. While traditional time series methods struggle with complexity, this algorithm adapts quickly. Efficiency here stems from how it processes features and splits data. Not every model handles volume and gaps well; this one does. Accuracy improves because decision trees focus on relevant patterns. Simpler assumptions often fail when real-world noise appears. In contrast, gradient boosting leverages multiple weak learners without overcomplicating training. Results show consistent leads in forecasting precision across diverse store-item combinations.
 2. **Financial Impact:** Less forecasting mistakes mean lower costs. When machine learning predicts better, companies keep fewer reserves on hand. This cuts inventory expenses while still meeting customer demand. Smaller errors in predictions lead to leaner operations. Efficiency grows because stores are neither overstocked nor caught short.
 3. **Technical Implementation:** Processing large datasets required a shift from conventional methods. Because Pandas struggled with fifty million rows, adopting Polars became necessary. Efficiency gains emerged when newer frameworks replaced older ones. Data scale exposed limits of familiar tools. Success depended on choosing faster, memory-efficient alternatives. Modern engineering tasks demand updated computational approaches.
 
 When demand shifts unpredictably, LightGBM fits the task of prediction quite naturally. Though training takes more time, savings on stock costs become clear over repeated cycles. Because it adapts quickly to changes, the method works reliably where uncertainty runs high.
+
+
 Notable is the way improved inventory management via artificial intelligence aligns with responsible business conduct. Because stored products decrease by close to 20 percent, energy demand for warehouse lighting and temperature systems falls accordingly. Overproduction waste declines when such methods are applied. As a result, factory output starts reflecting wider sustainability goals. These operational improvements bring about indirect yet beneficial environmental outcomes.
+
+<div style="page-break-before: always;"></div>
 
 # **REFERENCES**
 
@@ -565,12 +635,13 @@ Notable is the way improved inventory management via artificial intelligence ali
 * \[21\] Theodorou, E., Wang, S., Kang, Y., Spiliotis, E., Makridakis, S., & Assimakopoulos, V. (2022). Exploring the representativeness of the M5 competition data. *International Journal of Forecasting*, *38*(4), 1500-1506.
 * \[22\] Benidis, K., Rangapuram, S. S., Flunkert, V., Wang, Y., Maddix, D., Turkmen, C., ... & Januschowski, T. (2022). Deep learning for time series forecasting: Tutorial and literature survey. *ACM Computing Surveys*, *55*(6), 1-36.
 * \[23\] Park, M. J., Turner, O., & Becker, T. (2025). Inventory Optimization in Retail Supply Chains Using Deep Reinforcement Learning. *Advances in Management and Intelligent Technologies*, *1*(3).
+* [24] Lundberg, S. M., & Lee, Su-In. (2017). A Unified Approach to Interpreting Model Predictions. *Advances in Neural Information Processing Systems*, 30.
+* \[25] Arrieta, A. B., et al. (2020). Explainable Artificial Intelligence (XAI): Concepts, taxonomies, opportunities and challenges toward responsible AI. *Information Fusion*, 58, 82-115.
+* \[26] Power, D. J. (2002). *Decision support systems: concepts and resources for managers*. Greenwood Publishing Group.
+
+<div style="page-break-before: always;"></div>
 
 # **APPENDICES**
-
-* \[23\] Lundberg, S. M., & Lee, Su-In. (2017). A Unified Approach to Interpreting Model Predictions. *Advances in Neural Information Processing Systems*, 30.
-* \[24\] Arrieta, A. B., et al. (2020). Explainable Artificial Intelligence (XAI): Concepts, taxonomies, opportunities and challenges toward responsible AI. *Information Fusion*, 58, 82-115.
-* \[25\] Power, D. J. (2002). *Decision support systems: concepts and resources for managers*. Greenwood Publishing Group.
 
 ## **Appendix A: Key Algorithm Logic**
 
@@ -630,7 +701,7 @@ BEGIN PROCEDURE DataPipeline
 3.      Load Raw Data (Sales, Calendar, Prices)
 4.      JOIN Sales with Calendar on 'd' (Day ID)
 5.      JOIN Sales with Prices on ['store_id', 'item_id', 'wm_yr_wk']
-6.    
+6.  
 7.      FOR each SKU $i$ in Dataset DO
 8.          COMPUTE Feature Vector $X_i$:
 9.              Lags: $y_{t-7}, y_{t-28}$
@@ -649,7 +720,7 @@ BEGIN PROCEDURE DataPipeline
 21.         ELSE IF $m$ is MachineLearning THEN
 22.             Train Regressor $f(X) \rightarrow y$ on Feature Matrix
 23.         END IF
-24.       
+24.   
 25.         Generate Forecast $\hat{y}_{m}$ for Horizon $H$
 26.         Compute Error: $RMSE_m = \sqrt{\frac{1}{n} \sum (\hat{y}_m - y_{actual})^2}$
 27.     END FOR
@@ -665,18 +736,18 @@ BEGIN PROCEDURE DataPipeline
 36.         ForecastError $\sigma_e = RMSE(i)$
 37.         SafetyStock $SS_i = z_{\alpha} \cdot \sigma_e \cdot \sqrt{L}$
 38.         TargetLevel $S_i = \hat{y}_i + SS_i$
-39.       
+39.   
 40.         // Simulate Daily Operations
 41.         FOR day $t = 1$ to $H$ DO
 42.             Demand $D_t = T_{val}[i, t]$
 43.             NetInventory $I_t = S_i - D_t$
-44.           
+44.       
 45.             IF $I_t > 0$ THEN
 46.                 Cost = $I_t \cdot C_h$  // Holding Cost
 47.             ELSE
 48.                 Cost = $|I_t| \cdot C_s$ // Stockout Cost
 49.             END IF
-50.           
+50.       
 51.             $TC = TC + Cost$
 52.         END FOR
 53.     END FOR

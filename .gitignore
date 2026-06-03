@@ -104,4 +104,4 @@ backend/data/
 *.docx
 
 # Specific folders mentioned in your snippets
-capstone/
+capstone/.coverage
