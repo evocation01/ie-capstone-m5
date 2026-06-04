@@ -219,9 +219,11 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 
 # **WORK PLAN**
 
+### **IE 4197 Work Plan**
+
 | Wp | Name of Wp | Responsible | w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **1.** | **Phase 1: Defining the Problem** | **All Group Members** | X | X | X | | | | | | | | | | | |
+| **1.** | **Defining the Problem** | **All Group Members** | X | X | X | | | | | | | | | | | |
 | 1.1 | Analyze Bullwhip & Cost Balance | All Group Members | X | X | | | | | | | | | | | | |
 | 1.2 | Problem Statement & Diagram | All Group Members | | X | X | | | | | | | | | | | |
 | **2.** | **Literature Review & Examination** | **Boran T., Hakan İ.** | | | | X | X | X | X | | | | | | | |
@@ -233,7 +235,14 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 | **4.** | **Validating Data & Tools** | **Hakan İspir** | | | | | | | | | | | | X | X | X |
 | 4.1 | EDA & Data Setup | Hakan İspir | | | | | | | | | | | | X | X | |
 | 4.2 | Project Repository & Plan | Hakan İspir | | | | | | | | | | | | | X | X |
-| **5.** | **Phase 2: Global Scaling & ETL** | **Hakan İ., Boran T.** | X | X | X | | | | | | | | | | | |
+
+<br>
+
+### **IE 4198 Work Plan**
+
+| Wp | Name of Wp | Responsible | w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **5.** | **Global Scaling & ETL** | **Hakan İ., Boran T.** | X | X | X | | | | | | | | | | | |
 | 5.1 | Polars Pipeline Translation | Hakan İspir | X | X | | | | | | | | | | | | |
 | 5.2 | Full Dataset Ingestion | Boran Turan | | X | X | | | | | | | | | | | |
 | **6.** | **Advanced Model Development** | **Boran T., Ali K.** | | | | X | X | X | X | | | | | | | |
