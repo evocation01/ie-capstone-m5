@@ -32,7 +32,7 @@ def plot_zero_inflation():
         counts = sample['sales'].value_counts().sort_index().head(10) # 0 to 9
         
         sns.barplot(x=counts.index, y=counts.values, color="skyblue", edgecolor="black")
-        plt.title("Figure 4.1: Zero-Inflation in M5 Dataset (Sample of 1M Rows)")
+        plt.title("Figure 4.3: Zero-Inflation in M5 Dataset (Sample of 1M Rows)")
         plt.xlabel("Daily Unit Sales")
         plt.ylabel("Frequency")
         plt.yscale("log") # Log scale to show the drop
@@ -67,8 +67,8 @@ def plot_benchmark_leaderboard():
         print(f"Skipping Figure 4.2: {e}")
 
 def plot_financial_impact():
-    """Figure 4.4: Cost Comparison"""
-    print("Generating Figure 4.4 (Financial Impact)...")
+    """Figure 5.3: Cost Comparison"""
+    print("Generating Figure 5.3. (Financial Impact)...")
     try:
         df = pd.read_csv(RESULTS_DIR / "optimization/optimization_summary.csv")
         
@@ -85,7 +85,7 @@ def plot_financial_impact():
         p1 = plt.bar(models, stockout, color='#e74c3c', label='Stockout Cost')
         p2 = plt.bar(models, holding, bottom=stockout, color='#f1c40f', label='Holding Cost')
         
-        plt.title("Figure 4.4: Financial Impact Analysis (Inventory Simulation)")
+        plt.title("Figure 5.3.: Financial Impact Analysis (Inventory Simulation)")
         plt.ylabel("Total Logistics Cost ($)")
         plt.legend()
         

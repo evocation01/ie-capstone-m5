@@ -221,39 +221,39 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 
 ### **IE 4197 Work Plan**
 
-| Wp | Name of Wp | Responsible | w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **1.** | **Defining the Problem** | **All Group Members** | X | X | X | | | | | | | | | | | |
-| 1.1 | Analyze Bullwhip & Cost Balance | All Group Members | X | X | | | | | | | | | | | | |
-| 1.2 | Problem Statement & Diagram | All Group Members | | X | X | | | | | | | | | | | |
-| **2.** | **Literature Review & Examination** | **Boran T., Hakan İ.** | | | | X | X | X | X | | | | | | | |
-| 2.1 | ML Literature Review | Boran Turan | | | | X | X | X | | | | | | | | |
-| 2.2 | Classical Literature & Standard | Hakan İspir | | | | | X | X | X | | | | | | | |
-| **3.** | **Method Identification & Modeling** | **Ali K., Boran T.** | | | | | | | | | X | X | X | | | |
-| 3.1 | Dual-Track Architecture | Ali Kahya | | | | | | | | | X | X | | | | |
-| 3.2 | Mathematical Modeling | Boran Turan | | | | | | | | | | X | X | | | |
-| **4.** | **Validating Data & Tools** | **Hakan İspir** | | | | | | | | | | | | X | X | X |
-| 4.1 | EDA & Data Setup | Hakan İspir | | | | | | | | | | | | X | X | |
-| 4.2 | Project Repository & Plan | Hakan İspir | | | | | | | | | | | | | X | X |
+| Wp           | Name of Wp                                 | Responsible                 | w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 |
+| :----------- | :----------------------------------------- | :-------------------------- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :-- | :-- | :-- | :-- | :-- |
+| **1.** | **Defining the Problem**             | **All Group Members** | X  | X  | X  |    |    |    |    |    |    |     |     |     |     |     |
+| 1.1          | Analyze Bullwhip & Cost Balance            | All Group Members           | X  | X  |    |    |    |    |    |    |    |     |     |     |     |     |
+| 1.2          | Problem Statement & Diagram                | All Group Members           |    | X  | X  |    |    |    |    |    |    |     |     |     |     |     |
+| **2.** | **Literature Review & Examination**  | **All Group Members** |    |    |    | X  | X  | X  | X  |    |    |     |     |     |     |     |
+| 2.1          | ML Literature Review                       | Hakan İspir                |    |    |    | X  | X  | X  |    |    |    |     |     |     |     |     |
+| 2.2          | Classical Literature & Standard            | Ali K., Boran T.            |    |    |    |    | X  | X  | X  |    |    |     |     |     |     |     |
+| **3.** | **Method Identification & Modeling** | **Ali K., Boran T.**  |    |    |    |    |    |    |    |    | X  | X   | X   |     |     |     |
+| 3.1          | Dual-Track Architecture                    | Ali Kahya                   |    |    |    |    |    |    |    |    | X  | X   |     |     |     |     |
+| 3.2          | Mathematical Modeling                      | Boran Turan                 |    |    |    |    |    |    |    |    |    | X   | X   |     |     |     |
+| **4.** | **Validating Data & Tools**          | **All Group Members**      |    |    |    |    |    |    |    |    |    |     |     | X   | X   | X   |
+| 4.1          | EDA & Data Setup                           | Hakan İ., Ali K.           |    |    |    |    |    |    |    |    |    |     |     | X   | X   |     |
+| 4.2          | Project Repository & Plan                  | Hakan İ., Boran T.         |    |    |    |    |    |    |    |    |    |     |     |     | X   | X   |
 
 <br>
 
 ### **IE 4198 Work Plan**
 
-| Wp | Name of Wp | Responsible | w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **5.** | **Global Scaling & ETL** | **Hakan İ., Boran T.** | X | X | X | | | | | | | | | | | |
-| 5.1 | Polars Pipeline Translation | Hakan İspir | X | X | | | | | | | | | | | | |
-| 5.2 | Full Dataset Ingestion | Boran Turan | | X | X | | | | | | | | | | | |
-| **6.** | **Advanced Model Development** | **Boran T., Ali K.** | | | | X | X | X | X | | | | | | | |
-| 6.1 | Feature Engineering & LightGBM | Boran Turan | | | | X | X | X | | | | | | | | |
-| 6.2 | DeepAR Architecture | Ali Kahya | | | | | X | X | X | | | | | | | |
-| **7.** | **DSS & Economics Simulation** | **Hakan İ.** | | | | | | | | X | X | X | X | | | |
-| 7.1 | DSS & Critical Ratio Optimizer | Hakan İspir | | | | | | | | X | X | X | | | | |
-| 7.2 | SHAP & Financial Simulation | Hakan İspir | | | | | | | | | X | X | X | | | |
-| **8.** | **Final Evaluation & Documentation** | **All Group Members** | | | | | | | | | | | | X | X | X |
-| 8.1 | Data Synthesis & Conclusion | All Group Members | | | | | | | | | | | | X | X | |
-| 8.2 | Final Report & Defense | All Group Members | | | | | | | | | | | | | X | X |
+| Wp           | Name of Wp                                 | Responsible                   | w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 |
+| :----------- | :----------------------------------------- | :---------------------------- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :-- | :-- | :-- | :-- | :-- |
+| **5.** | **Global Scaling & ETL**             | **Hakan İ., Boran T.** | X  | X  | X  |    |    |    |    |    |    |     |     |     |     |     |
+| 5.1          | Polars Pipeline Translation                | Hakan İspir                  | X  | X  |    |    |    |    |    |    |    |     |     |     |     |     |
+| 5.2          | Full Dataset Ingestion                     | Boran Turan                   |    | X  | X  |    |    |    |    |    |    |     |     |     |     |     |
+| **6.** | **Advanced Model Development**       | **Hakan İspir**        |    |    |    | X  | X  | X  | X  |    |    |     |     |     |     |     |
+| 6.1          | Feature Engineering & LightGBM             | Hakan İspir                  |    |    |    | X  | X  | X  |    |    |    |     |     |     |     |     |
+| 6.2          | DeepAR Architecture                        | Hakan İspir                  |    |    |    |    | X  | X  | X  |    |    |     |     |     |     |     |
+| **7.** | **DSS & Economics Simulation**       | **All Group Members**        |    |    |    |    |    |    |    | X  | X  | X   | X   |     |     |     |
+| 7.1          | DSS & Critical Ratio Optimizer             | All Group Members             |    |    |    |    |    |    |    | X  | X  | X   |     |     |     |     |
+| 7.2          | SHAP & Financial Simulation                | All Group Members             |    |    |    |    |    |    |    |    | X  | X   | X   |     |     |     |
+| **8.** | **Final Evaluation & Documentation** | **All Group Members**   |    |    |    |    |    |    |    |    |    |     |     | X   | X   | X   |
+| 8.1          | Data Synthesis & Conclusion                | All Group Members             |    |    |    |    |    |    |    |    |    |     |     | X   | X   |     |
+| 8.2          | Final Report & Defense                     | All Group Members             |    |    |    |    |    |    |    |    |    |     |     |     | X   | X   |
 
 <br>
 
@@ -262,6 +262,7 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 **Duration**: 1 – 3 weeks
 **Work Package 1:** Defining the Problem
 **Activities:**
+
 * Looking into the Bullwhip Effect within today’s retail supply networks reveals how flawed predictions often lead to too much stock. One major cause behind surplus inventory turns out to be unreliable demand forecasts.
 * Started by outlining what the M5 Forecasting Challenge covered, particularly how balancing leftover stock expenses shaped decisions instead of running out too often. Costs tied to excess storage played off against those linked to missing sales. This balance guided the entire approach taken throughout the study.
 * Early discussions took place with the project supervisor, Professor Doctor Serol Bulkan, ensuring research goals matched academic expectations. Starting these conversations helped clarify direction early on.
@@ -273,9 +274,10 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 **Duration**: 4 – 7 weeks
 **Work Package 2:** Literature Review & Examination of the Application
 **Activities:**
-* A thorough analysis of scholarly work on traditional prediction methods - such as Box-Jenkins and ARIMA - was carried out alongside newer techniques like Deep Learning and LSTM. 
+
+* A thorough analysis of scholarly work on traditional prediction methods - such as Box-Jenkins and ARIMA - was carried out alongside newer techniques like Deep Learning and LSTM.
 * Looking into the outcomes of the initial M5 Competition (Makridakis et al., 2022) [9], insight emerged about current benchmark standards.
-* Looked into how sparse demand patterns appear in retail datasets, then examined effects on standard accuracy measures such as RMSE. 
+* Looked into how sparse demand patterns appear in retail datasets, then examined effects on standard accuracy measures such as RMSE.
 * Looking into common inventory methods, particularly the (Q, r) approach used in continuous monitoring.
 
 **Deliveries of WP2:** Literature Review Chapter, List of Selected Algorithms (e.g. ARIMA, LightGBM, LSTM).
@@ -284,6 +286,7 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 **Duration**: 9 – 11 weeks
 **Work Package 3:** Method Identification & Conceptual Modeling
 **Activities:**
+
 * A new structure called "Dual-Track" was built so that traditional models could operate at the same time as machine learning ones.
 * Established a mathematical link connecting Forecast Error, measured by RMSE, to Safety Stock using the expression SS equals Z times the square root of L.
 * For measuring accuracy, RMSE was chosen; regarding operational results, Total Logistics Cost served as the key indicator.
@@ -295,7 +298,8 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 **Duration**: 12 – 14 weeks
 **Work Package 4:** Validating Data & Identifying Tools
 **Activities:**
-* Fresh off the platform, the M5 Dataset arrived intact - checked down to its 58 million entries. 
+
+* Fresh off the platform, the M5 Dataset arrived intact - checked down to its 58 million entries.
 * Started by installing Python, then add Polars to handle data efficiently. Next comes PyTorch - use it for building models later on.
 * Starting with a look at the data, patterns in sales were mapped over time. Visual tools helped spot recurring seasonal shifts throughout the year.
 * Created a GitHub repository to manage code versions while enabling team collaboration.
@@ -308,6 +312,7 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 **Duration**: 1 – 3 weeks
 **Work Package 5:** Global Scaling & Pipeline Optimization
 **Activities:**
+
 * Refactoring the data processing pipeline to use Polars, addressing the out-of-memory limitations encountered with Pandas in the previous semester.
 * Ingesting and processing the full 59-million row M5 Dataset across all 10 Walmart stores and 30,490 SKUs, expanding the scope from the initial pilot study.
 * Designing and implementing a recursive inference loop to prevent data leakage during multi-horizon forecasting, ensuring that future sales data isn't inadvertently used in lag feature generation.
@@ -318,6 +323,7 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 **Duration**: 4 – 7 weeks
 **Work Package 6:** Advanced Model Development & Training
 **Activities:**
+
 * Engineering complex temporal features, including 28-day rolling means and staggered lag variables.
 * Training the LightGBM ensemble architecture on the global dataset, tuning hyperparameters for sparse data handling.
 * Implementing and training the DeepAR architecture using PyTorch, evaluating its autoregressive handling of zero-inflated items.
@@ -329,6 +335,7 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 **Duration**: 8 – 11 weeks
 **Work Package 7:** Decision Support System (DSS) & Economics Simulation
 **Activities:**
+
 * Creating an interactive Decision Support System (DSS) using the Next.js React framework.
 * Designing the Newsvendor simulation to translate raw forecasting errors into financial impact (Total Logistics Cost).
 * Implementing SHAP (SHapley Additive exPlanations) to interpret the LightGBM model and expose the predictive drivers to supply chain managers via the dashboard.
@@ -340,6 +347,7 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 **Duration**: 12 – 14 weeks
 **Work Package 8:** Final Evaluation & Documentation
 **Activities:**
+
 * Synthesizing the experimental data and financial simulation results into actionable business insights.
 * Finalizing the academic documentation and drafting the capstone final report.
 * Designing the final defense presentation to showcase the dashboard and mathematical findings.
@@ -601,7 +609,6 @@ The integration of SHAP revealed exactly what drives LightGBM's superior accurac
 
 **Figure 5.4.** SHAP Feature Importance summary plot detailing predictive drivers along with the interactive DSS.
 
-![](./images/comparison.png)
 
 ## **5.4. Dynamic Sensitivity Analysis & Economics**
 
@@ -609,7 +616,6 @@ The interactive Decision Support System (DSS) was used to conduct a sensitivity 
 
 **Figure 5.5.** The Interactive Decision Support System dashboard illustrating Newsvendor sensitivity.
 
-![](./images/dashboard.png)
 
 Interestingly, adjusting the Critical Ratio ($CR$) shifts the optimal model choice in counterintuitive ways. When $CR$ is extremely high (e.g., Stockout Cost >> Holding Cost), conservative models like LSTM or DeepAR might theoretically minimize expected cost because they inherently over-forecast, providing a wider safety buffer against severe stockout penalties. Conversely, at low $CR$, models that forecast closer to zero minimize holding costs on intermittent items. LightGBM remained globally optimal across standard and balanced parameter ranges, showcasing its robustness.
 
@@ -632,7 +638,7 @@ What sets this initiative apart isn’t just cost savings \- it tackles a hidden
 
 ## **Engineering Design**
 
-The core engineering problem solved in this project is the optimization of inventory safety stock parameters through the accurate modeling of zero-inflated, intermittent retail demand. A "Dual-Track" methodology was implemented. Classical methods like ARIMA and Holt-Winters were developed alongside modern gradient-boosting (LightGBM) and neural network (DeepAR) solutions. 
+The core engineering problem solved in this project is the optimization of inventory safety stock parameters through the accurate modeling of zero-inflated, intermittent retail demand. A "Dual-Track" methodology was implemented. Classical methods like ARIMA and Holt-Winters were developed alongside modern gradient-boosting (LightGBM) and neural network (DeepAR) solutions.
 
 The LightGBM ensemble approach was ultimately selected because it empirically provided the best balance of low RMSE and computational efficiency over a highly sparse 59-million-row dataset. This efficiency directly addressed the industry need for rapid nightly forecast updates across entire product catalogs. The industrial contribution extends to the Decision Support System (DSS) dashboard, transitioning the black-box AI outputs into a dynamic Newsvendor optimization framework usable by logistics managers. The technical execution utilized Operations Research theory (Critical Ratio), Statistical Modeling, and full-stack software development (Python, Polars, React) previously learned in the IE curriculum.
 
@@ -653,7 +659,6 @@ This project successfully implemented and compared three forecasting paradigms: 
 3. **Technical Implementation:** Processing large datasets required a shift from conventional methods. Because Pandas struggled with fifty million rows, adopting Polars became necessary. Efficiency gains emerged when newer frameworks replaced older ones. Data scale exposed limits of familiar tools. Success depended on choosing faster, memory-efficient alternatives. Modern engineering tasks demand updated computational approaches.
 
 When demand shifts unpredictably, LightGBM fits the task of prediction quite naturally. Though training takes more time, savings on stock costs become clear over repeated cycles. Because it adapts quickly to changes, the method works reliably where uncertainty runs high.
-
 
 Notable is the way improved inventory management via artificial intelligence aligns with responsible business conduct. Because stored products decrease by close to 20 percent, energy demand for warehouse lighting and temperature systems falls accordingly. Overproduction waste declines when such methods are applied. As a result, factory output starts reflecting wider sustainability goals. These operational improvements bring about indirect yet beneficial environmental outcomes.
 
@@ -790,13 +795,13 @@ BEGIN PROCEDURE DataPipeline
 41.         FOR day $t = 1$ to $H$ DO
 42.             Demand $D_t = T_{val}[i, t]$
 43.             NetInventory $I_t = S_i - D_t$
-44.       
+44.     
 45.             IF $I_t > 0$ THEN
 46.                 Cost = $I_t \cdot C_h$  // Holding Cost
 47.             ELSE
 48.                 Cost = $|I_t| \cdot C_s$ // Stockout Cost
 49.             END IF
-50.       
+50.     
 51.             $TC = TC + Cost$
 52.         END FOR
 53.     END FOR
