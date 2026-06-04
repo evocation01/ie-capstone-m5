@@ -9,7 +9,6 @@
 
 150322052 \- Hakan İspir
 150320024 \- Boran Turan
-150319053 \- Deniz Yağmur Adaş
 150320052 \- Ali Kahya
 
 **IE 4198 ENGINEERING PROJECT**
@@ -28,7 +27,7 @@ ISTANBUL, 2026
 
 We would like to sincerely thank our supervisor, Prof. Dr. Serol Bulkan,for his valuable guidance, ongoing support, and expert knowledge ofOptimization Theory during this project. His mentorship helped set the direction for this study and provided guidance on how to approach the design of the inventory policy. We also thank the Marmara University Industrial Engineering Department for providing us with the academic background required to conduct such a detailed study. We would like to thank the open-source community and the Makridakis Open Forecasting Center (MOFC) for providing the M5 Forecasting Dataset, which was essential to our research.
 
-**January, 2026	 	Hakan İspir, Boran Turan, Ali Kahya, Deniz Yağmur Adaş**
+**January, 2026	 	Hakan İspir, Boran Turan, Ali Kahya**
 
 <div style="page-break-before: always;"></div>
 
@@ -228,9 +227,9 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 | **2.** | **Literature Review & Examination** | **Boran T., Hakan İ.** | | | | X | X | X | X | | | | | | | |
 | 2.1 | ML Literature Review | Boran Turan | | | | X | X | X | | | | | | | | |
 | 2.2 | Classical Literature & Standard | Hakan İspir | | | | | X | X | X | | | | | | | |
-| **3.** | **Method Identification & Modeling** | **Ali K., Deniz Y. A.** | | | | | | | | | X | X | X | | | |
+| **3.** | **Method Identification & Modeling** | **Ali K., Boran T.** | | | | | | | | | X | X | X | | | |
 | 3.1 | Dual-Track Architecture | Ali Kahya | | | | | | | | | X | X | | | | |
-| 3.2 | Mathematical Modeling | Deniz Y. A. | | | | | | | | | | X | X | | | |
+| 3.2 | Mathematical Modeling | Boran Turan | | | | | | | | | | X | X | | | |
 | **4.** | **Validating Data & Tools** | **Hakan İspir** | | | | | | | | | | | | X | X | X |
 | 4.1 | EDA & Data Setup | Hakan İspir | | | | | | | | | | | | X | X | |
 | 4.2 | Project Repository & Plan | Hakan İspir | | | | | | | | | | | | | X | X |
@@ -282,7 +281,7 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 * A diagram took shape through Mermaid.js, forming a conceptual model.
 
 **Deliveries of WP3:** System Architecture Diagram, Mathematical Model for Safety Stock.
-**Work package responsibility:** Ali Kahya (System Design), Deniz Yağmur Adaş (Mathematical Modeling).
+**Work package responsibility:** Ali Kahya (System Design), Boran Turan (Mathematical Modeling).
 
 **Duration**: 12 – 14 weeks
 **Work Package 4:** Validating Data & Identifying Tools
@@ -327,7 +326,7 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 * Conducting dynamic sensitivity analysis to observe how shifting the Critical Ratio (Stockout vs. Holding costs) impacts algorithm choice.
 
 **Deliveries of WP7:** Deployed Next.js DSS Dashboard, Newsvendor Simulation Results.
-**Work package responsibility:** Hakan İspir, Deniz Yağmur Adaş
+**Work package responsibility:** Hakan İspir
 
 **Duration**: 12 – 14 weeks
 **Work Package 8:** Final Evaluation & Documentation
