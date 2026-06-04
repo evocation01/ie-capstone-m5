@@ -239,9 +239,9 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 | **6.** | **Advanced Model Development** | **Boran T., Ali K.** | | | | X | X | X | X | | | | | | | |
 | 6.1 | Feature Engineering & LightGBM | Boran Turan | | | | X | X | X | | | | | | | | |
 | 6.2 | DeepAR Architecture | Ali Kahya | | | | | X | X | X | | | | | | | |
-| **7.** | **DSS & Economics Simulation** | **Hakan İ., Deniz Y. A.** | | | | | | | | X | X | X | X | | | |
+| **7.** | **DSS & Economics Simulation** | **Hakan İ.** | | | | | | | | X | X | X | X | | | |
 | 7.1 | DSS & Critical Ratio Optimizer | Hakan İspir | | | | | | | | X | X | X | | | | |
-| 7.2 | SHAP & Financial Simulation | Deniz Y. A. | | | | | | | | | X | X | X | | | |
+| 7.2 | SHAP & Financial Simulation | Hakan İspir | | | | | | | | | X | X | X | | | |
 | **8.** | **Final Evaluation & Documentation** | **All Group Members** | | | | | | | | | | | | X | X | X |
 | 8.1 | Data Synthesis & Conclusion | All Group Members | | | | | | | | | | | | X | X | |
 | 8.2 | Final Report & Defense | All Group Members | | | | | | | | | | | | | X | X |
