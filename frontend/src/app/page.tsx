@@ -11,7 +11,8 @@ import {
   DollarSign,
   Settings,
   ArrowRight,
-  BookOpen
+  BookOpen,
+  Wand2
 } from 'lucide-react';
 import InfoTooltip from '@/components/InfoTooltip';
 import SidebarLayout from '@/components/SidebarLayout';
@@ -52,6 +53,14 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [chartType, setChartType] = useState<'sales' | 'inventory'>('sales');
   const [shapData, setShapData] = useState<Array<{feature: string, importance: number}>>([]);
+
+  const handleOptimize = () => {
+    // Newsvendor Critical Ratio calculation
+    const criticalRatio = stockoutCost / (holdingCost + stockoutCost);
+    // Clamp between 0.80 and 0.99 for safety
+    const optimalServiceLevel = Math.max(0.80, Math.min(0.99, criticalRatio));
+    setServiceLevel(optimalServiceLevel);
+  };
 
   // Load data on mount
   useEffect(() => {
@@ -315,7 +324,12 @@ export default function DashboardPage() {
               <div className="space-y-6 flex-1">
                 <div>
                   <InfoTooltip title="Service Level" content="The probability of not stocking out during the lead time. Higher values require more safety stock, increasing holding costs but reducing stockouts.">
-                    <label className="text-sm font-semibold text-slate-700 block mb-3">Service Level: <span className="text-blue-600 font-bold">{Math.round(serviceLevel * 100)}%</span></label>
+                    <div className="flex justify-between items-center mb-3">
+                      <label className="text-sm font-semibold text-slate-700 block">Service Level: <span className="text-blue-600 font-bold">{Math.round(serviceLevel * 100)}%</span></label>
+                      <button onClick={handleOptimize} className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-md hover:bg-emerald-200 transition-colors flex items-center gap-1">
+                        <Wand2 className="w-3 h-3" /> Auto-Optimize
+                      </button>
+                    </div>
                   </InfoTooltip>
                   <input
                     type="range"

@@ -94,15 +94,15 @@ We would like to sincerely thank our supervisor, Prof. Dr. Serol Bulkan,for his 
 
 [5.2.1. Cost Trade-offs and Safety Stock Optimization	34](#5.2.1.-cost-trade-offs-and-safety-stock-optimization)
 
-[5.3. Sustainability and Environmental Impact	35](#5.3.-sustainability-and-environmental-impact)
+[5.3. Model Explainability Analysis	36](#5.3.-model-explainability-analysis)
 
-[5.4. Model Explainability Analysis	36](#5.4.-model-explainability-analysis)
+[5.4. Dynamic Sensitivity Analysis &amp; Economics	37](#5.4.-dynamic-sensitivity-analysis-&-economics)
 
-[5.5. Dynamic Sensitivity Analysis &amp; Economics	37](#5.5.-dynamic-sensitivity-analysis-&-economics)
+[5.5. Impact of Recursive Inference: A Before &amp; After Analysis	38](#5.5.-impact-of-recursive-inference:-a-before-&-after-analysis)
 
-[5.6. Impact of Recursive Inference: A Before &amp; After Analysis	38](#5.6.-impact-of-recursive-inference:-a-before-&-after-analysis)
+[**ENGINEERING DESIGN EXPERIENCE	39**](#engineering-design-experience)
 
-[**6\. CONCLUSION	36**](#6.-conclusion)
+[**6\. CONCLUSION	40**](#6.-conclusion)
 
 [**REFERENCES	37**](#references)
 
@@ -221,6 +221,35 @@ Table 5.2: Inventory Optimization Simulation Results ………………………
 <div style="page-break-before: always;"></div>
 
 # **WORK PLAN**
+
+| Wp | Name of Wp | Responsible | w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **1.** | **Phase 1: Defining the Problem** | **All Group Members** | X | X | X | | | | | | | | | | | |
+| 1.1 | Analyze Bullwhip & Cost Balance | All Group Members | X | X | | | | | | | | | | | | |
+| 1.2 | Problem Statement & Diagram | All Group Members | | X | X | | | | | | | | | | | |
+| **2.** | **Literature Review & Examination** | **Boran T., Hakan İ.** | | | | X | X | X | X | | | | | | | |
+| 2.1 | ML Literature Review | Boran Turan | | | | X | X | X | | | | | | | | |
+| 2.2 | Classical Literature & Standard | Hakan İspir | | | | | X | X | X | | | | | | | |
+| **3.** | **Method Identification & Modeling** | **Ali K., Deniz Y. A.** | | | | | | | | | X | X | X | | | |
+| 3.1 | Dual-Track Architecture | Ali Kahya | | | | | | | | | X | X | | | | |
+| 3.2 | Mathematical Modeling | Deniz Y. A. | | | | | | | | | | X | X | | | |
+| **4.** | **Validating Data & Tools** | **Hakan İspir** | | | | | | | | | | | | X | X | X |
+| 4.1 | EDA & Data Setup | Hakan İspir | | | | | | | | | | | | X | X | |
+| 4.2 | Project Repository & Plan | Hakan İspir | | | | | | | | | | | | | X | X |
+| **5.** | **Phase 2: Global Scaling & ETL** | **Hakan İ., Boran T.** | X | X | X | | | | | | | | | | | |
+| 5.1 | Polars Pipeline Translation | Hakan İspir | X | X | | | | | | | | | | | | |
+| 5.2 | Full Dataset Ingestion | Boran Turan | | X | X | | | | | | | | | | | |
+| **6.** | **Advanced Model Development** | **Boran T., Ali K.** | | | | X | X | X | X | | | | | | | |
+| 6.1 | Feature Engineering & LightGBM | Boran Turan | | | | X | X | X | | | | | | | | |
+| 6.2 | DeepAR Architecture | Ali Kahya | | | | | X | X | X | | | | | | | |
+| **7.** | **DSS & Economics Simulation** | **Hakan İ., Deniz Y. A.** | | | | | | | | X | X | X | X | | | |
+| 7.1 | DSS & Critical Ratio Optimizer | Hakan İspir | | | | | | | | X | X | X | | | | |
+| 7.2 | SHAP & Financial Simulation | Deniz Y. A. | | | | | | | | | X | X | X | | | |
+| **8.** | **Final Evaluation & Documentation** | **All Group Members** | | | | | | | | | | | | X | X | X |
+| 8.1 | Data Synthesis & Conclusion | All Group Members | | | | | | | | | | | | X | X | |
+| 8.2 | Final Report & Defense | All Group Members | | | | | | | | | | | | | X | X |
+
+<br>
 
 ## **Phase 1: IE4197 (Fall Semester - Project Proposal & Research)**
 
@@ -560,14 +589,7 @@ Looking at Table 5.2, which illustrates a specific low-holding-cost scenario gen
 A spike in holding costs emerged under the LSTM approach. On days with no sales, its forecasts still showed small but persistent demand values. As a result, inventory levels stayed unusually high throughout the period. Efficiency dropped by 91 percent when measured against standard performance. For low-traffic retail items, straightforward decision trees or traditional seasonal methods tend to deliver stronger financial outcomes than intricate recurrent networks.
 Ultimately, though precision measures help assess data models, economic modeling shows top performance comes from correctly predicting frequent no-sales periods in store inventories.
 
-## **5.3. Sustainability and Environmental Impact**
-
-What sets this initiative apart isn’t just cost savings \- it tackles a hidden environmental burden in retail logistics. Poor predictions trigger excess production; that imbalance feeds into surplus inventory. One outcome is overstock ending in landfills. Another stems from unnecessary transportation cycles crisscrossing regions. Both drain resources without benefit
-
-1. Foods thrown out due to inflated predictions pile up in landfills. Mistakes in estimating demand lead to spoilage before items reach consumers. Too much stock means perishables rot on shelves. Excess supply ends in waste bins instead of meals. Poor projections feed into larger patterns of discarded groceries worldwide.
-2. When forecasts fall short, emergency deliveries often follow. Because supplies run low, companies resort to splitting orders across multiple shipments. Such last-minute moves tend to rely on faster but dirtier transportation methods. Instead of steady, planned restocking, these fixes travel longer distances with heavier emissions. Efficiency drops when urgency takes over. Routes change on short notice, avoiding regular patterns. Vehicles used are rarely the cleanest option available.
-
-## **5.4. Model Explainability Analysis**
+## **5.3. Model Explainability Analysis**
 
 The integration of SHAP revealed exactly what drives LightGBM's superior accuracy. The analysis highlighted that temporal lags (particularly `lag_7` and `lag_14`) and rolling aggregations (`rolling_mean_28`) possess the highest SHAP values, vastly outweighing static categorical identifiers like department or store ID.
 
@@ -575,7 +597,7 @@ The integration of SHAP revealed exactly what drives LightGBM's superior accurac
 
 ![](./images/comparison.png)
 
-## **5.5. Dynamic Sensitivity Analysis & Economics**
+## **5.4. Dynamic Sensitivity Analysis & Economics**
 
 The interactive Decision Support System (DSS) was used to conduct a sensitivity analysis on the Holding and Stockout costs, demonstrating the non-linear relationship between RMSE and financial utility.
 
@@ -585,11 +607,32 @@ The interactive Decision Support System (DSS) was used to conduct a sensitivity 
 
 Interestingly, adjusting the Critical Ratio ($CR$) shifts the optimal model choice in counterintuitive ways. When $CR$ is extremely high (e.g., Stockout Cost >> Holding Cost), conservative models like LSTM or DeepAR might theoretically minimize expected cost because they inherently over-forecast, providing a wider safety buffer against severe stockout penalties. Conversely, at low $CR$, models that forecast closer to zero minimize holding costs on intermittent items. LightGBM remained globally optimal across standard and balanced parameter ranges, showcasing its robustness.
 
-## **5.6. Impact of Recursive Inference: A Before & After Analysis**
+## **5.5. Impact of Recursive Inference: A Before & After Analysis**
 
 A major flaw discovered during the initial phases of this study (IE 4197) was "hallucinated accuracy" stemming from data leakage. When utilizing a multi-horizon forecasting approach without recursive updates, models artificially "looked into the future" by accessing $y_{t+1}$ lag features to predict $y_{t+2}$.
 
 By implementing the recursive inference loop in IE 4198—which forces the model to predict day 1, append the prediction, and mathematically recalculate all rolling means and lags before predicting day 2—the true operational accuracy was revealed. While the *theoretical* RMSE initially appeared worse after the fix, the *operational* robustness improved drastically. The strict recursive pipeline ensured that the resulting Total Logistics Cost simulations in the Newsvendor model were realistic and immune to real-world deployment failures, validating the pipeline for true enterprise use.
+
+<div style="page-break-before: always;"></div>
+
+# **ENGINEERING DESIGN EXPERIENCE**
+
+## **Sustainability**
+
+What sets this initiative apart isn’t just cost savings \- it tackles a hidden environmental burden in retail logistics. Poor predictions trigger excess production; that imbalance feeds into surplus inventory. One outcome is overstock ending in landfills. Another stems from unnecessary transportation cycles crisscrossing regions. Both drain resources without benefit.
+
+1. Foods thrown out due to inflated predictions pile up in landfills. Mistakes in estimating demand lead to spoilage before items reach consumers. Too much stock means perishables rot on shelves. Excess supply ends in waste bins instead of meals. Poor projections feed into larger patterns of discarded groceries worldwide.
+2. When forecasts fall short, emergency deliveries often follow. Because supplies run low, companies resort to splitting orders across multiple shipments. Such last-minute moves tend to rely on faster but dirtier transportation methods. Instead of steady, planned restocking, these fixes travel longer distances with heavier emissions. Efficiency drops when urgency takes over. Routes change on short notice, avoiding regular patterns. Vehicles used are rarely the cleanest option available.
+
+## **Engineering Design**
+
+The core engineering problem solved in this project is the optimization of inventory safety stock parameters through the accurate modeling of zero-inflated, intermittent retail demand. A "Dual-Track" methodology was implemented. Classical methods like ARIMA and Holt-Winters were developed alongside modern gradient-boosting (LightGBM) and neural network (DeepAR) solutions. 
+
+The LightGBM ensemble approach was ultimately selected because it empirically provided the best balance of low RMSE and computational efficiency over a highly sparse 59-million-row dataset. This efficiency directly addressed the industry need for rapid nightly forecast updates across entire product catalogs. The industrial contribution extends to the Decision Support System (DSS) dashboard, transitioning the black-box AI outputs into a dynamic Newsvendor optimization framework usable by logistics managers. The technical execution utilized Operations Research theory (Critical Ratio), Statistical Modeling, and full-stack software development (Python, Polars, React) previously learned in the IE curriculum.
+
+## **Engineering Standards and Constraints**
+
+The system design strictly adhered to software engineering standards, notably prioritizing modular architecture to ensure maintainability and reproducibility. Due to the computational constraints of handling a massive dataset on standard hardware, out-of-memory errors were mitigated by refactoring data pipelines to utilize Polars for multi-threaded chunk processing instead of standard Pandas operations. This satisfied the system performance constraints without compromising the granularity of the store-level modeling.
 
 <div style="page-break-before: always;"></div>
 
