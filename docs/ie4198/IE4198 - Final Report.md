@@ -560,10 +560,11 @@ Unsurprisingly, the champion LightGBM stood out on the globally scaled leaderboa
 | 1    | LightGBM       | 1.96            |
 | 2    | DeepAR         | 2.15            |
 | 3    | Moving Average | 2.26            |
-| 4    | Holt-Winters   | 2.31            |
-| 5    | Weighted MA    | 2.56            |
-| 6    | Naive          | 2.86 (Baseline) |
-| 7    | LSTM           | 3.58            |
+| 4    | ARIMA          | 2.28            |
+| 5    | Holt-Winters   | 2.31            |
+| 6    | Weighted MA    | 2.56            |
+| 7    | Naive          | 2.86 (Baseline) |
+| 8    | LSTM           | 3.58            |
 
 Although ARIMA relies solely on past values, LightGBM captures shifts in demand by linking them to external factors like pricing trends and specific dates. One reason tree methods outperform traditional ones lies in their ability to integrate outside variables. Features such as sports games or disbursement cycles matter when predicting consumption patterns. Where classical approaches remain limited to time-dependent sequences, gradient-boosted trees adapt using broader signals.
 
