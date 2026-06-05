@@ -32,7 +32,7 @@ def plot_zero_inflation():
         counts = sample['sales'].value_counts().sort_index().head(10) # 0 to 9
         
         sns.barplot(x=counts.index, y=counts.values, color="skyblue", edgecolor="black")
-        plt.title("Figure 4.3: Zero-Inflation in M5 Dataset (Sample of 1M Rows)")
+        plt.title("Figure: Zero-Inflation in M5 Dataset (Sample of 1M Rows)")
         plt.xlabel("Daily Unit Sales")
         plt.ylabel("Frequency")
         plt.yscale("log") # Log scale to show the drop
@@ -54,7 +54,7 @@ def plot_benchmark_leaderboard():
         colors = ['#2ecc71' if x == leaderboard.min() else '#e74c3c' if x == leaderboard.max() else '#3498db' for x in leaderboard.values]
         
         ax = sns.barplot(x=leaderboard.values, y=leaderboard.index, palette=colors)
-        plt.title("Figure 4.2: Final Benchmark Leaderboard (Store CA_1)")
+        plt.title("Figure: Final Benchmark Leaderboard (Store CA_1)")
         plt.xlabel("Average RMSE (Lower is Better)")
         
         # Add labels
@@ -85,7 +85,7 @@ def plot_financial_impact():
         p1 = plt.bar(models, stockout, color='#e74c3c', label='Stockout Cost')
         p2 = plt.bar(models, holding, bottom=stockout, color='#f1c40f', label='Holding Cost')
         
-        plt.title("Figure 5.3.: Financial Impact Analysis (Inventory Simulation)")
+        plt.title("Figure: Financial Impact Analysis (Inventory Simulation)")
         plt.ylabel("Total Logistics Cost ($)")
         plt.legend()
         
@@ -139,7 +139,7 @@ def plot_sparsity_penalty():
         plt.plot(days, y_lstm, 'r--', label='LSTM (Deep Learning)', alpha=0.8)
         plt.plot(days, y_lgbm, 'g-', label='LightGBM (ML)', alpha=0.8)
         
-        plt.title(f"Figure 4.3: The Sparsity Penalty (Item: {target_item})")
+        plt.title(f"Figure: The Sparsity Penalty (Item: {target_item})")
         plt.xlabel("Day of Forecast")
         plt.ylabel("Unit Sales")
         plt.legend()
