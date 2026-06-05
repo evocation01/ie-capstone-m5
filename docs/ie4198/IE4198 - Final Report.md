@@ -162,10 +162,10 @@ Sonuçlar, LightGBM'in hem Naive (saf) modelleri hem de LSTM'i geride bıraktı�
 | t      | Time period index                         |
 | TC     | Total Logistics Cost                      |
 | yt     | Actual demand at time t                   |
-| yt     | Forecasted demand at time t               |
+| ŷt     | Forecasted demand at time t               |
 | Z      | Standard Normal Z-score for service level |
-|        | Target Service Level (e.g., 95%)          |
-| e      | Standard deviation of forecast error      |
+| SL     | Target Service Level (e.g., 95%)          |
+| σ_e    | Standard deviation of forecast error      |
 
 <div style="page-break-before: always;"></div>
 
